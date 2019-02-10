@@ -52,7 +52,7 @@ if ( ! class_exists( 'SEIWP_Backend_Ajax' ) ) {
 			$to = sanitize_option( 'date_format', $_POST['to'] );
 			$query = sanitize_text_field( $_POST['query'] );
 			if ( isset( $_POST['filter'] ) ) {
-				$filter_id = sanitize_option( 'siteurl', $_POST['filter'] );
+				$filter_id = (int) $_POST['filter'];
 			} else {
 				$filter_id = false;
 			}

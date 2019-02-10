@@ -4,7 +4,7 @@
  * Plugin URI: https://deconf.com/search-engine-insights/
  * Description: Displays Google Search Console Reports in your Dashboard.
  * Author: Alin Marcu
- * Version: 0.4.1
+ * Version: 0.4.2
  * Author URI: https://deconf.com
  * Text Domain: search-engine-insights
  * Domain Path: /languages
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) )
 
 // Plugin Version
 if ( ! defined( 'SEIWP_CURRENT_VERSION' ) ) {
-	define( 'SEIWP_CURRENT_VERSION', '0.4.1' );
+	define( 'SEIWP_CURRENT_VERSION', '0.4.2' );
 }
 
 if ( ! defined( 'SEIWP_ENDPOINT_URL' ) ) {
