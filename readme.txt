@@ -68,9 +68,11 @@ Search Engine Insights it's released under the GPLv2, you can use it free of cha
 == Upgrade Notice ==
 
 == Changelog ==
-= 0.4.1 (2019.01.29) =
+= 0.4.1 (2019.02.10) =
 * Bug Fixes:
 	* fixes icon on mobile devices
+* Enhancements: 
+	* EndPoint URL update
 	
 = 0.4 (2019.01.27) =
 * Enhancements: 

@@ -20,7 +20,7 @@ if ( ! defined( 'SEIWP_CURRENT_VERSION' ) ) {
 }
 
 if ( ! defined( 'SEIWP_ENDPOINT_URL' ) ) {
-	define( 'SEIWP_ENDPOINT_URL', 'https://seiwp.deconf.com/' );
+	define( 'SEIWP_ENDPOINT_URL', 'https://deconf.com/seiwp/' );
 }
 
 
