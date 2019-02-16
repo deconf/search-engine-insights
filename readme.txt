@@ -68,7 +68,7 @@ Search Engine Insights it's released under the GPLv2, you can use it free of cha
 == Upgrade Notice ==
 
 == Changelog ==
-= 0.4.2 (2019.02.10) =
+= 0.4.2 (2019.02.16) =
 * Bug Fixes:
 	* small CSS fix on switch buttons
 	* backend reports displaying wrong data (site-wide stats instead of individual stats) 
