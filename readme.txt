@@ -15,7 +15,7 @@ See which keywords bring users to your site. Analyze the Google Search Console s
 
 ### The perfect tool for viewing Google Search Console stats in your WordPress dashboard.
 
-Search Engine Insights will help you understand your site's search engine traffic and performance, by displaying key stats in your admin dashboard.
+Search Engine Insights will help you understand your site's search engine traffic and performance, by displaying key stats in a widget, on your admin dashboard.
 
 In addition to a set of general Google Search Console reports, per Page and Post statistics will allow further segmentation of your search engine data, providing search engine insights for your web pages.
 
@@ -43,6 +43,7 @@ In addition, you can control who can view specific search console reports by set
 3. Open the plugin configuration page, which is located under Search Engine Insights menu.
 4. Authorize the plugin to connect to Google Search Console using the Authorize Plugin button.
 5. Go back to the plugin configuration page, which is located under Search Engine Insights menu to update/set your settings.
+6. Open the admin dashboard to view the Search Console reports on the newly added widget
 
 == Frequently Asked Questions == 
 
@@ -50,15 +51,15 @@ In addition, you can control who can view specific search console reports by set
 
 You can submit pull requests, feature requests and bug reports on [our GitHub repository](https://github.com/deconf/Search-Engine-Insights).
 
-= What "Processing data, please check again in a few days" means =
+= Why "Processing data, please check again in a few days" is displayed in the admin dashboard widget? =
 
 When new Properties are added to Google Search Console, it may take up to a few days until the search engine stats will be available in Search Console and your Search Engine Insights plugin.
 
 == Screenshots ==
 
-1. Search Engine Insights - Impressions, clicks, position, and click through rate stats 
+1. Search Engine Insights - Impressions, clicks, position, and click through rate stats on your dashboard
 2. Search Engine Insights - Reports about the location of your users, retrieved from Google Search Console
-3. Search Engine Insights - Search Console stats about your Pages
+3. Search Engine Insights - Search Console stats about your Pages on WordPress dashboard
 4. Search Engine Insights - Keywords statistics and performance reports retrieved from Google Search Console
 
 == License ==
