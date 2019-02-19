@@ -1,10 +1,10 @@
-=== Search Engine Insights & Stats ===
+=== Search Engine Insights ===
 Contributors: deconf
 Donate link: https://deconf.com/donate/
-Tags: stats, google search console, webmaster tools, statistics, search console, seo
+Tags: search console dashboard, google search console, search console widget, statistics, search console, seo
 Requires at least: 3.5
-Tested up to: 5.0
-Stable tag: 0.4.1
+Tested up to: 5.1
+Stable tag: 0.4.2
 Requires PHP: 5.2.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html

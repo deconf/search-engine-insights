@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Search Engine Insights & Stats
+ * Plugin Name: Search Engine Insights
  * Plugin URI: https://deconf.com/search-engine-insights/
  * Description: Displays Google Search Console Reports in your Dashboard.
  * Author: Alin Marcu
