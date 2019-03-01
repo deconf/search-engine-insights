@@ -26,7 +26,15 @@ if ( ! class_exists( 'SEIWP_Site_Verification' ) ) {
 
 		public function add_meta_tag() {
 			if ( isset( $this->seiwp->config->options['site_verification_meta'] ) && $this->seiwp->config->options['site_verification_meta'] )
-				echo $this->seiwp->config->options['site_verification_meta'] . "\n";
+			 /* @formatter:off */
+				$allowed_tags = array(
+					'meta' => array(
+						'name' => array(),
+						'content' => array()
+					),
+				);
+				/* @formatter:on */
+			echo wp_kses( $this->seiwp->config->options['site_verification_meta'], $allowed_tags ) . "\n";
 		}
 	}
 }

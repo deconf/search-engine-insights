@@ -476,10 +476,8 @@ final class SEIWP_Settings {
 			$sites = $seiwp->gapi_controller->get_sites_info();
 			if ( is_array( $sites ) && ! empty( $sites ) ) {
 				$seiwp->config->options['sites_list'] = $sites;
-				if ( ! $seiwp->config->options['site_jail'] ) {
-					$site = SEIWP_Tools::guess_default_domain( $sites );
-					$seiwp->config->options['site_jail'] = $site;
-				}
+				$site = SEIWP_Tools::guess_default_domain( $sites );
+				$seiwp->config->options['site_jail'] = $site;
 				$options = self::update_options( 'setup' );
 			}
 		}
@@ -488,10 +486,8 @@ final class SEIWP_Settings {
 			$sites = $seiwp->gapi_controller->get_sites_info();
 			if ( is_array( $sites ) && ! empty( $sites ) ) {
 				$seiwp->config->options['sites_list'] = $sites;
-				if ( ! $seiwp->config->options['site_jail'] ) {
-					$site = SEIWP_Tools::guess_default_domain( $sites );
-					$seiwp->config->options['site_jail'] = $site;
-				}
+				$site = SEIWP_Tools::guess_default_domain( $sites );
+				$seiwp->config->options['site_jail'] = $site;
 				$options = self::update_options( 'setup' );
 			}
 		}

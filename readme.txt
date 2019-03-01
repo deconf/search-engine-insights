@@ -1,4 +1,4 @@
-=== Search Engine Insights ===
+=== Search Engine Insights for Google Search Console ===
 Contributors: deconf
 Donate link: https://deconf.com/donate/
 Tags: search console dashboard, google search console, search console widget, statistics, search console, seo
@@ -9,7 +9,7 @@ Requires PHP: 5.2.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Add your website to Google Search Console! Analyze the Google Search Console stats, to see your site's position on Google Search Engine.
+Add your website to Google Search Console! Analyze the Search Console stats, to see your site's performance on Google Search.
 
 == Description ==
 
