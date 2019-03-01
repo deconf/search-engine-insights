@@ -66,7 +66,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				}
 			}
 			$this->client = new SEI_Client( $config );
-			$this->client->setScopes( array( 'https://www.googleapis.com/auth/webmasters.readonly', 'https://www.googleapis.com/auth/siteverification' ) );
+			$this->client->setScopes( array( 'https://www.googleapis.com/auth/webmasters', 'https://www.googleapis.com/auth/siteverification' ) );
 			$this->client->setAccessType( 'offline' );
 			$this->client->setApplicationName( 'SEIWP ' . SEIWP_CURRENT_VERSION );
 			$this->client->setRedirectUri( 'urn:ietf:wg:oauth:2.0:oob' );
@@ -240,6 +240,97 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		}
 
 		/**
+		 * Verifies the current site for Google Search Console
+		 *
+		 * @return boolean
+		 */
+		public function verify_property() {
+			try {
+
+				if ( empty( $this->seiwp->config->options['site_verification_meta'] ) ) {
+
+					$site = new SEI_Service_SiteVerification_SiteVerificationWebResourceGettokenRequestSite();
+					$site->setIdentifier( site_url() );
+					$site->setType( 'SITE' );
+
+					$request = new SEI_Service_SiteVerification_SiteVerificationWebResourceGettokenRequest();
+					$request->setSite( $site );
+					$request->setVerificationMethod( 'META' );
+
+					$service = new SEI_Service_SiteVerification( $this->client );
+					$webResource = $service->webResource;
+					$result = $webResource->getToken( $request );
+
+					$this->seiwp->config->options['site_verification_meta'] = $result->token;
+					$this->seiwp->config->set_plugin_options();
+				}
+
+				$site = new SEI_Service_SiteVerification_SiteVerificationWebResourceResourceSite();
+				$site->setIdentifier( site_url() );
+				$site->setType( 'SITE' );
+
+				$request = new SEI_Service_SiteVerification_SiteVerificationWebResourceResource();
+				$request->setSite( $site );
+
+				$service = new SEI_Service_SiteVerification( $this->client );
+				$webResource = $service->webResource;
+				$result = $webResource->insert( 'META', $request );
+
+				return true;
+			} catch ( Exception $e ) {
+				return false;
+			}
+		}
+
+		/**
+		 * Deletes the Google Search Console Property corresponding to current site
+		 *
+		 * @return boolean || array
+		 */
+		public function delete_property() {
+			try {
+				$url = site_url();
+				$this->service->sites->delete( $url );
+				return true;
+			} catch ( SEI_IO_Exception $e ) {
+				$timeout = $this->get_timeouts( 'midnight' );
+				SEIWP_Tools::set_error( $e, $timeout );
+				return $sites_list;
+			} catch ( SEI_Service_Exception $e ) {
+				$timeout = $this->get_timeouts( 'midnight' );
+				SEIWP_Tools::set_error( $e, $timeout );
+			} catch ( Exception $e ) {
+				$timeout = $this->get_timeouts( 'midnight' );
+				SEIWP_Tools::set_error( $e, $timeout );
+			}
+		}
+
+		/**
+		 * Adds a Google Search Console Property for the current site
+		 *
+		 * @return boolean || array
+		 */
+		public function add_property() {
+			try {
+
+				$url = site_url();
+				$this->service->sites->add( $url );
+
+				return true;
+			} catch ( SEI_IO_Exception $e ) {
+				$timeout = $this->get_timeouts( 'midnight' );
+				SEIWP_Tools::set_error( $e, $timeout );
+				return $sites_list;
+			} catch ( SEI_Service_Exception $e ) {
+				$timeout = $this->get_timeouts( 'midnight' );
+				SEIWP_Tools::set_error( $e, $timeout );
+			} catch ( Exception $e ) {
+				$timeout = $this->get_timeouts( 'midnight' );
+				SEIWP_Tools::set_error( $e, $timeout );
+			}
+		}
+
+		/**
 		 * Retrieves all Search Engine Insights Properties with their details
 		 *
 		 * @return array
@@ -268,12 +359,8 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 					}
 				}
 
-				if ( empty( $sites_list ) ) {
-					$timeout = $this->get_timeouts( 'midnight' );
-					SEIWP_Tools::set_error( 'No sites were found in this account!', $timeout );
-				} else {
-					SEIWP_Tools::delete_cache( 'last_error' );
-				}
+				SEIWP_Tools::delete_cache( 'last_error' );
+
 				return $sites_list;
 			} catch ( SEI_IO_Exception $e ) {
 				$timeout = $this->get_timeouts( 'midnight' );
@@ -294,7 +381,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 * @param
 		 *            $all
 		 */
-		public function reset_token( $all = false) {
+		public function reset_token( $all = true) {
 			$this->seiwp->config->options['token'] = "";
 			if ( $all ) {
 				$this->seiwp->config->options['site_jail'] = "";

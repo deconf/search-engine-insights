@@ -4,7 +4,7 @@
  * Plugin URI: https://deconf.com/search-engine-insights/
  * Description: Displays Google Search Console Reports in your Dashboard.
  * Author: Alin Marcu
- * Version: 0.4.2
+ * Version: 1.0
  * Author URI: https://deconf.com
  * Text Domain: search-engine-insights
  * Domain Path: /languages
@@ -16,13 +16,12 @@ if ( ! defined( 'ABSPATH' ) )
 
 // Plugin Version
 if ( ! defined( 'SEIWP_CURRENT_VERSION' ) ) {
-	define( 'SEIWP_CURRENT_VERSION', '0.4.2' );
+	define( 'SEIWP_CURRENT_VERSION', '1.0' );
 }
 
 if ( ! defined( 'SEIWP_ENDPOINT_URL' ) ) {
 	define( 'SEIWP_ENDPOINT_URL', 'https://deconf.com/seiwp/' );
 }
-
 
 if ( ! class_exists( 'SEIWP_Manager' ) ) {
 
@@ -223,6 +222,14 @@ if ( ! class_exists( 'SEIWP_Manager' ) ) {
 						include_once ( SEIWP_DIR . 'front/item-reports.php' );
 						self::$instance->frontend_item_reports = new SEIWP_Frontend_Item_Reports();
 					}
+				}
+
+				if ( isset( self::$instance->config->options['site_verification_meta'] ) && self::$instance->config->options['site_verification_meta'] ) {
+					/*
+					 * Load site verification class
+					 */
+					include_once ( SEIWP_DIR . 'front/verify/site-verification.php' );
+					self::$instance->tracking = new SEIWP_Site_Verification();
 				}
 			}
 		}

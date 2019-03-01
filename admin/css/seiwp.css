@@ -83,6 +83,10 @@ td.seiwp-settings-roles {
 	color: red !important;
 }
 
+.seiwp-green {
+	color: green !important;
+}
+
 #poststuff.seiwp h2 {
 	padding-bottom: 0;
 	font-size: 19.5px;

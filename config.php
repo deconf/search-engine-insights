@@ -223,7 +223,7 @@ if ( ! class_exists( 'SEIWP_Config' ) ) {
 				}
 			}
 
-			$empties = array();
+			$empties = array('site_verification_meta');
 			foreach ( $empties as $key ) {
 				if ( ! isset( $this->options[$key] ) ) {
 					$this->options[$key] = '';

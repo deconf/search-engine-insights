@@ -33,6 +33,7 @@ class SEIWP_Install {
 		$options['api_backoff'] = 0;
 		$options['maps_api_key'] = '';
 		$options['with_endpoint'] = 1;
+		$options['site_verification_meta'] = '';
 		add_option( 'seiwp_options', json_encode( $options ) );
 	}
 }

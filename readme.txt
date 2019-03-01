@@ -4,22 +4,31 @@ Donate link: https://deconf.com/donate/
 Tags: search console dashboard, google search console, search console widget, statistics, search console, seo
 Requires at least: 3.5
 Tested up to: 5.1
-Stable tag: 0.4.2
+Stable tag: 1.0
 Requires PHP: 5.2.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-See which keywords bring users to your site. Analyze the Google Search Console stats, to see your site's position on Google Search Engine.
+Add your website to Google Search Console! Analyze the Google Search Console stats, to see your site's position on Google Search Engine.
 
 == Description ==
 
-### The perfect tool for viewing Google Search Console stats in your WordPress dashboard.
+### Get your website on Google Search Console
 
-Search Engine Insights will help you understand your site's search engine traffic and performance, by displaying key stats in a widget, on your admin dashboard.
+Search Engine Insights adds your website to Google Search Console and helps you verify the ownership of the site:
 
-In addition to a set of general Google Search Console reports, per Page and Post statistics will allow further segmentation of your search engine data, providing search engine insights for your web pages.
+- Automatically detects your default WordPress Site URL and gives you the option to add it to Search Console. 
+- Verifies the site ownership with a simple click.
+
+### View Google Search Console stats on your WordPress dashboard
+
+Search Engine Insights will help you understand your site's search engine traffic and performance, by displaying key stats in a widget, on your WordPress dashboard.
+
+In addition to a set of general Search Console reports, per Page and Post statistics will allow further segmentation of your search engine data, providing search engine insights for your web pages.
 
 #### Google Search Console stats on your admin dashboard
+
+[youtube https://www.youtube.com/watch?v=8SAOtwRNsGk]
 
 - Four reports with overview stats about Impressions, Clicks, Position and Click Through Rate 
 - Location statistics with insights about your search engine performance by country   
@@ -69,6 +78,11 @@ Search Engine Insights it's released under the GPLv2, you can use it free of cha
 == Upgrade Notice ==
 
 == Changelog ==
+= 1.0 (2019.03.01) =
+* Enhancements: 
+	* better identify default search console property
+	* introduces site verification feature for Google Search Console
+
 = 0.4.2 (2019.02.16) =
 * Bug Fixes:
 	* small CSS fix on switch buttons

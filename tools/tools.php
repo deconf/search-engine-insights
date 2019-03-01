@@ -30,11 +30,10 @@ if ( ! class_exists( 'SEIWP_Tools' ) ) {
 		 * @return string
 		 */
 		public static function guess_default_domain( $sites ) {
-			$domain = get_option( 'siteurl' );
-			$domain = str_ireplace( array( 'http://', 'https://' ), '', $domain );
+			$siteurl = site_url('/');
 			if ( ! empty( $sites ) ) {
 				foreach ( $sites as $item ) {
-					if ( strpos( $item[0], $domain ) ) {
+					if ( $item[0] == $siteurl ) {
 						return $item[0];
 					}
 				}
@@ -58,6 +57,7 @@ if ( ! class_exists( 'SEIWP_Tools' ) ) {
 					}
 				}
 			}
+			return '';
 		}
 
 		/**

@@ -361,6 +361,7 @@ final class SEIWP_Settings {
 			$seiwp->gapi_controller = new SEIWP_GAPI_Controller();
 		}
 		echo '<script type="text/javascript">jQuery("#gapi-warning").hide()</script>';
+
 		if ( isset( $_POST['seiwp_access_code'] ) ) {
 			if ( $_POST['seiwp_access_code'] != get_option( 'seiwp_redeemed_code' ) ) {
 				try {
@@ -415,6 +416,7 @@ final class SEIWP_Settings {
 		}
 		if ( isset( $_POST['Reset'] ) ) {
 			if ( isset( $_POST['seiwp_security'] ) && wp_verify_nonce( $_POST['seiwp_security'], 'seiwp_form' ) ) {
+				//$seiwp->gapi_controller->delete_property();
 				$seiwp->gapi_controller->reset_token();
 				SEIWP_Tools::clear_cache();
 				$message = "<div class='updated' id='seiwp-autodismiss'><p>" . __( "Token Reseted and Revoked.", 'search-engine-insights' ) . "</p></div>";
@@ -463,10 +465,34 @@ final class SEIWP_Settings {
 				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "Cheating Huh?", 'search-engine-insights' ) . "</p></div>";
 			}
 		}
-		if ( isset( $_POST['options']['seiwp_hidden'] ) && ! isset( $_POST['Clear'] ) && ! isset( $_POST['Reset'] ) && ! isset( $_POST['Reset_Err'] ) ) {
+		if ( isset( $_POST['options']['seiwp_hidden'] ) && ! isset( $_POST['Verify_Property'] ) && ! isset( $_POST['Add_Property'] ) && ! isset( $_POST['Clear'] ) && ! isset( $_POST['Reset'] ) && ! isset( $_POST['Reset_Err'] ) ) {
 			$message = "<div class='updated' id='seiwp-autodismiss'><p>" . __( "Settings saved.", 'search-engine-insights' ) . "</p></div>";
 			if ( ! ( isset( $_POST['seiwp_security'] ) && wp_verify_nonce( $_POST['seiwp_security'], 'seiwp_form' ) ) ) {
 				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "Cheating Huh?", 'search-engine-insights' ) . "</p></div>";
+			}
+		}
+		if ( isset( $_POST['Add_Property'] ) ) {
+			$seiwp->gapi_controller->add_property();
+			$sites = $seiwp->gapi_controller->get_sites_info();
+			if ( is_array( $sites ) && ! empty( $sites ) ) {
+				$seiwp->config->options['sites_list'] = $sites;
+				if ( ! $seiwp->config->options['site_jail'] ) {
+					$site = SEIWP_Tools::guess_default_domain( $sites );
+					$seiwp->config->options['site_jail'] = $site;
+				}
+				$options = self::update_options( 'setup' );
+			}
+		}
+		if ( isset( $_POST['Verify_Property'] ) ) {
+			$seiwp->gapi_controller->verify_property();
+			$sites = $seiwp->gapi_controller->get_sites_info();
+			if ( is_array( $sites ) && ! empty( $sites ) ) {
+				$seiwp->config->options['sites_list'] = $sites;
+				if ( ! $seiwp->config->options['site_jail'] ) {
+					$site = SEIWP_Tools::guess_default_domain( $sites );
+					$seiwp->config->options['site_jail'] = $site;
+				}
+				$options = self::update_options( 'setup' );
 			}
 		}
 		if ( isset( $_POST['Hide'] ) ) {
@@ -557,11 +583,61 @@ final class SEIWP_Settings {
 													</td>
 												</tr>
 												<tr>
-													<td colspan="2"><?php echo "<h2>" . __( "Setup", 'search-engine-insights' ) . "</h2>"; ?></td>
+													<td colspan="2"><?php echo "<h2>" . __( "Site Verification", 'search-engine-insights' ) . "</h2>"; ?></td>
 												</tr>
 												<tr>
 													<td class="seiwp-settings-title">
-														<label for="site_jail"><?php _e("Select Site:", 'search-engine-insights' ); ?></label>
+														<label for="site_jail"><?php _e("Default Site URL:", 'search-engine-insights' ); ?></label>
+													</td>
+													<td>
+														<?php echo '<strong>' . site_url('/') . '</strong>'; ?>
+													 </td>
+												</tr>
+												<tr>
+													<td class="seiwp-settings-title">
+														<label for="site_jail"><?php _e("Status:", 'search-engine-insights' ); ?></label>
+													</td>
+													<td>
+														<?php if ( empty (SEIWP_Tools::get_selected_site( $seiwp->config->options['sites_list'], site_url('/')) ) ) : ?>
+													 	<?php echo  '<span class="seiwp-red">' . __("Not found", 'search-engine-insights' ) . '</span>'; ?>
+													 <?php else: ?>
+														 <?php $flag = false; ?>
+										 				<?php foreach ( $seiwp->config->options['sites_list'] as $items ) : ?>
+																<?php if ( ( $items[0] == site_url('/') ) && ( $items[1] <> 'siteUnverifiedUser' ) ) : ?>
+																	<?php $flag = true; ?>
+																<?php endif; ?>
+															<?php endforeach; ?>
+															<?php if ( $flag ) : ?>
+														 	<?php echo  '<span class="seiwp-green">' . __("Verified", 'search-engine-insights' ) . '</span>'; ?>
+														 <?php else : ?>
+														 	<?php echo  '<span class="seiwp-red">' . __("Unverified", 'search-engine-insights' ) . '</span>'; ?>
+														 <?php endif; ?>
+													 <?php endif; ?>
+													 </td>
+												</tr>
+												<tr>
+													<td class="seiwp-settings-title">
+													</td>
+													<td>
+														<?php if ( empty (SEIWP_Tools::get_selected_site( $seiwp->config->options['sites_list'], site_url('/')) ) ) : ?>
+															<input type="submit" name="Add_Property" class="button button-secondary" value="<?php _e( "Add site", 'search-engine-insights' ); ?>" />
+														<?php elseif ( !$flag ) : ?>
+														 <input type="submit" name="Verify_Property" class="button button-secondary" value="<?php _e( "Verify Site", 'search-engine-insights' ); ?>" />
+														<?php endif; ?>
+													 </td>
+												</tr>
+
+												<tr>
+													<td colspan="2">
+														<hr>
+													</td>
+												</tr>
+												<tr>
+													<td colspan="2"><?php echo "<h2>" . __( "Default Property", 'search-engine-insights' ) . "</h2>"; ?></td>
+												</tr>
+												<tr>
+													<td class="seiwp-settings-title">
+														<label for="site_jail"><?php _e("Select Property:", 'search-engine-insights' ); ?></label>
 													</td>
 													<td>
 														<select id="site_jail" <?php disabled(empty($options['sites_list']) || 1 == count($options['sites_list']), true); ?> onchange="this.form.submit()" name="options[site_jail]">
@@ -569,16 +645,19 @@ final class SEIWP_Settings {
 																	<?php foreach ( $options['sites_list'] as $items ) : ?>
 																		<?php if ( $items[0] ) : ?>
 																			<option value="<?php echo esc_attr( $items[0] ); ?>" <?php selected( $items[0], $options['site_jail'] ); ?> title="<?php _e( "Site URL:", 'search-engine-insights' ); ?> <?php echo esc_attr( $items[0] ); ?>">
-																				<?php echo esc_html( rtrim( $items[0],'/' ) )?>
+																				<?php echo esc_html( $items[0] )?>
 																			</option>
 																		<?php endif; ?>
 																	<?php endforeach; ?>
 															<?php else : ?>
-																	<option value=""><?php _e( "Property not found", 'search-engine-insights' ); ?></option>
+																	<option value=""><?php _e( 'Property not found', 'search-engine-insights' ); ?></option>
 															<?php endif; ?>
 														</select>
 														<?php if ( count( $options['sites_list'] ) > 1 ) : ?>
 														&nbsp;<input type="submit" name="Hide" class="button button-secondary" value="<?php _e( "Lock Selection", 'search-engine-insights' ); ?>" />
+														<?php endif; ?>
+														<?php if ( empty( $options['sites_list'] ) ) : ?>
+															<input type="submit" name="Add_Property" class="button button-secondary" value="<?php _e( "Add & Verify your site", 'search-engine-insights' ); ?>" />
 														<?php endif; ?>
 													 </td>
 												</tr>
@@ -586,9 +665,11 @@ final class SEIWP_Settings {
 												<tr>
 													<td class="seiwp-settings-title"></td>
 													<td>
-													<?php $site_info = SEIWP_Tools::get_selected_site( $seiwp->config->options['sites_list'], $seiwp->config->options['site_jail'] ); ?>
-													<?php $permission = ($site_info[1] == 'siteUnverifiedUser') ? '<span class="seiwp-red">' . esc_html( $site_info[1] ) . '</span>' :  esc_html( $site_info[1] )?>
-														<pre><?php echo __( "Site URL:", 'search-engine-insights' ) . "\t" . esc_html( $site_info[0] ) . "<br />" . __( "Permission:", 'search-engine-insights' ) . "\t" . $permission?></pre>
+													<?php if ( ! empty( $options['sites_list'] ) ) : ?>
+															<?php $site_info = SEIWP_Tools::get_selected_site( $seiwp->config->options['sites_list'], $seiwp->config->options['site_jail'] ); ?>
+															<?php $permission = ($site_info[1] == 'siteUnverifiedUser') ? '<span class="seiwp-red">' . esc_html( $site_info[1] ) . '</span>' :  esc_html( $site_info[1] )?>
+															<pre><?php echo __( "Property URL:", 'search-engine-insights' ) . "\t" . esc_html( $site_info[0] ) . "<br />" . __( "Permission:", 'search-engine-insights' ) . "\t" . $permission?></pre>
+												 <?php endif; ?>
 													</td>
 												</tr>
 												<?php endif; ?>
