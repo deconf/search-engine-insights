@@ -30,7 +30,7 @@ if ( ! class_exists( 'SEIWP_Tools' ) ) {
 		 * @return string
 		 */
 		public static function guess_default_domain( $sites ) {
-			$siteurl = site_url('/');
+			$siteurl = SEIWP_SITE_URL;
 			if ( ! empty( $sites ) ) {
 				foreach ( $sites as $item ) {
 					if ( $item[0] == $siteurl ) {

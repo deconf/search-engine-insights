@@ -34,6 +34,7 @@ class SEIWP_Install {
 		$options['maps_api_key'] = '';
 		$options['with_endpoint'] = 1;
 		$options['site_verification_meta'] = '';
+		$options['sites_list_locked'] = 0;
 		add_option( 'seiwp_options', json_encode( $options ) );
 	}
 }

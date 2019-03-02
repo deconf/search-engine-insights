@@ -250,7 +250,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				if ( empty( $this->seiwp->config->options['site_verification_meta'] ) ) {
 
 					$site = new SEI_Service_SiteVerification_SiteVerificationWebResourceGettokenRequestSite();
-					$site->setIdentifier( site_url() );
+					$site->setIdentifier( SEIWP_SITE_URL );
 					$site->setType( 'SITE' );
 
 					$request = new SEI_Service_SiteVerification_SiteVerificationWebResourceGettokenRequest();
@@ -266,7 +266,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				}
 
 				$site = new SEI_Service_SiteVerification_SiteVerificationWebResourceResourceSite();
-				$site->setIdentifier( site_url() );
+				$site->setIdentifier( SEIWP_SITE_URL );
 				$site->setType( 'SITE' );
 
 				$request = new SEI_Service_SiteVerification_SiteVerificationWebResourceResource();
@@ -289,7 +289,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 */
 		public function delete_property() {
 			try {
-				$url = site_url();
+				$url = SEIWP_SITE_URL;
 				$this->service->sites->delete( $url );
 				return true;
 			} catch ( SEI_IO_Exception $e ) {
@@ -313,20 +313,22 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		public function add_property() {
 			try {
 
-				$url = site_url();
+				$url = SEIWP_SITE_URL;
 				$this->service->sites->add( $url );
 
 				return true;
 			} catch ( SEI_IO_Exception $e ) {
 				$timeout = $this->get_timeouts( 'midnight' );
 				SEIWP_Tools::set_error( $e, $timeout );
-				return $sites_list;
+				return false;
 			} catch ( SEI_Service_Exception $e ) {
 				$timeout = $this->get_timeouts( 'midnight' );
 				SEIWP_Tools::set_error( $e, $timeout );
+				return false;
 			} catch ( Exception $e ) {
 				$timeout = $this->get_timeouts( 'midnight' );
 				SEIWP_Tools::set_error( $e, $timeout );
+				return false;
 			}
 		}
 
@@ -383,6 +385,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 */
 		public function reset_token( $all = true) {
 			$this->seiwp->config->options['token'] = "";
+			$this->seiwp->config->options['sites_list_locked'] = 0;
 			if ( $all ) {
 				$this->seiwp->config->options['site_jail'] = "";
 				$this->seiwp->config->options['sites_list'] = array();

@@ -45,6 +45,8 @@ Individual reports for each web page on your site with per page details as:
 
 In addition, you can control who can view specific search console reports by setting permissions based on user roles.
 
+Fully compatible with WordPress Network installs (Multisite Mode).
+
 == Installation ==
 
 1. Upload the full search-engine-insights directory into your wp-content/plugins directory.
@@ -78,6 +80,12 @@ Search Engine Insights it's released under the GPLv2, you can use it free of cha
 == Upgrade Notice ==
 
 == Changelog ==
+= 1.0.1 (2019.03.02) =
+* Bug Fixes:
+	* do not allow properties list refresh after locking to a property
+	* do not allow site verification at site level when using a single account for the entire WordPress Network
+	* remember the date range selection accross sessions
+
 = 1.0 (2019.03.01) =
 * Enhancements: 
 	* better identify default search console property

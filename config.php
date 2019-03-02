@@ -41,10 +41,10 @@ if ( ! class_exists( 'SEIWP_Config' ) ) {
 		 */
 		public function get_major_version( $version ) {
 			$exploded_version = explode( '.', $version );
-			if ( isset( $exploded_version[2] ) ) {
-				return $exploded_version[0] . '.' . $exploded_version[1] . '.' . $exploded_version[2];
+			if ( isset( $exploded_version[1] ) ) {
+				return $exploded_version[0] . '.' . $exploded_version[1];
 			} else {
-				return $exploded_version[0] . '.' . $exploded_version[1] . '.0';
+				return $exploded_version[0] . '.0';
 			}
 		}
 
@@ -207,7 +207,7 @@ if ( ! class_exists( 'SEIWP_Config' ) ) {
 			}
 
 			/* @formatter:off */
-			$zeros = array();
+			$zeros = array('sites_list_locked');
 			foreach ( $zeros as $key ) {
 				if ( ! isset( $this->options[$key] ) ) {
 					$this->options[$key] = 0;

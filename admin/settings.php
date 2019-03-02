@@ -58,7 +58,9 @@ final class SEIWP_Settings {
 	}
 
 	public static function settings() {
+
 		$seiwp = SEIWP();
+
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
@@ -66,7 +68,7 @@ final class SEIWP_Settings {
 		if ( isset( $_POST['options']['seiwp_hidden'] ) ) {
 			$message = "<div class='updated' id='seiwp-autodismiss'><p>" . __( "Settings saved.", 'search-engine-insights' ) . "</p></div>";
 			if ( ! ( isset( $_POST['seiwp_security'] ) && wp_verify_nonce( $_POST['seiwp_security'], 'seiwp_form' ) ) ) {
-				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "Cheating Huh?", 'search-engine-insights' ) . "</p></div>";
+				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "You don’t have permission to do this.", 'search-engine-insights' ) . "</p></div>";
 			}
 		}
 		if ( ! $seiwp->config->options['site_jail'] || ! $seiwp->config->options['token'] ) {
@@ -411,7 +413,7 @@ final class SEIWP_Settings {
 				SEIWP_Tools::clear_cache();
 				$message = "<div class='updated' id='seiwp-autodismiss'><p>" . __( "Cleared Cache.", 'search-engine-insights' ) . "</p></div>";
 			} else {
-				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "Cheating Huh?", 'search-engine-insights' ) . "</p></div>";
+				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "You don’t have permission to do this.", 'search-engine-insights' ) . "</p></div>";
 			}
 		}
 		if ( isset( $_POST['Reset'] ) ) {
@@ -422,7 +424,7 @@ final class SEIWP_Settings {
 				$message = "<div class='updated' id='seiwp-autodismiss'><p>" . __( "Token Reseted and Revoked.", 'search-engine-insights' ) . "</p></div>";
 				$options = self::update_options( 'Reset' );
 			} else {
-				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "Cheating Huh?", 'search-engine-insights' ) . "</p></div>";
+				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "You don’t have permission to do this.", 'search-engine-insights' ) . "</p></div>";
 			}
 		}
 		if ( isset( $_POST['Reset_Err'] ) ) {
@@ -462,33 +464,37 @@ final class SEIWP_Settings {
 				delete_option( 'seiwp_got_updated' );
 				$message = "<div class='updated' id='seiwp-autodismiss'><p>" . __( "All errors reseted.", 'search-engine-insights' ) . "</p></div>";
 			} else {
-				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "Cheating Huh?", 'search-engine-insights' ) . "</p></div>";
+				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "You don’t have permission to do this.", 'search-engine-insights' ) . "</p></div>";
 			}
 		}
 		if ( isset( $_POST['options']['seiwp_hidden'] ) && ! isset( $_POST['Verify_Property'] ) && ! isset( $_POST['Add_Property'] ) && ! isset( $_POST['Clear'] ) && ! isset( $_POST['Reset'] ) && ! isset( $_POST['Reset_Err'] ) ) {
 			$message = "<div class='updated' id='seiwp-autodismiss'><p>" . __( "Settings saved.", 'search-engine-insights' ) . "</p></div>";
 			if ( ! ( isset( $_POST['seiwp_security'] ) && wp_verify_nonce( $_POST['seiwp_security'], 'seiwp_form' ) ) ) {
-				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "Cheating Huh?", 'search-engine-insights' ) . "</p></div>";
+				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "You don’t have permission to do this.", 'search-engine-insights' ) . "</p></div>";
 			}
 		}
 		if ( isset( $_POST['Add_Property'] ) ) {
-			$seiwp->gapi_controller->add_property();
-			$sites = $seiwp->gapi_controller->get_sites_info();
-			if ( is_array( $sites ) && ! empty( $sites ) ) {
-				$seiwp->config->options['sites_list'] = $sites;
-				$site = SEIWP_Tools::guess_default_domain( $sites );
-				$seiwp->config->options['site_jail'] = $site;
-				$options = self::update_options( 'setup' );
+			if ( $seiwp->gapi_controller->add_property() ){
+				$sites = $seiwp->gapi_controller->get_sites_info();
+				if ( is_array( $sites ) && ! empty( $sites ) ) {
+					$seiwp->config->options['sites_list'] = $sites;
+					$site = SEIWP_Tools::guess_default_domain( $sites );
+					$seiwp->config->options['site_jail'] = $site;
+					$options = self::update_options( 'setup' );
+				}
 			}
 		}
 		if ( isset( $_POST['Verify_Property'] ) ) {
-			$seiwp->gapi_controller->verify_property();
-			$sites = $seiwp->gapi_controller->get_sites_info();
-			if ( is_array( $sites ) && ! empty( $sites ) ) {
-				$seiwp->config->options['sites_list'] = $sites;
-				$site = SEIWP_Tools::guess_default_domain( $sites );
-				$seiwp->config->options['site_jail'] = $site;
-				$options = self::update_options( 'setup' );
+			if ( false == $seiwp->gapi_controller->verify_property() ){
+				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "Unable to verify site. Please disable your cache plugin or clear the page cache before retrying.", 'search-engine-insights' ) . "</p></div>";
+			} else {
+				$sites = $seiwp->gapi_controller->get_sites_info();
+				if ( is_array( $sites ) && ! empty( $sites ) ) {
+					$seiwp->config->options['sites_list'] = $sites;
+					$site = SEIWP_Tools::guess_default_domain( $sites );
+					$seiwp->config->options['site_jail'] = $site;
+					$options = self::update_options( 'setup' );
+				}
 			}
 		}
 		if ( isset( $_POST['Hide'] ) ) {
@@ -496,9 +502,10 @@ final class SEIWP_Settings {
 				$message = "<div class='updated' id='seiwp-action'><p>" . __( "All other domains/properties were removed.", 'search-engine-insights' ) . "</p></div>";
 				$lock_profile = SEIWP_Tools::get_selected_site( $seiwp->config->options['sites_list'], $seiwp->config->options['site_jail'] );
 				$seiwp->config->options['sites_list'] = array( $lock_profile );
+				$seiwp->config->options['sites_list_locked'] = array( $lock_profile );
 				$options = self::update_options( 'setup' );
 			} else {
-				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "Cheating Huh?", 'search-engine-insights' ) . "</p></div>";
+				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "You don’t have permission to do this.", 'search-engine-insights' ) . "</p></div>";
 			}
 		}
 		?>
@@ -578,6 +585,7 @@ final class SEIWP_Settings {
 														<hr>
 													</td>
 												</tr>
+												<?php if ( !$options['network_mode'] ) : ?>
 												<tr>
 													<td colspan="2"><?php echo "<h2>" . __( "Site Verification", 'search-engine-insights' ) . "</h2>"; ?></td>
 												</tr>
@@ -586,7 +594,7 @@ final class SEIWP_Settings {
 														<label for="site_jail"><?php _e("Default Site URL:", 'search-engine-insights' ); ?></label>
 													</td>
 													<td>
-														<?php echo '<strong>' . site_url('/') . '</strong>'; ?>
+														<?php echo '<strong>' . SEIWP_SITE_URL . '</strong>'; ?>
 													 </td>
 												</tr>
 												<tr>
@@ -594,12 +602,12 @@ final class SEIWP_Settings {
 														<label for="site_jail"><?php _e("Status:", 'search-engine-insights' ); ?></label>
 													</td>
 													<td>
-														<?php if ( empty (SEIWP_Tools::get_selected_site( $seiwp->config->options['sites_list'], site_url('/')) ) ) : ?>
+														<?php if ( empty (SEIWP_Tools::get_selected_site( $seiwp->config->options['sites_list'], SEIWP_SITE_URL) ) ) : ?>
 													 	<?php echo  '<span class="seiwp-red">' . __("Not found", 'search-engine-insights' ) . '</span>'; ?>
 													 <?php else: ?>
 														 <?php $flag = false; ?>
 										 				<?php foreach ( $seiwp->config->options['sites_list'] as $items ) : ?>
-																<?php if ( ( $items[0] == site_url('/') ) && ( $items[1] <> 'siteUnverifiedUser' ) ) : ?>
+																<?php if ( ( $items[0] == SEIWP_SITE_URL ) && ( $items[1] <> 'siteUnverifiedUser' ) ) : ?>
 																	<?php $flag = true; ?>
 																<?php endif; ?>
 															<?php endforeach; ?>
@@ -615,19 +623,19 @@ final class SEIWP_Settings {
 													<td class="seiwp-settings-title">
 													</td>
 													<td>
-														<?php if ( empty (SEIWP_Tools::get_selected_site( $seiwp->config->options['sites_list'], site_url('/')) ) ) : ?>
+														<?php if ( empty (SEIWP_Tools::get_selected_site( $seiwp->config->options['sites_list'], SEIWP_SITE_URL ) ) && !$options['sites_list_locked'] ) : ?>
 															<input type="submit" name="Add_Property" class="button button-secondary" value="<?php _e( "Add site", 'search-engine-insights' ); ?>" />
-														<?php elseif ( !$flag ) : ?>
+														<?php elseif ( !$flag && !$options['sites_list_locked'] ) : ?>
 														 <input type="submit" name="Verify_Property" class="button button-secondary" value="<?php _e( "Verify Site", 'search-engine-insights' ); ?>" />
 														<?php endif; ?>
 													 </td>
 												</tr>
-
 												<tr>
 													<td colspan="2">
 														<hr>
 													</td>
 												</tr>
+												<?php endif; ?>
 												<tr>
 													<td colspan="2"><?php echo "<h2>" . __( "Default Property", 'search-engine-insights' ) . "</h2>"; ?></td>
 												</tr>
@@ -700,11 +708,6 @@ final class SEIWP_Settings {
 													</td>
 												</tr>
 												<?php endif; ?>
-												<tr>
-													<td colspan="2" class="submit">
-														<input type="submit" name="Submit" class="button button-primary" value="<?php _e('Save Changes', 'search-engine-insights' ) ?>" />
-													</td>
-												</tr>
 												<?php else : ?>
 												<tr>
 													<td colspan="2">
@@ -828,7 +831,7 @@ final class SEIWP_Settings {
 					}
 				}
 			} else {
-				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "Cheating Huh?", 'search-engine-insights' ) . "</p></div>";
+				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "You don’t have permission to do this.", 'search-engine-insights' ) . "</p></div>";
 			}
 		}
 		if ( isset( $_POST['Clear'] ) ) {
@@ -836,7 +839,7 @@ final class SEIWP_Settings {
 				SEIWP_Tools::clear_cache();
 				$message = "<div class='updated' id='seiwp-autodismiss'><p>" . __( "Cleared Cache.", 'search-engine-insights' ) . "</p></div>";
 			} else {
-				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "Cheating Huh?", 'search-engine-insights' ) . "</p></div>";
+				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "You don’t have permission to do this.", 'search-engine-insights' ) . "</p></div>";
 			}
 		}
 		if ( isset( $_POST['Reset'] ) ) {
@@ -846,13 +849,13 @@ final class SEIWP_Settings {
 				$message = "<div class='updated' id='seiwp-autodismiss'><p>" . __( "Token Reseted and Revoked.", 'search-engine-insights' ) . "</p></div>";
 				$options = self::update_options( 'Reset' );
 			} else {
-				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "Cheating Huh?", 'search-engine-insights' ) . "</p></div>";
+				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "You don’t have permission to do this.", 'search-engine-insights' ) . "</p></div>";
 			}
 		}
 		if ( isset( $_POST['options']['seiwp_hidden'] ) && ! isset( $_POST['Clear'] ) && ! isset( $_POST['Reset'] ) && ! isset( $_POST['Refresh'] ) ) {
 			$message = "<div class='updated' id='seiwp-autodismiss'><p>" . __( "Settings saved.", 'search-engine-insights' ) . "</p></div>";
 			if ( ! ( isset( $_POST['seiwp_security'] ) && wp_verify_nonce( $_POST['seiwp_security'], 'seiwp_form' ) ) ) {
-				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "Cheating Huh?", 'search-engine-insights' ) . "</p></div>";
+				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "You don’t have permission to do this.", 'search-engine-insights' ) . "</p></div>";
 			}
 		}
 		if ( isset( $_POST['Hide'] ) ) {
@@ -862,7 +865,7 @@ final class SEIWP_Settings {
 				$seiwp->config->options['sites_list'] = array( $lock_profile );
 				$options = self::update_options( 'network' );
 			} else {
-				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "Cheating Huh?", 'search-engine-insights' ) . "</p></div>";
+				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "You don’t have permission to do this.", 'search-engine-insights' ) . "</p></div>";
 			}
 		}
 		?>
@@ -902,7 +905,7 @@ final class SEIWP_Settings {
 																			<div class="seiwp-togglegroup">
 																				<input type="checkbox" name="options[network_mode]" value="1" id="network_mode" <?php checked( $options['network_mode'], 1); ?> onchange="this.form.submit()">
 																				<label for="network_mode">
-																			        <?php echo " ".__("use a single Search Engine Insights account for the entire network", 'search-engine-insights' );?>
+																			        <?php echo " ".__("use a single Google Search Console account for the entire network", 'search-engine-insights' );?>
 																			    </label>
 																				<div class="seiwp-onoffswitch pull-right" aria-hidden="true">
 																					<div class="seiwp-onoffswitch-label">

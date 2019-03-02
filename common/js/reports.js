@@ -139,7 +139,7 @@ jQuery.fn.extend( {
 					swmetric = tools.getCookie( 'default_swmetric' );
 				}
 
-				if ( list == false ) {
+				if ( list == 'submetrics' ) {
 
 					output = '<span id="seiwp-swmetric-impressions" title="' + seiwpItemData.i18n[ 5 ] + '" class="dashicons dashicons-visibility" style="font-size:22px;padding:7px 4px;"></span>';
 					output += '<span id="seiwp-swmetric-clicks" title="' + seiwpItemData.i18n[ 6 ] + '" class="dashicons dashicons-external" style="font-size:22px;padding:7px 4px;"></span>';
@@ -149,6 +149,8 @@ jQuery.fn.extend( {
 					jQuery( id ).html( output );
 
 					jQuery( '#seiwp-swmetric-' + swmetric ).css( "color", "#008ec2" );
+				} else if ( list == 'range' ){
+					jQuery( id ).val( defaultDimension );
 				} else {
 					jQuery.each( list, function ( key, value ) {
 						if ( key == defaultMetric || key == defaultDimension || key == defaultView ) {
@@ -193,9 +195,10 @@ jQuery.fn.extend( {
 
 				jQuery( '#seiwp-window' + slug ).append( tpl );
 
+				template.addOptions( '#seiwp-sel-period' + slug, 'range' );
 				template.addOptions( '#seiwp-sel-property' + slug, seiwpItemData.propertyList );
 				template.addOptions( '#seiwp-sel-report' + slug, seiwpItemData.reportList );
-				template.addOptions( '#seiwp-sel-metric' + slug, false );
+				template.addOptions( '#seiwp-sel-metric' + slug, 'submetrics' );
 
 			}
 		}
@@ -780,8 +783,6 @@ jQuery.fn.extend( {
 					'This Month' : [ moment().startOf( 'month' ), moment().endOf( 'month' ) ],
 					'Last Month' : [ moment().subtract( 1, 'month' ).startOf( 'month' ), moment().subtract( 1, 'month' ).endOf( 'month' ) ]
 				},
-				startDate : moment().subtract( 30, 'days' ),
-				endDate : moment(),
 				minDate : moment().subtract( 16, 'months' ),
 				maxDate : moment(),
 				autoUpdateInput : true,
