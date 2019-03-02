@@ -68,10 +68,11 @@ When new Properties are added to Google Search Console, it may take up to a few 
 
 == Screenshots ==
 
-1. Search Engine Insights - Impressions, clicks, position, and click through rate stats on your dashboard
-2. Search Engine Insights - Reports about the location of your users, retrieved from Google Search Console
-3. Search Engine Insights - Search Console stats about your Pages on WordPress dashboard
-4. Search Engine Insights - Keywords statistics and performance reports retrieved from Google Search Console
+1. Impressions, clicks, position, and click through rate stats on your dashboard
+2. Reports about the location of your users, retrieved from Google Search Console
+3. Search Console stats about your Pages on WordPress dashboard
+4. Keywords statistics and performance reports retrieved from Google Search Console
+5. Add site to Google Search Console / Verify site ownership
 
 == License ==
 
@@ -80,7 +81,7 @@ Search Engine Insights it's released under the GPLv2, you can use it free of cha
 == Upgrade Notice ==
 
 == Changelog ==
-= 1.0.1 (2019.03.02) =
+= 1.1 (2019.03.02) =
 * Bug Fixes:
 	* do not allow properties list refresh after locking to a property
 	* do not allow site verification at site level when using a single account for the entire WordPress Network
