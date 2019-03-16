@@ -127,7 +127,7 @@ jQuery.fn.extend( {
 
 				if ( !tools.getCookie( 'default_metric' ) || !tools.getCookie( 'default_dimension' ) || !tools.getCookie( 'default_swmetric' ) ) {
 					defaultMetric = 'sessions';
-					defaultDimension = moment().subtract( 30, 'days' ).format("YYYY-MM-DD") + ' - ' + moment().subtract( 1, 'days' ).format("YYYY-MM-DD");
+					defaultDimension = moment().subtract( 30, 'days' ).format( "YYYY-MM-DD" ) + ' - ' + moment().subtract( 1, 'days' ).format( "YYYY-MM-DD" );
 					swmetric = 'impressions';
 					tools.setCookie( 'default_metric', defaultMetric );
 					tools.setCookie( 'default_dimension', defaultDimension );
@@ -149,7 +149,7 @@ jQuery.fn.extend( {
 					jQuery( id ).html( output );
 
 					jQuery( '#seiwp-swmetric-' + swmetric ).css( "color", "#008ec2" );
-				} else if ( list == 'range' ){
+				} else if ( list == 'range' ) {
 					jQuery( id ).val( defaultDimension );
 				} else {
 					jQuery.each( list, function ( key, value ) {
@@ -175,7 +175,7 @@ jQuery.fn.extend( {
 				}
 
 				tpl = '<div id="seiwp-container' + slug + '">';
-				
+
 				if ( seiwpItemData.propertyList != false ) {
 					tpl += '<select id="seiwp-sel-property' + slug + '"></select>';
 				}
@@ -233,11 +233,30 @@ jQuery.fn.extend( {
 			},
 
 			areachartSummary : function ( response ) {
+
+				var tpl;
+
+				tpl = '<div id="seiwp-areachartsummary' + slug + '">';
+				tpl += '<div id="seiwp-summary' + slug + '">';
+				tpl += '<div class="inside">';
+				tpl += '<div class="small-box first"><h3>' + seiwpItemData.i18n[ 5 ] + '</h3><p id="gdimpressions' + slug + '">&nbsp;</p></div>';
+				tpl += '<div class="small-box second"><h3>' + seiwpItemData.i18n[ 6 ] + '</h3><p id="gdclicks' + slug + '">&nbsp;</p></div>';
+				tpl += '<div class="small-box third"><h3>' + seiwpItemData.i18n[ 7 ] + '</h3><p id="gdposition' + slug + '">&nbsp;</p></div>';
+				tpl += '<div class="small-box last"><h3>' + seiwpItemData.i18n[ 8 ] + '</h3><p id="gdctr' + slug + '">&nbsp;</p></div>';
+				tpl += '</div>';
+				tpl += '<div id="seiwp-areachart' + slug + '"></div>';
+				tpl += '</div>';
+				tpl += '</div>';
+
+				if ( !jQuery( '#seiwp-areachartsummary' + slug ).length ) {
+					jQuery( '#seiwp-reports' + slug ).html( tpl );
+				}
+
 				reports.areachartSummaryData = response;
 				if ( jQuery.isArray( response ) ) {
 					if ( !jQuery.isNumeric( response[ 0 ] ) ) {
 						if ( jQuery.isArray( response[ 0 ] ) ) {
-							jQuery( '#seiwp-reports' + slug ).show();
+							// jQuery( '#seiwp-reports' + slug ).show();
 							if ( postData.query == 'visitBounceRate,summary' ) {
 								reports.drawareachart( response[ 0 ], true );
 							} else {
@@ -247,18 +266,18 @@ jQuery.fn.extend( {
 							reports.throwDebug( response[ 0 ] );
 						}
 					} else {
-						jQuery( '#seiwp-reports' + slug ).show();
+						// jQuery( '#seiwp-reports' + slug ).show();
 						reports.throwError( '#seiwp-areachart' + slug, response[ 0 ], "125px" );
 					}
 					if ( !jQuery.isNumeric( response[ 1 ] ) ) {
 						if ( jQuery.isArray( response[ 1 ] ) ) {
-							jQuery( '#seiwp-reports' + slug ).show();
+							// jQuery( '#seiwp-reports' + slug ).show();
 							reports.drawSummary( response[ 1 ] );
 						} else {
 							reports.throwDebug( response[ 1 ] );
 						}
 					} else {
-						jQuery( '#seiwp-reports' + slug ).show();
+						// jQuery( '#seiwp-reports' + slug ).show();
 						reports.throwError( '#seiwp-summary' + slug, response[ 1 ], "40px" );
 					}
 				} else {
@@ -270,30 +289,48 @@ jQuery.fn.extend( {
 
 			orgChartPieCharts : function ( response ) {
 				var i = 0;
+				var tpl;
+
+				tpl = '<div id="seiwp-orgchartpiecharts' + slug + '">';
+				tpl += '<div id="seiwp-orgchart' + slug + '"></div>';
+				tpl += '<div class="seiwp-floatwraper">';
+				tpl += '<div id="seiwp-piechart-1' + slug + '" class="halfsize floatleft"></div>';
+				tpl += '<div id="seiwp-piechart-2' + slug + '" class="halfsize floatright"></div>';
+				tpl += '</div>';
+				tpl += '<div class="seiwp-floatwraper">';
+				tpl += '<div id="seiwp-piechart-3' + slug + '" class="halfsize floatleft"></div>';
+				tpl += '<div id="seiwp-piechart-4' + slug + '" class="halfsize floatright"></div>';
+				tpl += '</div>';
+				tpl += '</div>';
+
+				if ( !jQuery( '#seiwp-orgchartpiecharts' + slug ).length ) {
+					jQuery( '#seiwp-reports' + slug ).html( tpl );
+				}
+
 				reports.orgChartPieChartsData = response;
 				if ( jQuery.isArray( response ) ) {
 					if ( !jQuery.isNumeric( response[ 0 ] ) ) {
 						if ( jQuery.isArray( response[ 0 ] ) ) {
-							jQuery( '#seiwp-reports' + slug ).show();
+							// jQuery( '#seiwp-reports' + slug ).show();
 							reports.drawOrgChart( response[ 0 ] );
 						} else {
 							reports.throwDebug( response[ 0 ] );
 						}
 					} else {
-						jQuery( '#seiwp-reports' + slug ).show();
+						// jQuery( '#seiwp-reports' + slug ).show();
 						reports.throwError( '#seiwp-orgchart' + slug, response[ 0 ], "125px" );
 					}
 
 					for ( i = 1; i < response.length; i++ ) {
 						if ( !jQuery.isNumeric( response[ i ] ) ) {
 							if ( jQuery.isArray( response[ i ] ) ) {
-								jQuery( '#seiwp-reports' + slug ).show();
+								// jQuery( '#seiwp-reports' + slug ).show();
 								reports.drawPieChart( 'piechart-' + i, response[ i ], reports.i18n[ i ] );
 							} else {
 								reports.throwDebug( response[ i ] );
 							}
 						} else {
-							jQuery( '#seiwp-reports' + slug ).show();
+							// jQuery( '#seiwp-reports' + slug ).show();
 							reports.throwError( '#seiwp-piechart-' + i + slug, response[ i ], "80px" );
 						}
 					}
@@ -304,18 +341,30 @@ jQuery.fn.extend( {
 			},
 
 			geoChartTableChart : function ( response ) {
+
+				var tpl;
+
+				tpl = '<div id="seiwp-geocharttablechart' + slug + '">';
+				tpl += '<div id="seiwp-geochart' + slug + '"></div>';
+				tpl += '<div id="seiwp-tablechart' + slug + '"></div>';
+				tpl += '</div>';
+
+				if ( !jQuery( '#seiwp-geocharttablechart' + slug ).length ) {
+					jQuery( '#seiwp-reports' + slug ).html( tpl );
+				}
+
 				reports.geoChartTableChartData = response;
 				if ( jQuery.isArray( response ) ) {
 					if ( !jQuery.isNumeric( response[ 0 ] ) ) {
 						if ( jQuery.isArray( response[ 0 ] ) ) {
-							jQuery( '#seiwp-reports' + slug ).show();
+							// jQuery( '#seiwp-reports' + slug ).show();
 							reports.drawGeoChart( response[ 0 ] );
 							reports.drawTableChart( response[ 0 ] );
 						} else {
 							reports.throwDebug( response[ 0 ] );
 						}
 					} else {
-						jQuery( '#seiwp-reports' + slug ).show();
+						// jQuery( '#seiwp-reports' + slug ).show();
 						reports.throwError( '#seiwp-geochart' + slug, response[ 0 ], "125px" );
 						reports.throwError( '#seiwp-tablechart' + slug, response[ 0 ], "125px" );
 					}
@@ -326,17 +375,29 @@ jQuery.fn.extend( {
 			},
 
 			orgChartTableChart : function ( response ) {
+
+				var tpl;
+
+				tpl = '<div id="seiwp-orgcharttablechart' + slug + '">';
+				tpl += '<div id="seiwp-orgchart' + slug + '"></div>';
+				tpl += '<div id="seiwp-tablechart' + slug + '"></div>';
+				tpl += '</div>';
+
+				if ( !jQuery( '#seiwp-orgcharttablechart' + slug ).length ) {
+					jQuery( '#seiwp-reports' + slug ).html( tpl );
+				}
+
 				reports.orgChartTableChartData = response
 				if ( jQuery.isArray( response ) ) {
 					if ( !jQuery.isNumeric( response[ 0 ] ) ) {
 						if ( jQuery.isArray( response[ 0 ] ) ) {
-							jQuery( '#seiwp-reports' + slug ).show();
+							// jQuery( '#seiwp-reports' + slug ).show();
 							reports.drawOrgChart( response[ 0 ] );
 						} else {
 							reports.throwDebug( response[ 0 ] );
 						}
 					} else {
-						jQuery( '#seiwp-reports' + slug ).show();
+						// jQuery( '#seiwp-reports' + slug ).show();
 						reports.throwError( '#seiwp-orgchart' + slug, response[ 0 ], "125px" );
 					}
 
@@ -356,17 +417,28 @@ jQuery.fn.extend( {
 			},
 
 			tableChart : function ( response ) {
+
+				var tpl;
+
+				tpl = '<div id="seiwp-404tablechart' + slug + '">';
+				tpl += '<div id="seiwp-tablechart' + slug + '"></div>';
+				tpl += '</div>';
+
+				if ( !jQuery( '#seiwp-404tablechart' + slug ).length ) {
+					jQuery( '#seiwp-reports' + slug ).html( tpl );
+				}
+
 				reports.tableChartData = response
 				if ( jQuery.isArray( response ) ) {
 					if ( !jQuery.isNumeric( response[ 0 ] ) ) {
 						if ( jQuery.isArray( response[ 0 ] ) ) {
-							jQuery( '#seiwp-reports' + slug ).show();
+							// jQuery( '#seiwp-reports' + slug ).show();
 							reports.drawTableChart( response[ 0 ] );
 						} else {
 							reports.throwDebug( response[ 0 ] );
 						}
 					} else {
-						jQuery( '#seiwp-reports' + slug ).show();
+						// jQuery( '#seiwp-reports' + slug ).show();
 						reports.throwError( '#seiwp-tablechart' + slug, response[ 0 ], "125px" );
 					}
 				} else {
@@ -610,13 +682,7 @@ jQuery.fn.extend( {
 				}
 				if ( jQuery.inArray( query, [ 'pages', 'keywords' ] ) > -1 ) {
 
-					tpl = '<div id="seiwp-orgcharttablechart' + slug + '">';
-					tpl += '<div id="seiwp-orgchart' + slug + '"></div>';
-					tpl += '<div id="seiwp-tablechart' + slug + '"></div>';
-					tpl += '</div>';
-
-					jQuery( '#seiwp-reports' + slug ).html( tpl );
-					jQuery( '#seiwp-reports' + slug ).hide();
+					// jQuery( '#seiwp-reports' + slug ).hide();
 					jQuery( '#seiwp-sel-metric' + slug ).show();
 
 					postData.query = 'channelGrouping,' + query;
@@ -626,12 +692,8 @@ jQuery.fn.extend( {
 						reports.orgChartTableChart( response );
 					} );
 				} else if ( query == '404errors' ) {
-					tpl = '<div id="seiwp-404tablechart' + slug + '">';
-					tpl += '<div id="seiwp-tablechart' + slug + '"></div>';
-					tpl += '</div>';
 
-					jQuery( '#seiwp-reports' + slug ).html( tpl );
-					jQuery( '#seiwp-reports' + slug ).hide();
+					// jQuery( '#seiwp-reports' + slug ).hide();
 					jQuery( '#seiwp-sel-metric' + slug ).show();
 
 					postData.query = query;
@@ -642,20 +704,7 @@ jQuery.fn.extend( {
 					} );
 				} else if ( query == 'siteperformance' || query == 'technologydetails' ) {
 
-					tpl = '<div id="seiwp-orgchartpiecharts' + slug + '">';
-					tpl += '<div id="seiwp-orgchart' + slug + '"></div>';
-					tpl += '<div class="seiwp-floatwraper">';
-					tpl += '<div id="seiwp-piechart-1' + slug + '" class="halfsize floatleft"></div>';
-					tpl += '<div id="seiwp-piechart-2' + slug + '" class="halfsize floatright"></div>';
-					tpl += '</div>';
-					tpl += '<div class="seiwp-floatwraper">';
-					tpl += '<div id="seiwp-piechart-3' + slug + '" class="halfsize floatleft"></div>';
-					tpl += '<div id="seiwp-piechart-4' + slug + '" class="halfsize floatright"></div>';
-					tpl += '</div>';
-					tpl += '</div>';
-
-					jQuery( '#seiwp-reports' + slug ).html( tpl );
-					jQuery( '#seiwp-reports' + slug ).hide();
+					// jQuery( '#seiwp-reports' + slug ).hide();
 					jQuery( '#seiwp-sel-metric' + slug ).show();
 
 					if ( query == 'siteperformance' ) {
@@ -673,13 +722,7 @@ jQuery.fn.extend( {
 
 				} else if ( query == 'locations' ) {
 
-					tpl = '<div id="seiwp-geocharttablechart' + slug + '">';
-					tpl += '<div id="seiwp-geochart' + slug + '"></div>';
-					tpl += '<div id="seiwp-tablechart' + slug + '"></div>';
-					tpl += '</div>';
-
-					jQuery( '#seiwp-reports' + slug ).html( tpl );
-					jQuery( '#seiwp-reports' + slug ).hide();
+					// jQuery( '#seiwp-reports' + slug ).hide();
 					jQuery( '#seiwp-sel-metric' + slug ).show();
 
 					postData.query = query;
@@ -691,20 +734,7 @@ jQuery.fn.extend( {
 
 				} else {
 
-					tpl = '<div id="seiwp-areachartsummary' + slug + '">';
-					tpl += '<div id="seiwp-summary' + slug + '">';
-					tpl += '<div class="inside">';
-					tpl += '<div class="small-box first"><h3>' + seiwpItemData.i18n[ 5 ] + '</h3><p id="gdimpressions' + slug + '">&nbsp;</p></div>';
-					tpl += '<div class="small-box second"><h3>' + seiwpItemData.i18n[ 6 ] + '</h3><p id="gdclicks' + slug + '">&nbsp;</p></div>';
-					tpl += '<div class="small-box third"><h3>' + seiwpItemData.i18n[ 7 ] + '</h3><p id="gdposition' + slug + '">&nbsp;</p></div>';
-					tpl += '<div class="small-box last"><h3>' + seiwpItemData.i18n[ 8 ] + '</h3><p id="gdctr' + slug + '">&nbsp;</p></div>';
-					tpl += '</div>';
-					tpl += '<div id="seiwp-areachart' + slug + '"></div>';
-					tpl += '</div>';
-					tpl += '</div>';
-
-					jQuery( '#seiwp-reports' + slug ).html( tpl );
-					jQuery( '#seiwp-reports' + slug ).hide();
+					// jQuery( '#seiwp-reports' + slug ).hide();
 
 					postData.query = query + ',summary';
 
@@ -735,13 +765,13 @@ jQuery.fn.extend( {
 
 			init : function () {
 
-				if ( !jQuery( "#seiwp-reports" + slug ).length ) {
-					return;
-				}
+				// if ( !jQuery( "#seiwp-reports" + slug ).length ) {
+				// return;
+				// }
 
-				if ( jQuery( "#seiwp-reports" + slug ).html().length ) { // only when report is empty
-					return;
-				}
+				// if ( jQuery( "#seiwp-reports" + slug ).html().length ) { // only when report is empty
+				// return;
+				// }
 
 				try {
 					SEIWPNProgress.configure( {
@@ -770,7 +800,7 @@ jQuery.fn.extend( {
 		reports.init();
 
 		jQuery( '#seiwp-sel-property' + slug ).change( function () {
-			jQuery( '#seiwp-reports' + slug ).html( '' );
+			// jQuery( '#seiwp-reports' + slug ).html( '' );
 			reports.init();
 		} );
 
@@ -794,13 +824,13 @@ jQuery.fn.extend( {
 
 		jQuery( 'input[name="seiwp-sel-period' + slug + '"]' ).change( function () {
 			jQuery( '#seiwp-sel-metric' + slug ).hide();
-			jQuery( '#seiwp-reports' + slug ).html( '' );
+			// jQuery( '#seiwp-reports' + slug ).html( '' );
 			reports.init();
 		} );
 
 		jQuery( '#seiwp-sel-report' + slug ).change( function () {
 			jQuery( '#seiwp-sel-metric' + slug ).hide();
-			jQuery( '#seiwp-reports' + slug ).html( '' );
+			// jQuery( '#seiwp-reports' + slug ).html( '' );
 			reports.init();
 		} );
 
@@ -813,7 +843,7 @@ jQuery.fn.extend( {
 			jQuery( '#seiwp-swmetric-ctr' ).css( "color", "#444" );
 			jQuery( '#' + this.id ).css( "color", "#008ec2" );
 
-			jQuery( '#seiwp-reports' + slug ).html( '' );
+			// jQuery( '#seiwp-reports' + slug ).html( '' );
 			reports.init();
 		} );
 

@@ -9,13 +9,13 @@ Requires PHP: 5.2.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Add your website to Google Search Console! Analyze the Google Search Console stats, to see your site's performance on Google Search.
+Verify site ownership on Google Search Console! Analyze the Google Search Console stats, to see your site's performance on Google Search.
 
 == Description ==
 
-### Get your website on Google Search Console
+### Google Search Console site verification
 
-Search Engine Insights adds your website to Google Search Console and helps you verify the ownership of the site:
+Search Engine Insights adds your website to Google Search Console and helps you verify site ownership:
 
 - Detects your default WordPress Site URL and gives you the option to add it to Search Console. 
 - Automatically insert Google Search Console metatag to verify site ownership.
@@ -72,7 +72,7 @@ When new Properties are added to Google Search Console, it may take up to a few 
 2. Reports about the location of your users, retrieved from Google Search Console
 3. Search Console stats about your Pages on WordPress dashboard
 4. Keywords statistics and performance reports retrieved from Google Search Console
-5. Verify site ownership using the Search Console metatag
+5. Site verification using the Search Console metatag
 
 == License ==
 
@@ -81,11 +81,15 @@ Search Engine Insights it's released under the GPLv2, you can use it free of cha
 == Upgrade Notice ==
 
 == Changelog ==
+= 1.2 (2019.03.16) =
+* Bug Fixes:
+	* remove screen flickering on report change
+
 = 1.1 (2019.03.16) =
 * Bug Fixes:
 	* do not allow properties list refresh after locking to a property
 	* do not allow site verification at site level when using a single account for the entire WordPress Network
-	* remember the date range selection accross sessions
+	* remember the date range selection accros sessions
 
 = 1.0 (2019.03.01) =
 * Enhancements: 
