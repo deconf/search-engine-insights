@@ -1,15 +1,15 @@
 === Search Engine Insights for Google Search Console ===
 Contributors: deconf
 Donate link: https://deconf.com/donate/
-Tags: search console dashboard, google search console, search console widget, statistics, search console, seo
+Tags: search console dashboard, google search console, search console widget, search console metatag, search console, seo
 Requires at least: 3.5
 Tested up to: 5.1
-Stable tag: 1.0
+Stable tag: 1.1
 Requires PHP: 5.2.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Add your website to Google Search Console! Analyze the Search Console stats, to see your site's performance on Google Search.
+Add your website to Google Search Console! Analyze the Google Search Console stats, to see your site's performance on Google Search.
 
 == Description ==
 
@@ -17,8 +17,8 @@ Add your website to Google Search Console! Analyze the Search Console stats, to 
 
 Search Engine Insights adds your website to Google Search Console and helps you verify the ownership of the site:
 
-- Automatically detects your default WordPress Site URL and gives you the option to add it to Search Console. 
-- Verifies the site ownership with a simple click.
+- Detects your default WordPress Site URL and gives you the option to add it to Search Console. 
+- Automatically insert Google Search Console metatag to verify site ownership.
 
 ### View Google Search Console stats on your WordPress dashboard
 
@@ -72,7 +72,7 @@ When new Properties are added to Google Search Console, it may take up to a few 
 2. Reports about the location of your users, retrieved from Google Search Console
 3. Search Console stats about your Pages on WordPress dashboard
 4. Keywords statistics and performance reports retrieved from Google Search Console
-5. Add site to Google Search Console / Verify site ownership
+5. Verify site ownership using the Search Console metatag
 
 == License ==
 
@@ -81,7 +81,7 @@ Search Engine Insights it's released under the GPLv2, you can use it free of cha
 == Upgrade Notice ==
 
 == Changelog ==
-= 1.1 (2019.03.02) =
+= 1.1 (2019.03.16) =
 * Bug Fixes:
 	* do not allow properties list refresh after locking to a property
 	* do not allow site verification at site level when using a single account for the entire WordPress Network
