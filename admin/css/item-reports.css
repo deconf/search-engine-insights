@@ -34,6 +34,7 @@
 [id^=seiwp-progressbar-] {
 	width: 100%;
 	height: 3px;
+	clear: both;
 	margin: 5px 0 0px 0;
 }
 
@@ -116,7 +117,7 @@
 }
 
 [id^=seiwp-tablechart-], [id^=seiwp-tablechart-] {
-	margin: 10px 0 0 0;
+	margin: 2px 0 0 0;
 }
 
 [id^=seiwp-sel-period-] {

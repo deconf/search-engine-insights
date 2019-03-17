@@ -15,7 +15,7 @@ if ( seiwpItemData.mapsApiKey ) {
 	} );
 } else {
 	google.charts.load( 'current', {
-		'packages' : [ 'corechart', 'table', 'orgchart', 'geochart' ]
+		'packages' : [ 'corechart', 'table', 'orgchart', 'geochart', 'controls' ]
 	} );
 }
 
@@ -233,9 +233,8 @@ jQuery.fn.extend( {
 			},
 
 			areachartSummary : function ( response ) {
-
 				var tpl;
-
+				jQuery( '#seiwp-sel-metric' + slug ).hide();
 				tpl = '<div id="seiwp-areachartsummary' + slug + '">';
 				tpl += '<div id="seiwp-summary' + slug + '">';
 				tpl += '<div class="inside">';
@@ -256,7 +255,7 @@ jQuery.fn.extend( {
 				if ( jQuery.isArray( response ) ) {
 					if ( !jQuery.isNumeric( response[ 0 ] ) ) {
 						if ( jQuery.isArray( response[ 0 ] ) ) {
-							// jQuery( '#seiwp-reports' + slug ).show();
+							
 							if ( postData.query == 'visitBounceRate,summary' ) {
 								reports.drawareachart( response[ 0 ], true );
 							} else {
@@ -266,18 +265,18 @@ jQuery.fn.extend( {
 							reports.throwDebug( response[ 0 ] );
 						}
 					} else {
-						// jQuery( '#seiwp-reports' + slug ).show();
+						
 						reports.throwError( '#seiwp-areachart' + slug, response[ 0 ], "125px" );
 					}
 					if ( !jQuery.isNumeric( response[ 1 ] ) ) {
 						if ( jQuery.isArray( response[ 1 ] ) ) {
-							// jQuery( '#seiwp-reports' + slug ).show();
+							
 							reports.drawSummary( response[ 1 ] );
 						} else {
 							reports.throwDebug( response[ 1 ] );
 						}
 					} else {
-						// jQuery( '#seiwp-reports' + slug ).show();
+						
 						reports.throwError( '#seiwp-summary' + slug, response[ 1 ], "40px" );
 					}
 				} else {
@@ -311,26 +310,26 @@ jQuery.fn.extend( {
 				if ( jQuery.isArray( response ) ) {
 					if ( !jQuery.isNumeric( response[ 0 ] ) ) {
 						if ( jQuery.isArray( response[ 0 ] ) ) {
-							// jQuery( '#seiwp-reports' + slug ).show();
+							
 							reports.drawOrgChart( response[ 0 ] );
 						} else {
 							reports.throwDebug( response[ 0 ] );
 						}
 					} else {
-						// jQuery( '#seiwp-reports' + slug ).show();
+						
 						reports.throwError( '#seiwp-orgchart' + slug, response[ 0 ], "125px" );
 					}
 
 					for ( i = 1; i < response.length; i++ ) {
 						if ( !jQuery.isNumeric( response[ i ] ) ) {
 							if ( jQuery.isArray( response[ i ] ) ) {
-								// jQuery( '#seiwp-reports' + slug ).show();
+								
 								reports.drawPieChart( 'piechart-' + i, response[ i ], reports.i18n[ i ] );
 							} else {
 								reports.throwDebug( response[ i ] );
 							}
 						} else {
-							// jQuery( '#seiwp-reports' + slug ).show();
+							
 							reports.throwError( '#seiwp-piechart-' + i + slug, response[ i ], "80px" );
 						}
 					}
@@ -341,14 +340,16 @@ jQuery.fn.extend( {
 			},
 
 			geoChartTableChart : function ( response ) {
-
 				var tpl;
 
 				tpl = '<div id="seiwp-geocharttablechart' + slug + '">';
 				tpl += '<div id="seiwp-geochart' + slug + '"></div>';
+				tpl += '<div id="seiwp-dashboard' + slug + '">';
+				tpl += '<div id="seiwp-control' + slug + '"></div>';
 				tpl += '<div id="seiwp-tablechart' + slug + '"></div>';
 				tpl += '</div>';
-
+				tpl += '</div>';
+				
 				if ( !jQuery( '#seiwp-geocharttablechart' + slug ).length ) {
 					jQuery( '#seiwp-reports' + slug ).html( tpl );
 				}
@@ -357,14 +358,13 @@ jQuery.fn.extend( {
 				if ( jQuery.isArray( response ) ) {
 					if ( !jQuery.isNumeric( response[ 0 ] ) ) {
 						if ( jQuery.isArray( response[ 0 ] ) ) {
-							// jQuery( '#seiwp-reports' + slug ).show();
 							reports.drawGeoChart( response[ 0 ] );
 							reports.drawTableChart( response[ 0 ] );
 						} else {
 							reports.throwDebug( response[ 0 ] );
 						}
 					} else {
-						// jQuery( '#seiwp-reports' + slug ).show();
+						
 						reports.throwError( '#seiwp-geochart' + slug, response[ 0 ], "125px" );
 						reports.throwError( '#seiwp-tablechart' + slug, response[ 0 ], "125px" );
 					}
@@ -375,12 +375,14 @@ jQuery.fn.extend( {
 			},
 
 			orgChartTableChart : function ( response ) {
-
 				var tpl;
 
 				tpl = '<div id="seiwp-orgcharttablechart' + slug + '">';
 				tpl += '<div id="seiwp-orgchart' + slug + '"></div>';
+				tpl += '<div id="seiwp-dashboard' + slug + '">';
+				tpl += '<div id="seiwp-control' + slug + '"></div>';
 				tpl += '<div id="seiwp-tablechart' + slug + '"></div>';
+				tpl += '</div>';
 				tpl += '</div>';
 
 				if ( !jQuery( '#seiwp-orgcharttablechart' + slug ).length ) {
@@ -391,13 +393,13 @@ jQuery.fn.extend( {
 				if ( jQuery.isArray( response ) ) {
 					if ( !jQuery.isNumeric( response[ 0 ] ) ) {
 						if ( jQuery.isArray( response[ 0 ] ) ) {
-							// jQuery( '#seiwp-reports' + slug ).show();
+							
 							reports.drawOrgChart( response[ 0 ] );
 						} else {
 							reports.throwDebug( response[ 0 ] );
 						}
 					} else {
-						// jQuery( '#seiwp-reports' + slug ).show();
+						
 						reports.throwError( '#seiwp-orgchart' + slug, response[ 0 ], "125px" );
 					}
 
@@ -417,7 +419,6 @@ jQuery.fn.extend( {
 			},
 
 			tableChart : function ( response ) {
-
 				var tpl;
 
 				tpl = '<div id="seiwp-404tablechart' + slug + '">';
@@ -432,13 +433,13 @@ jQuery.fn.extend( {
 				if ( jQuery.isArray( response ) ) {
 					if ( !jQuery.isNumeric( response[ 0 ] ) ) {
 						if ( jQuery.isArray( response[ 0 ] ) ) {
-							// jQuery( '#seiwp-reports' + slug ).show();
+							
 							reports.drawTableChart( response[ 0 ] );
 						} else {
 							reports.throwDebug( response[ 0 ] );
 						}
 					} else {
-						// jQuery( '#seiwp-reports' + slug ).show();
+						
 						reports.throwError( '#seiwp-tablechart' + slug, response[ 0 ], "125px" );
 					}
 				} else {
@@ -448,7 +449,7 @@ jQuery.fn.extend( {
 			},
 
 			drawTableChart : function ( data ) {
-				var chartData, options, chart, ascending;
+				var chartData, options, chart, ascending, dashboard, control, wrapper;
 
 				if ( swmetric == "position" ) {
 					ascending = true;
@@ -465,9 +466,34 @@ jQuery.fn.extend( {
 					sortColumn : 1,
 					sortAscending : ascending,
 				};
-				chart = new google.visualization.Table( document.getElementById( 'seiwp-tablechart' + slug ) );
+				
+				dashboard = new google.visualization.Dashboard(document.getElementById( 'seiwp-dashboard' + slug ));
+				
+			    control = new google.visualization.ControlWrapper({
+			        controlType: 'StringFilter',
+			        containerId: 'seiwp-control' + slug,
+			        options: {
+			            filterColumnIndex: 0, 
+			            matchType : 'any',
+			            ui : { label : '', cssClass : 'seiwp-dashboard-control' },
+			        }
+			    });
+			    
+			    google.visualization.events.addListener(control, 'ready', function () {
+			        jQuery('.seiwp-dashboard-control input').prop('placeholder', seiwpItemData.i18n[ 1 ]);
+			    });
+				
+			    wrapper = new google.visualization.ChartWrapper({
+			    	  'chartType' : 'Table',
+			    	  'containerId' : 'seiwp-tablechart' + slug,
+			    	  'options' : options,
+		    	});
+			    
+			    dashboard.bind(control, wrapper);
+			    
+				//chart = new google.visualization.Table( document.getElementById( 'seiwp-tablechart' + slug ) );
 
-				chart.draw( chartData, options );
+			    dashboard.draw( chartData );
 			},
 
 			drawOrgChart : function ( data ) {
@@ -682,7 +708,7 @@ jQuery.fn.extend( {
 				}
 				if ( jQuery.inArray( query, [ 'pages', 'keywords' ] ) > -1 ) {
 
-					// jQuery( '#seiwp-reports' + slug ).hide();
+
 					jQuery( '#seiwp-sel-metric' + slug ).show();
 
 					postData.query = 'channelGrouping,' + query;
@@ -693,7 +719,7 @@ jQuery.fn.extend( {
 					} );
 				} else if ( query == '404errors' ) {
 
-					// jQuery( '#seiwp-reports' + slug ).hide();
+
 					jQuery( '#seiwp-sel-metric' + slug ).show();
 
 					postData.query = query;
@@ -704,7 +730,7 @@ jQuery.fn.extend( {
 					} );
 				} else if ( query == 'siteperformance' || query == 'technologydetails' ) {
 
-					// jQuery( '#seiwp-reports' + slug ).hide();
+
 					jQuery( '#seiwp-sel-metric' + slug ).show();
 
 					if ( query == 'siteperformance' ) {
@@ -722,7 +748,7 @@ jQuery.fn.extend( {
 
 				} else if ( query == 'locations' ) {
 
-					// jQuery( '#seiwp-reports' + slug ).hide();
+
 					jQuery( '#seiwp-sel-metric' + slug ).show();
 
 					postData.query = query;
@@ -733,8 +759,6 @@ jQuery.fn.extend( {
 					} );
 
 				} else {
-
-					// jQuery( '#seiwp-reports' + slug ).hide();
 
 					postData.query = query + ',summary';
 
@@ -800,7 +824,6 @@ jQuery.fn.extend( {
 		reports.init();
 
 		jQuery( '#seiwp-sel-property' + slug ).change( function () {
-			// jQuery( '#seiwp-reports' + slug ).html( '' );
 			reports.init();
 		} );
 
@@ -823,14 +846,10 @@ jQuery.fn.extend( {
 		} );
 
 		jQuery( 'input[name="seiwp-sel-period' + slug + '"]' ).change( function () {
-			jQuery( '#seiwp-sel-metric' + slug ).hide();
-			// jQuery( '#seiwp-reports' + slug ).html( '' );
 			reports.init();
 		} );
 
 		jQuery( '#seiwp-sel-report' + slug ).change( function () {
-			jQuery( '#seiwp-sel-metric' + slug ).hide();
-			// jQuery( '#seiwp-reports' + slug ).html( '' );
 			reports.init();
 		} );
 
@@ -843,7 +862,6 @@ jQuery.fn.extend( {
 			jQuery( '#seiwp-swmetric-ctr' ).css( "color", "#444" );
 			jQuery( '#' + this.id ).css( "color", "#008ec2" );
 
-			// jQuery( '#seiwp-reports' + slug ).html( '' );
 			reports.init();
 		} );
 

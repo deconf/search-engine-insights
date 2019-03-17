@@ -134,7 +134,7 @@
 [id^=seiwp-tablechart-], [id^=seiwp-tablechart-] {
 	width: 98%;
 	height: 100%;
-	margin: 10px auto 10px 0;
+	margin: 2px auto 10px 0;
 }
 
 #dashboard-widgets-wrap .postbox {
@@ -144,6 +144,7 @@
 /* Admin Widget content */
 [id^=seiwp-progressbar-] {
 	width: 100%;
+	clear: both;
 	height: 3px;
 	margin: 5px 0 0px 0;
 }
@@ -236,6 +237,12 @@
 	font-size: 1em !important;
 	font-family: inherit !important;
 	background-color: #3E7CE0;
+}
+
+.seiwp-dashboard-control input {
+	font-size: 14px;
+	height: 20px;
+	content: "Search ...";
 }
 
 @media screen and (max-width: 410px) {
