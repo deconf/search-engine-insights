@@ -85,6 +85,8 @@ Search Engine Insights it's released under the GPLv2, you can use it free of cha
 * Bug Fixes:
 	* remove screen flickering on report change
 	* multiple CSS fixes
+* Enhancements: 
+	* search capability for table charts	
 
 = 1.1 (2019.03.16) =
 * Bug Fixes:
