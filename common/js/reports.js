@@ -10,8 +10,8 @@
 
 if ( seiwpItemData.mapsApiKey ) {
 	google.charts.load( 'current', {
-		mapsApiKey : seiwpItemData.mapsApiKey,
-		'packages' : [ 'corechart', 'table', 'orgchart', 'geochart' ]
+		'mapsApiKey' : seiwpItemData.mapsApiKey,
+		'packages' : [ 'corechart', 'table', 'orgchart', 'geochart', 'controls' ]
 	} );
 } else {
 	google.charts.load( 'current', {
