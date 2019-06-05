@@ -477,60 +477,6 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		}
 
 		/**
-		 * Gets and stores Crawl URL Errors
-		 *
-		 * @param
-		 *            $projecId
-		 * @param
-		 *            $from
-		 * @param
-		 *            $to
-		 * @param
-		 *            $dimensions
-		 * @param
-		 *            $options
-		 * @param
-		 *            $serial
-		 * @return int|SEI_Service_Webmasters
-		 */
-		private function handle_urlcrawlerrorscounts_reports( $projectId, $from, $to, $dimensions, $options, $serial ) {
-			try {
-
-				$transient = SEIWP_Tools::get_cache( $serial );
-				if ( false === $transient ) {
-					if ( $this->gapi_errors_handler() ) {
-						return - 23;
-					}
-
-					// $options['samplingLevel'] = 'HIGHER_PRECISION';
-					$data = $this->service->urlcrawlerrorscounts->query( $projectId, $options );
-
-					SEIWP_Tools::set_cache( $serial, $data, $this->get_timeouts( 'daily' ) );
-				} else {
-					$data = $transient;
-				}
-			} catch ( SEI_Service_Exception $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
-				SEIWP_Tools::set_error( $e, $timeout );
-				return $e->getCode();
-			} catch ( Exception $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
-				SEIWP_Tools::set_error( $e, $timeout );
-				return $e->getCode();
-			}
-
-			$this->seiwp->config->options['api_backoff'] = 0;
-			$this->seiwp->config->set_plugin_options();
-
-			if ( $data ) {
-				return $data;
-			} else {
-				$data->rows = array();
-				return $data;
-			}
-		}
-
-		/**
 		 * Generates serials for cache using crc32() to avoid exceeding option name lengths
 		 *
 		 * @param
