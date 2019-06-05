@@ -81,7 +81,7 @@ Search Engine Insights it's released under the GPLv2, you can use it free of cha
 == Upgrade Notice ==
 
 == Changelog ==
-= 1.2 (2019.04.07) =
+= 1.2 (2019.04.12) =
 * Bug Fixes:
 	* small CSS fixes on item reports
 	* load Google Chart controls package when using a Maps API key 
