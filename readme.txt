@@ -81,6 +81,10 @@ Search Engine Insights it's released under the GPLv2, you can use it free of cha
 == Upgrade Notice ==
 
 == Changelog ==
+= 1.3.1 (2020.11.30) =
+* Bug Fixes:
+	* fixes some deprecated messages on PHP 7.4 and later
+	
 = 1.3 (2020.11.30) =
 * Enhancements:
 	* the automatic update feature was removed
