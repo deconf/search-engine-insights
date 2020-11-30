@@ -29,25 +29,3 @@ For support and other questions use these dedicated forums:
  * support on <a href="https://wordpress.org/support/plugin/search-engine-insights" title="Search Engine Insights for WordPress support">wordpress.org forums</a>
 
 You can also find Search Engine Insights on <a href="http://wordpress.org/plugins/search-engine-insights/">wordpress.org</a>
-
-Hooks
------
-
-* Filters
-
-  - seiwp_sites_limit
-  - seiwp_backenditem_uri
-  - seiwp_frontenditem_uri
-  - seiwp_analyticsevents_timeout
-  - seiwp_curl_options
-  - seiwp_analytics_script_path
-  - seiwp_gtag_script_path
-  - seiwp_maps_api_key
-  - seiwp_curl_options
-
-* Actions
-
-  - seiwp_tagmanager_datalayer
-  - seiwp_analytics_commands
-  - seiwp_gtag_commands
-  - seiwp_endpoint_support
