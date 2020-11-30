@@ -26,7 +26,6 @@ class SEIWP_Install {
 		$options['token'] = '';
 		$options['sites_list'] = array();
 		$options['network_mode'] = 0;
-		$options['automatic_updates_minorversion'] = 1;
 		$options['backend_item_reports'] = 1;
 		$options['frontend_item_reports'] = 0;
 		$options['dashboard_widget'] = 1;

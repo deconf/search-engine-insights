@@ -23,52 +23,11 @@ if ( ! class_exists( 'SEIWP_Config' ) ) {
 			 */
 			$this->get_plugin_options();
 			/**
-			 * Automatic updates
-			 */
-			add_filter( 'auto_update_plugin', array( $this, 'automatic_update' ), 10, 2 );
-			/**
 			 * Provide language packs for all available Network languages
 			 */
 			if ( is_multisite() ) {
 				add_filter( 'plugins_update_check_locales', array( $this, 'translation_updates' ), 10, 1 );
 			}
-		}
-
-		/**
-		 * Helper function for automatic updates
-		 * @param string $version
-		 * @return string
-		 */
-		public function get_major_version( $version ) {
-			$exploded_version = explode( '.', $version );
-			if ( isset( $exploded_version[1] ) ) {
-				return $exploded_version[0] . '.' . $exploded_version[1];
-			} else {
-				return $exploded_version[0] . '.0';
-			}
-		}
-
-		/**
-		 * Automatic update for minor versions
-		 * @param string $update
-		 * @param string $item
-		 * @return null|boolean
-		 */
-		public function automatic_update( $update, $item ) {
-			$item = (array) $item;
-			if ( is_multisite() && ! is_main_site() ) {
-				return;
-			}
-			if ( ! isset( $item['new_version'] ) || ! isset( $item['plugin'] ) || ! $this->options['automatic_updates_minorversion'] ) {
-				return $update;
-			}
-			if ( isset( $item['slug'] ) && 'search-engine-insights' == $item['slug'] ) {
-				// Only when a minor update is available
-				if ( $this->get_major_version( SEIWP_CURRENT_VERSION ) == $this->get_major_version( $item['new_version'] ) ) {
-					return ( $this->get_major_version( SEIWP_CURRENT_VERSION ) == $this->get_major_version( $item['new_version'] ) );
-				}
-			}
-			return $update;
 		}
 
 		/**
@@ -89,7 +48,6 @@ if ( ! class_exists( 'SEIWP_Config' ) ) {
 																							'backend_item_reports',
 																							'dashboard_widget',
 																							'frontend_item_reports',
-																							'automatic_updates_minorversion',
 																							'user_api',
 																							'api_backoff',
 																							'with_endpoint',
@@ -140,7 +98,6 @@ if ( ! class_exists( 'SEIWP_Config' ) ) {
 						$network_options['user_api'] = $this->options['user_api'];
 						$options['user_api'] = 0;
 						$network_options['network_mode'] = $this->options['network_mode'];
-						$network_options['automatic_updates_minorversion'] = $this->options['automatic_updates_minorversion'];
 						unset( $options['network_mode'] );
 						if ( isset( $this->options['network_tableid'] ) ) {
 							$network_options['network_tableid'] = $this->options['network_tableid'];

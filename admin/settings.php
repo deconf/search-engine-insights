@@ -33,13 +33,9 @@ final class SEIWP_Settings {
 				}
 			} else if ( 'setup' == $who ) {
 				$options['user_api'] = 0;
-				if ( ! is_multisite() ) {
-					$options['automatic_updates_minorversion'] = 0;
-				}
 			} else if ( 'network' == $who ) {
 				$options['user_api'] = 0;
 				$options['network_mode'] = 0;
-				$options['automatic_updates_minorversion'] = 0;
 				$network_settings = true;
 			}
 			$options = array_merge( $options, $new_options );
@@ -373,7 +369,6 @@ final class SEIWP_Settings {
 					SEIWP_Tools::delete_cache( 'last_error' );
 					$seiwp->gapi_controller->client->authenticate( $seiwp_access_code );
 					$seiwp->config->options['token'] = $seiwp->gapi_controller->client->getAccessToken();
-					$seiwp->config->options['automatic_updates_minorversion'] = 1;
 					$seiwp->config->set_plugin_options();
 					$options = self::update_options( 'setup' );
 					$message = "<div class='updated' id='seiwp-autodismiss'><p>" . __( "Plugin authorization succeeded.", 'search-engine-insights' ) . "</p></div>";
@@ -682,32 +677,6 @@ final class SEIWP_Settings {
 														<hr>
 													</td>
 												</tr>
-												<?php if ( !is_multisite()) :?>
-												<tr>
-													<td colspan="2"><?php echo "<h2>" . __( "Automatic Updates", 'search-engine-insights' ) . "</h2>"; ?></td>
-												</tr>
-												<tr>
-													<td colspan="2" class="seiwp-settings-title">
-														<div class="seiwp-togglegroup">
-															<input type="checkbox" name="options[automatic_updates_minorversion]" value="1" id="automatic_updates_minorversion" <?php checked( $options['automatic_updates_minorversion'], 1 ); ?>>
-															<label for="automatic_updates_minorversion">
-														        <?php echo " ".__( "automatic updates for minor versions (security and maintenance releases only)", 'search-engine-insights' );?>
-														    </label>
-															<div class="seiwp-onoffswitch pull-right" aria-hidden="true">
-																<div class="seiwp-onoffswitch-label">
-																	<div class="seiwp-onoffswitch-inner"></div>
-																	<div class="seiwp-onoffswitch-switch"></div>
-																</div>
-															</div>
-														</div>
-													</td>
-												</tr>
-												<tr>
-													<td colspan="2">
-														<hr>
-													</td>
-												</tr>
-												<?php endif; ?>
 												<?php else : ?>
 												<tr>
 													<td colspan="2">
@@ -763,7 +732,6 @@ final class SEIWP_Settings {
 					update_option( 'seiwp_redeemed_code', $seiwp_access_code );
 					$seiwp->gapi_controller->client->authenticate( $_POST['seiwp_access_code'] );
 					$seiwp->config->options['token'] = $seiwp->gapi_controller->client->getAccessToken();
-					$seiwp->config->options['automatic_updates_minorversion'] = 1;
 					$seiwp->config->set_plugin_options( true );
 					$options = self::update_options( 'network' );
 					$message = "<div class='updated' id='seiwp-action'><p>" . __( "Plugin authorization succeeded.", 'search-engine-insights' ) . "</p></div>";
@@ -1006,27 +974,6 @@ final class SEIWP_Settings {
 																		</td>
 																	</tr>
 							<?php endforeach; ?>
-							<tr>
-																		<td colspan="2">
-																			<h2><?php echo _e( "Automatic Updates", 'search-engine-insights' );?></h2>
-																		</td>
-																	</tr>
-																	<tr>
-																		<td colspan="2" class="seiwp-settings-title">
-																			<div class="seiwp-togglegroup">
-																				<input type="checkbox" name="options[automatic_updates_minorversion]" value="1" id="automatic_updates_minorversion" <?php checked( $options['automatic_updates_minorversion'], 1 ); ?>>
-																				<label for="automatic_updates_minorversion">
-																			        <?php echo " ".__( "automatic updates for minor versions (security and maintenance releases only)", 'search-engine-insights' );?>
-																			    </label>
-																				<div class="seiwp-onoffswitch pull-right" aria-hidden="true">
-																					<div class="seiwp-onoffswitch-label">
-																						<div class="seiwp-onoffswitch-inner"></div>
-																						<div class="seiwp-onoffswitch-switch"></div>
-																					</div>
-																				</div>
-																			</div>
-																		</td>
-																	</tr>
 																	<tr>
 																		<td colspan="2">
 																			<hr>
