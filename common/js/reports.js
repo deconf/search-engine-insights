@@ -491,9 +491,12 @@ jQuery.fn.extend( {
 			    
 			    dashboard.bind(control, wrapper);
 			    
-				//chart = new google.visualization.Table( document.getElementById( 'seiwp-tablechart' + slug ) );
-
 			    dashboard.draw( chartData );
+			    
+			    // outputs selection
+			    google.visualization.events.addListener(wrapper, 'select', function() {
+			    	console.log(wrapper.getDataTable().getValue(wrapper.getChart().getSelection()[0].row, 0));
+			    });
 			},
 
 			drawOrgChart : function ( data ) {
@@ -788,14 +791,6 @@ jQuery.fn.extend( {
 			},
 
 			init : function () {
-
-				// if ( !jQuery( "#seiwp-reports" + slug ).length ) {
-				// return;
-				// }
-
-				// if ( jQuery( "#seiwp-reports" + slug ).html().length ) { // only when report is empty
-				// return;
-				// }
 
 				try {
 					SEIWPNProgress.configure( {

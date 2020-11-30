@@ -211,7 +211,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 *            $interval
 		 * @return number
 		 */
-		public function get_timeouts( $interval = '') {
+		public function get_timeouts( $interval = '' ) {
 			$local_time = time() + $this->timeshift;
 			if ( 'daily' == $interval ) {
 				$nextday = explode( '-', date( 'n-j-Y', strtotime( ' +1 day', $local_time ) ) );
@@ -383,7 +383,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 * @param
 		 *            $all
 		 */
-		public function reset_token( $all = true) {
+		public function reset_token( $all = true ) {
 			$this->seiwp->config->options['token'] = "";
 			$this->seiwp->config->options['sites_list_locked'] = 0;
 			if ( $all ) {
@@ -438,7 +438,11 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 					$request = new SEI_Service_Webmasters_SearchAnalyticsQueryRequest();
 					$request->setStartDate( $from );
 					$request->setEndDate( $to );
-					$request->setDimensions( $dimensions );
+
+					if ( $dimensions ) {
+						$request->setDimensions( $dimensions );
+					}
+
 					if ( is_array( $filters ) ) {
 						$dimensionfiltergroup = new SEI_Service_Webmasters_ApiDimensionFilterGroup();
 						$filtergroup = new SEI_Service_Webmasters_ApiDimensionFilter();
@@ -502,7 +506,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 *            $filter
 		 * @return array|int
 		 */
-		private function get_areachart_data( $projectId, $from, $to, $query, $filter = '') {
+		private function get_areachart_data( $projectId, $from, $to, $query, $filter = '' ) {
 			switch ( $query ) {
 				case 'clicks' :
 					$title = __( "Clicks", 'search-engine-insights' );
@@ -567,10 +571,10 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 *            $filter
 		 * @return array|int
 		 */
-		private function get_summary( $projectId, $from, $to, $filter = '') {
+		private function get_summary( $projectId, $from, $to, $filter = '' ) {
 			$options = array( 'quotaUser' => $this->managequota . 'p' . $projectId );
 
-			$dimensions = 'query';
+			$dimensions = '';
 
 			if ( $filter ) {
 				$filters['dimension'] = 'page';
@@ -802,7 +806,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 *   $metric
 		 * @return number|SEI_Service_Webmasters
 		 */
-		public function get( $projectId, $query, $from = false, $to = false, $filter = '', $metric = 'sessions') {
+		public function get( $projectId, $query, $from = false, $to = false, $filter = '', $metric = 'sessions' ) {
 			if ( empty( $projectId ) ) {
 				wp_die( - 26 );
 			}
