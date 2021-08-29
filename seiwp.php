@@ -230,7 +230,7 @@ if ( ! class_exists( 'SEIWP_Manager' ) ) {
 
 				if ( isset( self::$instance->config->options['site_verification_meta'] ) && self::$instance->config->options['site_verification_meta'] ) {
 					/*
-					 * Load site verification class
+					 * Load site verification classes
 					 */
 					include_once ( SEIWP_DIR . 'front/verify/site-verification.php' );
 					self::$instance->tracking = new SEIWP_Site_Verification();
