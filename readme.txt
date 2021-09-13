@@ -4,7 +4,7 @@ Donate link: https://deconf.com/donate/
 Tags: search console dashboard, google search console, search console widget, search console metatag, search console, seo
 Requires at least: 3.5
 Tested up to: 5.8
-Stable tag: 1.3.1
+Stable tag: 1.4.1
 Requires PHP: 5.2.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -81,10 +81,14 @@ Search Engine Insights it's released under the GPLv2, you can use it free of cha
 == Upgrade Notice ==
 
 == Changelog ==
-= 1.4 (2021.08.29) =
+= 1.4.1 (2021.09.14) =
+* Bug Fixes:
+	* fixes multisite/network mode random token resets
+
+= 1.4 (2021.08.24) =
 * Bug Fixes:
 	* fixes some deprecated messages on PHP 7.4 and later
-	
+		
 = 1.3 (2020.11.30) =
 * Enhancements:
 	* the automatic update feature was removed

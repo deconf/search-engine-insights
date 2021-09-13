@@ -513,7 +513,7 @@ final class SEIWP_Settings {
 							<div id="post-body-content">
 								<div class="settings-wrapper">
 									<div class="inside">
-										<?php if ( $seiwp->gapi_controller->gapi_errors_handler() || SEIWP_Tools::get_cache( 'last_error' ) ) : ?>
+										<?php if ( ( $seiwp->gapi_controller->gapi_errors_handler() || SEIWP_Tools::get_cache( 'last_error' ) )  && strpos(SEIWP_Tools::get_cache( 'last_error' ), '-27') === false ) : ?>
 													<?php $message = sprintf( '<div class="error"><p>%s</p></div>', sprintf( __( 'Something went wrong, check %1$s or %2$s.', 'search-engine-insights' ), sprintf( '<a href="%1$s">%2$s</a>', menu_page_url( 'seiwp_errors_debugging', false ), __( 'Debug', 'search-engine-insights' ) ), sprintf( '<a href="%1$s">%2$s</a>', menu_page_url( 'seiwp_settings', false ), __( 'authorize the plugin', 'search-engine-insights' ) ) ) );?>
 										<?php endif;?>
 										<?php if ( isset( $_POST['Authorize'] ) ) : ?>
@@ -846,7 +846,7 @@ final class SEIWP_Settings {
 												<div id="post-body-content">
 													<div class="settings-wrapper">
 														<div class="inside">
-					<?php if ( $seiwp->gapi_controller->gapi_errors_handler() || SEIWP_Tools::get_cache( 'last_error' ) ) : ?>
+					<?php if ( ( $seiwp->gapi_controller->gapi_errors_handler() || SEIWP_Tools::get_cache( 'last_error' ) )  && strpos(SEIWP_Tools::get_cache( 'last_error' ), '-27') === false ) : ?>
 						<?php $message = sprintf( '<div class="error"><p>%s</p></div>', sprintf( __( 'Something went wrong, check %1$s or %2$s.', 'search-engine-insights' ), sprintf( '<a href="%1$s">%2$s</a>', menu_page_url( 'seiwp_errors_debugging', false ), __( 'Debug', 'search-engine-insights' ) ), sprintf( '<a href="%1$s">%2$s</a>', menu_page_url( 'seiwp_settings', false ), __( 'authorize the plugin', 'search-engine-insights' ) ) ) );?>
 					<?php endif; ?>
 					<?php if ( isset( $_POST['Authorize'] ) ) : ?>
