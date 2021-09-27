@@ -45,7 +45,10 @@ Individual reports for each web page on your site with per page details as:
 
 In addition, you can control who can view specific search console reports by setting permissions based on user roles.
 
-Fully compatible with WordPress Network installs (Multisite Mode).
+= Further reading =
+
+* [Search Engine Insights](https://wordpress.org/plugins/search-engine-insights/) - The perfect tool for viewing Google Search Console stats in your WordPress dashboard.
+* [Analytics Insights](https://wordpress.org/plugins/analytics-insights/) - Connects Google Analytics with your WordPress site.
 
 == Installation ==
 
@@ -73,10 +76,6 @@ When new Properties are added to Google Search Console, it may take up to a few 
 3. Search Console stats about your Pages on WordPress dashboard
 4. Keywords statistics and performance reports retrieved from Google Search Console
 5. Site verification using the Search Console metatag
-
-== License ==
-
-Search Engine Insights it's released under the GPLv2, you can use it free of charge on your personal or commercial website.
 
 == Upgrade Notice ==
 
