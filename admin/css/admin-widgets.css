@@ -153,6 +153,10 @@
 	width: 100%;
 }
 
+[id^=seiwp-sel-period-]{
+
+}
+
 [id^=seiwp-sel-period-], .seiwp-dashboard-control input {
 	vertical-align: bottom;
 	-webkit-box-sizing: border-box;

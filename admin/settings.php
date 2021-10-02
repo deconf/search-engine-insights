@@ -1042,14 +1042,14 @@ final class SEIWP_Settings {
 							<a href="https://deconf.com/clicky-web-analytics-review/?utm_source=seiwp_config&utm_medium=link&utm_content=clicky&utm_campaign=seiwp"><img src="<?php echo plugins_url( 'images/clicky.png' , __FILE__ ); ?>" /></a>
 						</div>
 						<div class="seiwp-desc">
-							<?php printf(__('%s service with users tracking at IP level.', 'search-engine-insights'), sprintf('<a href="https://deconf.com/clicky-web-analytics-review/?utm_source=seiwp_config&utm_medium=link&utm_content=clicky&utm_campaign=seiwp">%s</a>', __('Web Analytics', 'search-engine-insights')));?>
+							<?php printf(__('%s - A web analytics service with users tracking at IP level.', 'search-engine-insights'), sprintf('<a href="https://deconf.com/clicky-web-analytics-review/?utm_source=aiwp_config&utm_medium=link&utm_content=clicky&utm_campaign=aiwp">%s</a>', __('Clicky Analytics', 'search-engine-insights')));?>
 						</div>
 						<br />
 						<div class="seiwp-title">
 							<a href="https://wordpress.org/plugins/analytics-insights/"><img src="<?php echo plugins_url( 'images/aiwp.png' , __FILE__ ); ?>" /></a>
 						</div>
 						<div class="seiwp-desc">
-							<?php echo '<a href="https://wordpress.org/plugins/analytics-insights/">'.__('Analytics Insights','search-engine-insights').'</a> '.' - '.__('Connects Google Analytics with your WordPress site.','search-engine-insights'); ?>
+							<?php printf(__('%s - Connects Google Analytics with your WordPress site.', 'search-engine-insights'), sprintf('<a href="https://wordpress.org/plugins/analytics-insights/">%s</a>', __('Analytics Insights', 'search-engine-insights')));?>
 						</div>
 					</div>
 				</div>

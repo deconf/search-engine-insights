@@ -80,6 +80,11 @@ When new Properties are added to Google Search Console, it may take up to a few 
 == Upgrade Notice ==
 
 == Changelog ==
+= 1.4.2 (2021.10.02)
+* Bug Fixes:
+	* fix invalid links
+	* use sprintf for plugin i18n
+	
 = 1.4.1 (2021.09.14) =
 * Bug Fixes:
 	* fixes multisite/network mode random token resets
