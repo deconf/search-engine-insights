@@ -287,7 +287,7 @@ final class SEIWP_Settings {
 									<?php $errors_count = SEIWP_Tools::get_cache( 'errors_count' ); ?>
 									<pre class="seiwp-settings-logdata"><?php echo '<span>' . __("Count: ", 'search-engine-insights') . '</span>' . (int)$errors_count;?></pre>
 									<?php $errors = print_r( SEIWP_Tools::get_cache( 'last_error' ), true ) ? esc_html( print_r( SEIWP_Tools::get_cache( 'last_error' ), true ) ) : ''; ?>
-									<?php $errors = str_replace( 'SEI_', 'Google_', $errors); ?>
+									<?php $errors = str_replace( 'Google_', 'Google_', $errors); ?>
 									<pre class="seiwp-settings-logdata"><?php echo '<span>' . __("Last Error: ", 'search-engine-insights') . '</span>' . "\n" . $errors;?></pre>
 									<pre class="seiwp-settings-logdata"><?php echo '<span>' . __("GAPI Error: ", 'search-engine-insights') . '</span>'; echo "\n" . esc_html( print_r( SEIWP_Tools::get_cache( 'gapi_errors' ), true ) ) ?></pre>
 									<br />
@@ -367,8 +367,12 @@ final class SEIWP_Settings {
 					update_option( 'seiwp_redeemed_code', $seiwp_access_code );
 					SEIWP_Tools::delete_cache( 'gapi_errors' );
 					SEIWP_Tools::delete_cache( 'last_error' );
-					$seiwp->gapi_controller->client->authenticate( $seiwp_access_code );
+
+					$token = $seiwp->gapi_controller->authenticate( $_POST['seiwp_access_code'] );
+					$array_token = (array)$token;
+					$seiwp->gapi_controller->client->setAccessToken( $array_token );
 					$seiwp->config->options['token'] = $seiwp->gapi_controller->client->getAccessToken();
+
 					$seiwp->config->set_plugin_options();
 					$options = self::update_options( 'setup' );
 					$message = "<div class='updated' id='seiwp-autodismiss'><p>" . __( "Plugin authorization succeeded.", 'search-engine-insights' ) . "</p></div>";
@@ -384,10 +388,7 @@ final class SEIWP_Settings {
 							$options = self::update_options( 'setup' );
 						}
 					}
-				} catch ( SEI_IO_Exception $e ) {
-					$timeout = $seiwp->gapi_controller->get_timeouts( 'midnight' );
-					SEIWP_Tools::set_error( $e, $timeout );
-				} catch ( SEI_Service_Exception $e ) {
+				} catch ( Google_Service_Exception $e ) {
 					$timeout = $seiwp->gapi_controller->get_timeouts( 'midnight' );
 					SEIWP_Tools::set_error( $e, $timeout );
 				} catch ( Exception $e ) {
@@ -730,8 +731,14 @@ final class SEIWP_Settings {
 				try {
 					$seiwp_access_code = sanitize_text_field( $_POST['seiwp_access_code'] );
 					update_option( 'seiwp_redeemed_code', $seiwp_access_code );
-					$seiwp->gapi_controller->client->authenticate( $_POST['seiwp_access_code'] );
+					SEIWP_Tools::delete_cache( 'gapi_errors' );
+					SEIWP_Tools::delete_cache( 'last_error' );
+
+					$token = $seiwp->gapi_controller->authenticate( $_POST['seiwp_access_code'] );
+					$array_token = (array)$token;
+					$seiwp->gapi_controller->client->setAccessToken( $array_token );
 					$seiwp->config->options['token'] = $seiwp->gapi_controller->client->getAccessToken();
+
 					$seiwp->config->set_plugin_options( true );
 					$options = self::update_options( 'network' );
 					$message = "<div class='updated' id='seiwp-action'><p>" . __( "Plugin authorization succeeded.", 'search-engine-insights' ) . "</p></div>";
@@ -758,10 +765,7 @@ final class SEIWP_Settings {
 							$options = self::update_options( 'network' );
 						}
 					}
-				} catch ( SEI_IO_Exception $e ) {
-					$timeout = $seiwp->gapi_controller->get_timeouts( 'midnight' );
-					SEIWP_Tools::set_error( $e, $timeout );
-				} catch ( SEI_Service_Exception $e ) {
+				} catch ( Google_Service_Exception $e ) {
 					$timeout = $seiwp->gapi_controller->get_timeouts( 'midnight' );
 					SEIWP_Tools::set_error( $e, $timeout );
 				} catch ( Exception $e ) {
