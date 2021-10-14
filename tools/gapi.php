@@ -32,6 +32,19 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 			$this->seiwp = SEIWP();
 			include_once ( SEIWP_DIR . 'tools/vendor/autoload.php' );
 			$this->client = new Google\Client();
+
+			// add Proxy server settings to Guzzle, if defined
+
+			if ( defined( 'WP_PROXY_HOST' ) && defined( 'WP_PROXY_PORT' ) ) {
+				$httpoptions = array();
+				$httpoptions [ 'proxy' ] = "'" . WP_PROXY_HOST . ":". WP_PROXY_PORT ."'";
+				if ( defined( 'WP_PROXY_USERNAME' ) && defined( 'WP_PROXY_PASSWORD' ) ) {
+					$httpoptions [ 'auth' ] = array( WP_PROXY_USERNAME, WP_PROXY_PASSWORD );
+				}
+				$httpClient = new GuzzleHttp\Client( $httpoptions );
+				$this->client->setHttpClient( $httpClient );
+			}
+
 			$this->client->setScopes( array( 'https://www.googleapis.com/auth/webmasters', 'https://www.googleapis.com/auth/siteverification' ) );
 			$this->client->setAccessType( 'offline' );
 			$this->client->setApplicationName( 'SEIWP ' . SEIWP_CURRENT_VERSION );
