@@ -85,7 +85,11 @@ When new Properties are added to Google Search Console, it may take up to a few 
  	* Google Search Console library update to v2
 	* Search Console API Endpoint update to v1
 	* minimum requirements changed to PHP 5.6.0 or higher
-	
+	* automatically authorize users with Google Search Console, without copy/pasting the access codes
+* Bug Fixes:
+	* multiple bugfixes for network mode setup
+	* admin page css fixes
+		
 = 1.4.2 (2021.10.02)
 * Bug Fixes:
 	* fix invalid links

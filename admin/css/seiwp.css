@@ -7,8 +7,17 @@
  */
 
 /* Tab navigation */
-#seiwp-events, #seiwp-custom, #seiwp-advanced, #seiwp-exclude, #seiwp-config, #seiwp-tmdatalayervars, #seiwp-tmintegration, #seiwp-integration {
+#seiwp-config, #seiwp-sysinfo, #seiwp-errors {
 	display: none;
+}
+
+#seiwp-autodismiss {
+	position: fixed;
+	top: 35px;
+	left: 48%;
+	transform: translate(-50%, 0);
+	z-index: 2;
+	margin-left: 0px;
 }
 
 /* Options pages */

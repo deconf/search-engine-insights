@@ -37,4 +37,7 @@ jQuery( document ).ready( function () {
 			jQuery( "#" + this.hash.split( '#' )[ 2 ] ).show();
 		}
 	} );
+	
+	jQuery( '#seiwp-autodismiss' ).delay( 2000 ).fadeOut( 'slow' );
+	
 } );

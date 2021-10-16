@@ -251,7 +251,7 @@ if ( ! class_exists( 'SEIWP_Backend_Setup' ) ) {
 			/**
 			 * Settings Styles & Scripts
 			 */
-			$settings_hooks = array( '_page_seiwp_settings', '_page_seiwp_settings', '_page_seiwp_frontend_settings', '_page_seiwp_errors_debugging' );
+			$settings_hooks = array( '_page_seiwp_setup', '_page_seiwp_settings', '_page_seiwp_frontend_settings', '_page_seiwp_errors_debugging' );
 
 			if ( in_array( $new_hook, $settings_hooks ) ) {
 				wp_enqueue_style( 'wp-color-picker' );

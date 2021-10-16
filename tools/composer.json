@@ -16,6 +16,7 @@
     "extra": {
         "google/apiclient-services": [
             "SearchConsole",
+            "SiteVerification"
 			"Analytics",
 			"AnalyticsData",
 			"AnalyticsReporting"

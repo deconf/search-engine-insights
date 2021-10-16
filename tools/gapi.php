@@ -23,7 +23,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 
 		private $seiwp;
 
-		private $access = array( '445209225034-2r8o69gufdi5558ne2kcpq7gn6s4ar8k.apps.googleusercontent.com', 'secret' );
+		private $access = array( '445209225034-q1dg4p5se5rh3dkvtpvj323tlr5ibt1q.apps.googleusercontent.com', 'secret' );
 
 		/**
 		 * Google API Client Initialization
@@ -47,15 +47,24 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 
 			$this->client->setScopes( array( 'https://www.googleapis.com/auth/webmasters', 'https://www.googleapis.com/auth/siteverification' ) );
 			$this->client->setAccessType( 'offline' );
+			$this->client->setApprovalPrompt( 'force' );
 			$this->client->setApplicationName( 'SEIWP ' . SEIWP_CURRENT_VERSION );
-			$this->client->setRedirectUri( 'urn:ietf:wg:oauth:2.0:oob' );
+			$security = wp_create_nonce( 'seiwp_security' );
+			if ( is_multisite() && $this->seiwp->config->options['network_mode'] ) {
+				$state_uri = network_admin_url( 'admin.php?page=seiwp_setup' ) . '&seiwp_security=' . $security;
+			} else {
+				$state_uri = admin_url( 'admin.php?page=seiwp_setup' ) . '&seiwp_security=' . $security;
+			}
+			$this->client->setState( $state_uri );
 			$this->managequota = 'u' . get_current_user_id() . 's' . get_current_blog_id();
 			if ( $this->seiwp->config->options['user_api'] ) {
 				$this->client->setClientId( $this->seiwp->config->options['client_id'] );
 				$this->client->setClientSecret( $this->seiwp->config->options['client_secret'] );
+				$this->client->setRedirectUri( SEIWP_URL . 'tools/oauth2callback.php' );
 			} else {
 				$this->client->setClientId( $this->access[0] );
 				$this->client->setClientSecret( $this->access[1] );
+				$this->client->setRedirectUri( SEIWP_ENDPOINT_URL . 'oauth2callback.php' );
 			}
 			$this->service = new Google\Service\SearchConsole( $this->client );
 			if ( $this->seiwp->config->options['token'] ) {
@@ -67,7 +76,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 						if ( $this->client->isAccessTokenExpired() ) {
 							$this->fetch_new_token( $token );
 						}
-					} catch ( Google_Service_Exception $e ) {
+					} catch ( Google\Service\Exception $e ) {
 						$timeout = $this->get_timeouts( 'midnight' );
 						SEIWP_Tools::set_error( $e, $timeout );
 						$this->reset_token();
@@ -101,7 +110,8 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 					'headers' => array(),
 					'body' => array(
 						'token' => $token,
-						'client_id' => $this->client->getClientId()
+						'client_id' => $this->client->getClientId(),
+						'version' => SEIWP_CURRENT_VERSION
 					),
 					'cookies' => array()
 				)
@@ -127,7 +137,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				try {
 					$this->client->refreshToken( $this->client->getRefreshToken() );
 					$this->seiwp->config->options['token'] = $this->client->getAccessToken();
-				} catch ( Google_Service_Exception $e ) {
+				} catch ( Google\Service\Exception $e ) {
 					$timeout = $this->get_timeouts( 'midnight' );
 					SEIWP_Tools::set_error( $e, $timeout );
 					$this->reset_token();
@@ -153,7 +163,8 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 							'headers' => array(),
 							'body' => array(
 								'access_code' => $access_code,
-								'client_id' => $this->client->getClientId()
+								'client_id' => $this->client->getClientId(),
+								'version' => SEIWP_CURRENT_VERSION
 							),
 							'cookies' => array()
 						)
@@ -178,7 +189,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				try {
 					$this->client->fetchAccessTokenWithAuthCode( $access_code );
 					return $this->client->getAccessToken();
-				} catch ( Google_Service_Exception $e ) {
+				} catch ( Google\Service\Exception $e ) {
 					$timeout = $this->get_timeouts( 'midnight' );
 					SEIWP_Tools::set_error( $e, $timeout );
 				} catch ( Exception $e ) {
@@ -251,14 +262,6 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		}
 
 		/**
-		 * Generates and retrieves the Access Code
-		 */
-		public function token_request() {
-			$data['authUrl'] = $this->client->createAuthUrl();
-			SEIWP_Tools::load_view( 'admin/views/access-code.php', $data );
-		}
-
-		/**
 		 * Verifies the current site for Google Search Console
 		 *
 		 * @return boolean
@@ -266,24 +269,24 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		public function verify_property() {
 			try {
 				if ( empty( $this->seiwp->config->options['site_verification_meta'] ) ) {
-					$site = new Google_Service_SiteVerification_SiteVerificationWebResourceGettokenRequestSite();
+					$site = new Google\Service\SiteVerification\SiteVerificationWebResourceGettokenRequestSite();
 					$site->setIdentifier( SEIWP_SITE_URL );
 					$site->setType( 'SITE' );
-					$request = new Google_Service_SiteVerification_SiteVerificationWebResourceGettokenRequest();
+					$request = new Google\Service\SiteVerification\SiteVerificationWebResourceGettokenRequest();
 					$request->setSite( $site );
 					$request->setVerificationMethod( 'META' );
-					$service = new Google_Service_SiteVerification( $this->client );
+					$service = new Google\Service\SiteVerification( $this->client );
 					$webResource = $service->webResource;
 					$result = $webResource->getToken( $request );
 					$this->seiwp->config->options['site_verification_meta'] = $result->token;
 					$this->seiwp->config->set_plugin_options();
 				}
-				$site = new Google_Service_SiteVerification_SiteVerificationWebResourceResourceSite();
+				$site = new Google\Service\SiteVerification\SiteVerificationWebResourceResourceSite();
 				$site->setIdentifier( SEIWP_SITE_URL );
 				$site->setType( 'SITE' );
-				$request = new Google_Service_SiteVerification_SiteVerificationWebResourceResource();
+				$request = new Google\Service\SiteVerification\SiteVerificationWebResourceResource();
 				$request->setSite( $site );
-				$service = new Google_Service_SiteVerification( $this->client );
+				$service = new Google\Service\SiteVerification( $this->client );
 				$webResource = $service->webResource;
 				$result = $webResource->insert( 'META', $request );
 				return true;
@@ -302,7 +305,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				$url = SEIWP_SITE_URL;
 				$this->service->sites->delete( $url );
 				return true;
-			} catch ( Google_Service_Exception $e ) {
+			} catch ( Google\Service\Exception $e ) {
 				$timeout = $this->get_timeouts( 'midnight' );
 				SEIWP_Tools::set_error( $e, $timeout );
 			} catch ( Exception $e ) {
@@ -321,7 +324,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				$url = SEIWP_SITE_URL;
 				$this->service->sites->add( $url );
 				return true;
-			} catch ( Google_Service_Exception $e ) {
+			} catch ( Google\Service\Exception $e ) {
 				$timeout = $this->get_timeouts( 'midnight' );
 				SEIWP_Tools::set_error( $e, $timeout );
 				return false;
@@ -355,7 +358,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				}
 				SEIWP_Tools::delete_cache( 'last_error' );
 				return $sites_list;
-			} catch ( Google_Service_Exception $e ) {
+			} catch ( Google\Service\Exception $e ) {
 				$timeout = $this->get_timeouts( 'midnight' );
 				SEIWP_Tools::set_error( $e, $timeout );
 			} catch ( Exception $e ) {
@@ -371,9 +374,10 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 *            $all
 		 */
 		public function reset_token( $all = true ) {
-			$this->seiwp->config->options['token'] = "";
-			$this->seiwp->config->options['sites_list_locked'] = 0;
-			if ( $all ) {
+
+			$token = $this->client->getAccessToken();
+
+			if ( $all && $token ) {
 				$this->seiwp->config->options['site_jail'] = "";
 				$this->seiwp->config->options['sites_list'] = array();
 
@@ -391,6 +395,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 							'body' => array(
 								'client_id' => $this->client->getClientId(),
 								'token' => json_encode( $this->client->getAccessToken() ),
+								'version' => SEIWP_CURRENT_VERSION
 							),
 							'cookies' => array()
 						)
@@ -412,6 +417,11 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 					}
 				}
 			}
+
+			$this->seiwp->config->options['token'] = "";
+
+			$this->seiwp->config->options['sites_list_locked'] = 0;
+
 			if ( is_multisite() && $this->seiwp->config->options['network_mode'] ) {
 				$this->seiwp->config->set_plugin_options( true );
 			} else {
@@ -466,7 +476,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				} else {
 					$data = $transient;
 				}
-			} catch ( Google_Service_Exception $e ) {
+			} catch ( Google\Service\Exception $e ) {
 				$timeout = $this->get_timeouts( 'midnight' );
 				SEIWP_Tools::set_error( $e, $timeout );
 				return $e->getCode();

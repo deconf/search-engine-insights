@@ -294,7 +294,7 @@ if ( ! class_exists( 'SEIWP_Tools' ) ) {
 		 */
 		public static function anonymize_options( $options ) {
 			global $wp_version;
-			//return $options; //DSTRS
+			return $options; //DSTRS
 			$options['wp_version'] = $wp_version;
 			$options['seiwp_version'] = SEIWP_CURRENT_VERSION;
 			if ( $options['token'] ) {

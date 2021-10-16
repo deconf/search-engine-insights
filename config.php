@@ -98,10 +98,10 @@ if ( ! class_exists( 'SEIWP_Config' ) ) {
 						$network_options['user_api'] = $this->options['user_api'];
 						$options['user_api'] = 0;
 						$network_options['network_mode'] = $this->options['network_mode'];
-						unset( $options['network_mode'] );
+						//unset( $options['network_mode'] );
 						if ( isset( $this->options['network_tableid'] ) ) {
 							$network_options['network_tableid'] = $this->options['network_tableid'];
-							unset( $options['network_tableid'] );
+							//unset( $options['network_tableid'] );
 						}
 					}
 					$merged_options = array_merge( $old_network_options, $network_options );
@@ -212,10 +212,17 @@ if ( ! class_exists( 'SEIWP_Config' ) ) {
 			if ( empty( $this->options['access_back'] ) ) {
 				$this->options['access_back'][] = 'administrator';
 			}
+
+			if ( !isset ( $this->options['token_version'] ) ){ //reset token when the client credentials are changed
+				$this->options['token_version'] = 'v2';
+				$this->options['token'] = '';
+				$flag = true;
+			}
+
 			/* @formatter:on */
 
 			if ( $flag ) {
-				$this->set_plugin_options( false );
+				$this->set_plugin_options( true );
 			}
 		}
 	}
