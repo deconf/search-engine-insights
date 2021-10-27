@@ -157,7 +157,7 @@ if ( ! class_exists( 'SEIWP_Backend_Setup' ) ) {
 						'i18n' => array(
 							__( "A JavaScript Error is blocking plugin resources!", 'search-engine-insights' ), //0
 							__( "Search ...", 'search-engine-insights' ),
-							__( "", 'search-engine-insights' ),
+							__( "Download", 'search-engine-insights' ),
 							__( "Search Engines", 'search-engine-insights' ),
 							__( "", 'search-engine-insights' ),
 							__( "Impressions", 'search-engine-insights' ),
@@ -223,7 +223,7 @@ if ( ! class_exists( 'SEIWP_Backend_Setup' ) ) {
 						'i18n' => array(
 							__( "A JavaScript Error is blocking plugin resources!", 'search-engine-insights' ), //0
 							__( "", 'search-engine-insights' ),
-							__( "", 'search-engine-insights' ),
+							__( "Download", 'search-engine-insights' ),
 							__( "", 'search-engine-insights' ),
 							__( "", 'search-engine-insights' ),
 							__( "Impressions", 'search-engine-insights' ),

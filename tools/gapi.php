@@ -9,6 +9,9 @@
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) )
 	exit();
+
+use Google\Service\Exception as GoogleServiceException;
+
 if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 
 	final class SEIWP_GAPI_Controller {
@@ -76,7 +79,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 						if ( $this->client->isAccessTokenExpired() ) {
 							$this->fetch_new_token( $token );
 						}
-					} catch ( Google\Service\Exception $e ) {
+					} catch ( GoogleServiceException $e ) {
 						$timeout = $this->get_timeouts( 'midnight' );
 						SEIWP_Tools::set_error( $e, $timeout );
 						$this->reset_token();
@@ -137,7 +140,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				try {
 					$this->client->refreshToken( $this->client->getRefreshToken() );
 					$this->seiwp->config->options['token'] = $this->client->getAccessToken();
-				} catch ( Google\Service\Exception $e ) {
+				} catch ( GoogleServiceException $e ) {
 					$timeout = $this->get_timeouts( 'midnight' );
 					SEIWP_Tools::set_error( $e, $timeout );
 					$this->reset_token();
@@ -189,7 +192,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				try {
 					$this->client->fetchAccessTokenWithAuthCode( $access_code );
 					return $this->client->getAccessToken();
-				} catch ( Google\Service\Exception $e ) {
+				} catch ( GoogleServiceException $e ) {
 					$timeout = $this->get_timeouts( 'midnight' );
 					SEIWP_Tools::set_error( $e, $timeout );
 				} catch ( Exception $e ) {
@@ -305,7 +308,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				$url = SEIWP_SITE_URL;
 				$this->service->sites->delete( $url );
 				return true;
-			} catch ( Google\Service\Exception $e ) {
+			} catch ( GoogleServiceException $e ) {
 				$timeout = $this->get_timeouts( 'midnight' );
 				SEIWP_Tools::set_error( $e, $timeout );
 			} catch ( Exception $e ) {
@@ -324,7 +327,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				$url = SEIWP_SITE_URL;
 				$this->service->sites->add( $url );
 				return true;
-			} catch ( Google\Service\Exception $e ) {
+			} catch ( GoogleServiceException $e ) {
 				$timeout = $this->get_timeouts( 'midnight' );
 				SEIWP_Tools::set_error( $e, $timeout );
 				return false;
@@ -358,7 +361,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				}
 				SEIWP_Tools::delete_cache( 'last_error' );
 				return $sites_list;
-			} catch ( Google\Service\Exception $e ) {
+			} catch ( GoogleServiceException $e ) {
 				$timeout = $this->get_timeouts( 'midnight' );
 				SEIWP_Tools::set_error( $e, $timeout );
 			} catch ( Exception $e ) {
@@ -476,7 +479,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				} else {
 					$data = $transient;
 				}
-			} catch ( Google\Service\Exception $e ) {
+			} catch ( GoogleServiceException $e ) {
 				$timeout = $this->get_timeouts( 'midnight' );
 				SEIWP_Tools::set_error( $e, $timeout );
 				return $e->getCode();

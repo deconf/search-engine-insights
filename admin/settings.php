@@ -12,6 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
 
+use Google\Service\Exception as GoogleServiceException;
+
 final class SEIWP_Settings {
 
 	private static function update_options( $who ) {
@@ -391,7 +393,7 @@ final class SEIWP_Settings {
 							$options = self::update_options( 'setup' );
 						}
 					}
-				} catch ( Google\Service\Exception $e ) {
+				} catch ( GoogleServiceException $e ) {
 					$timeout = $seiwp->gapi_controller->get_timeouts( 'midnight' );
 					SEIWP_Tools::set_error( $e, $timeout );
 				} catch ( Exception $e ) {
@@ -757,7 +759,7 @@ final class SEIWP_Settings {
 							$options = self::update_options( 'network' );
 						}
 					}
-				} catch ( Google\Service\Exception $e ) {
+				} catch ( GoogleServiceException $e ) {
 					$timeout = $seiwp->gapi_controller->get_timeouts( 'midnight' );
 					SEIWP_Tools::set_error( $e, $timeout );
 				} catch ( Exception $e ) {
