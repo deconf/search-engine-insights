@@ -619,7 +619,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 *            $metric
 		 * @return array|int
 		 */
-		private function get_pages( $projectId, $from, $to, $filter = '', $metric ) {
+		private function get_pages( $projectId, $from, $to, $metric, $filter = '' ) {
 			$metrics = $metric;
 			$dimensions[] = 'page';
 			$options = array( 'sort' => '-' . $metrics, 'quotaUser' => $this->managequota . 'p' . $projectId );
@@ -657,7 +657,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 *            $metric
 		 * @return array|int
 		 */
-		private function get_keywords( $projectId, $from, $to, $filter = '', $metric ) {
+		private function get_keywords( $projectId, $from, $to, $metric, $filter = '' ) {
 			$metrics = $metric;
 			$dimensions[] = 'query';
 			$options = array( 'sort' => '-' . $metrics, 'quotaUser' => $this->managequota . 'p' . $projectId );
@@ -695,7 +695,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 *            $metric
 		 * @return array|int
 		 */
-		private function get_locations( $projectId, $from, $to, $filter = '', $metric ) {
+		private function get_locations( $projectId, $from, $to, $metric, $filter = '' ) {
 			$metrics = $metric;
 			$options = "";
 			$title = __( "Countries", 'search-engine-insights' );
@@ -740,7 +740,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 *            $metric
 		 * @return array|int
 		 */
-		private function get_orgchart_data( $projectId, $from, $to, $query, $filter = '', $metric ) {
+		private function get_orgchart_data( $projectId, $from, $to, $query, $metric, $filter = '' ) {
 			$options = array( 'quotaUser' => $this->managequota . 'p' . $projectId );
 			$dimensions = 'query';
 			if ( $filter ) {
@@ -802,16 +802,16 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				return $this->get_areachart_data( $projectId, $from, $to, $query, $filter );
 			}
 			if ( 'locations' == $query ) {
-				return $this->get_locations( $projectId, $from, $to, $filter, $metric );
+				return $this->get_locations( $projectId, $from, $to, $metric, $filter );
 			}
 			if ( 'pages' == $query ) {
-				return $this->get_pages( $projectId, $from, $to, $filter, $metric );
+				return $this->get_pages( $projectId, $from, $to, $metric, $filter  );
 			}
 			if ( 'channelGrouping' == $query || 'deviceCategory' == $query ) {
-				return $this->get_orgchart_data( $projectId, $from, $to, $query, $filter, $metric );
+				return $this->get_orgchart_data( $projectId, $from, $to, $query, $metric, $filter );
 			}
 			if ( 'keywords' == $query ) {
-				return $this->get_keywords( $projectId, $from, $to, $filter, $metric );
+				return $this->get_keywords( $projectId, $from, $to, $metric, $filter );
 			}
 			wp_die( - 27 );
 		}

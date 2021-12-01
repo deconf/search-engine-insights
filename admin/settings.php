@@ -594,6 +594,7 @@ final class SEIWP_Settings {
 													<td>
 														<?php if ( empty (SEIWP_Tools::get_selected_site( $seiwp->config->options['sites_list'], SEIWP_SITE_URL) ) ) : ?>
 													 	<?php echo  '<span class="seiwp-red">' . __("Not found", 'search-engine-insights' ) . '</span>'; ?>
+															<?php $flag = false; ?>
 													 <?php else: ?>
 														 <?php $flag = false; ?>
 										 				<?php foreach ( $seiwp->config->options['sites_list'] as $items ) : ?>

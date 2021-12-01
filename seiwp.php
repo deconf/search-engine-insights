@@ -72,7 +72,7 @@ if ( ! class_exists( 'SEIWP_Manager' ) ) {
 		/**
 		 * Wakeup warning
 		 */
-		private function __wakeup() {
+		public function __wakeup() {
 			_doing_it_wrong( __FUNCTION__, __( "This is not allowed, read the documentation!", 'search-engine-insights' ), '4.6' );
 		}
 
