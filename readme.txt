@@ -84,6 +84,7 @@ When new Properties are added to Google Search Console, it may take up to a few 
 * Bug Fixes:
 	* fixing multiple notices and errors for PHP 8
 	* Search Console API improvements
+	* avoid setting unverified sites as defaults
 	
 = 1.5 (2021.10.27)
 * Important Note:
