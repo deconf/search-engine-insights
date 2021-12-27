@@ -638,7 +638,7 @@ final class SEIWP_Settings {
 															<?php if ( ! empty( $options['sites_list'] ) ) : ?>
 																	<?php foreach ( $options['sites_list'] as $items ) : ?>
 																		<?php if ( $items[0] ) : ?>
-																			<option value="<?php echo esc_attr( $items[0] ); ?>" <?php selected( $items[0], $options['site_jail'] ); ?> title="<?php _e( "Site URL:", 'search-engine-insights' ); ?> <?php echo esc_attr( $items[0] ); ?>">
+																			<option <?php disabled($items[1],'siteUnverifiedUser') ?> value="<?php echo esc_attr( $items[0] ); ?>" <?php selected( $items[0], $options['site_jail'] ); ?> title="<?php _e( "Site URL:", 'search-engine-insights' ); ?> <?php echo esc_attr( $items[0] ); ?>">
 																				<?php echo esc_html( $items[0] )?>
 																			</option>
 																		<?php endif; ?>

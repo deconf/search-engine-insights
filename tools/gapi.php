@@ -87,8 +87,6 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 						$this->reset_token();
 					}
 
-					$this->service = new Google\Service\SearchConsole( $this->client );
-
 					if ( is_multisite() && $this->seiwp->config->options['network_mode'] ) {
 						$this->seiwp->config->set_plugin_options( true );
 					} else {
@@ -96,6 +94,9 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 					}
 				}
 			}
+
+			$this->service = new Google\Service\SearchConsole( $this->client );
+
 		}
 
 		public function fetch_new_token( $oldtoken ) {

@@ -33,11 +33,11 @@ if ( ! class_exists( 'SEIWP_Tools' ) ) {
 			$siteurl = SEIWP_SITE_URL;
 			if ( ! empty( $sites ) ) {
 				foreach ( $sites as $item ) {
-					if ( $item[0] == $siteurl ) {
+					if ( $item[0] == $siteurl && 'siteUnverifiedUser' != $item[1] ) {
 						return $item[0];
 					}
 				}
-				return $sites[0][0];
+				return '';
 			} else {
 				return '';
 			}
