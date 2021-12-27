@@ -64,7 +64,6 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				$this->client->setRedirectUri( SEIWP_URL . 'tools/oauth2callback.php' );
 			} else {
 				$this->client->setClientId( $this->access[0] );
-				$this->client->setClientSecret( $this->access[1] );
 				$this->client->setRedirectUri( SEIWP_ENDPOINT_URL . 'oauth2callback.php' );
 			}
 
@@ -74,7 +73,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 					try {
 						$array_token = (array)$token;
 						$this->client->setAccessToken( $array_token );
-						if ( $this->client->isAccessTokenExpired() ) {
+						if ( $this->isAccessTokenExpired() ) {
 							$this->fetch_new_token( $token );
 						}
 					} catch ( GoogleServiceException $e ) {
@@ -97,6 +96,23 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 
 			$this->service = new Google\Service\SearchConsole( $this->client );
 
+		}
+
+		/**
+		 * Returns if the access_token is expired.
+		 * @return bool Returns True if the access_token is expired.
+		 */
+		public function isAccessTokenExpired() {
+			$token = (array)$this->seiwp->config->options['token'];
+			if ( ! $token ) {
+				return true;
+			}
+			$created = 0;
+			if ( isset( $token['created'] ) ) {
+				$created = $token['created'];
+			}
+			// If the token is set to expire in the next 90 seconds.
+			return ( $created + ( $token['expires_in'] - 90 ) ) < time();
 		}
 
 		public function fetch_new_token( $oldtoken ) {
@@ -135,7 +151,6 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 					} else{ //Google Endpoint Error
 						$timeout = $this->get_timeouts( 'midnight' );
 						SEIWP_Tools::set_error( $token, $timeout );
-						$this->reset_token();
 					}
 				}
 			} else {
@@ -145,11 +160,9 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				} catch ( GoogleServiceException $e ) {
 					$timeout = $this->get_timeouts( 'midnight' );
 					SEIWP_Tools::set_error( $e, $timeout );
-					$this->reset_token();
 				} catch ( Exception $e ) {
 					$timeout = $this->get_timeouts( 'midnight' );
 					SEIWP_Tools::set_error( $e, $timeout );
-					$this->reset_token();
 				}
 			}
 		}
@@ -187,7 +200,6 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 					} else { //Google Endpoint Error
 						$timeout = $this->get_timeouts( 'midnight' );
 						SEIWP_Tools::set_error( $token, $timeout );
-						$this->reset_token();
 					}
 				}
 			} else {
@@ -200,7 +212,6 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				} catch ( Exception $e ) {
 					$timeout = $this->get_timeouts( 'midnight' );
 					SEIWP_Tools::set_error( $e, $timeout );
-					$this->reset_token();
 				}
 			}
 		}
