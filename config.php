@@ -213,12 +213,6 @@ if ( ! class_exists( 'SEIWP_Config' ) ) {
 				$this->options['access_back'][] = 'administrator';
 			}
 
-			if ( !isset ( $this->options['token_version'] ) ){ //reset token when the client credentials are changed
-				$this->options['token_version'] = 'v2';
-				$this->options['token'] = '';
-				$flag = true;
-			}
-
 			/* @formatter:on */
 
 			if ( $flag ) {

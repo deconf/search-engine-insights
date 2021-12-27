@@ -415,8 +415,7 @@ final class SEIWP_Settings {
 		}
 		if ( isset( $_POST['Reset'] ) ) {
 			if ( isset( $_POST['seiwp_security'] ) && wp_verify_nonce( $_POST['seiwp_security'], 'seiwp_form' ) ) {
-				//$seiwp->gapi_controller->delete_property();
-				$seiwp->gapi_controller->reset_token();
+				$seiwp->gapi_controller->reset_token(true);
 				SEIWP_Tools::clear_cache();
 				$message = "<div class='updated' id='seiwp-autodismiss'><p>" . __( "Token Reseted and Revoked.", 'search-engine-insights' ) . "</p></div>";
 				$options = self::update_options( 'Reset' );
@@ -763,6 +762,7 @@ final class SEIWP_Settings {
 				} catch ( GoogleServiceException $e ) {
 					$timeout = $seiwp->gapi_controller->get_timeouts( 'midnight' );
 					SEIWP_Tools::set_error( $e, $timeout );
+					$seiwp->gapi_controller->reset_token();
 				} catch ( Exception $e ) {
 					$timeout = $seiwp->gapi_controller->get_timeouts( 'midnight' );
 					SEIWP_Tools::set_error( $e, $timeout );
@@ -807,7 +807,7 @@ final class SEIWP_Settings {
 		}
 		if ( isset( $_POST['Reset'] ) ) {
 			if ( isset( $_POST['seiwp_security'] ) && wp_verify_nonce( $_POST['seiwp_security'], 'seiwp_form' ) ) {
-				$seiwp->gapi_controller->reset_token();
+				$seiwp->gapi_controller->reset_token(true);
 				SEIWP_Tools::clear_cache();
 				$message = "<div class='updated' id='seiwp-autodismiss'><p>" . __( "Token Reseted and Revoked.", 'search-engine-insights' ) . "</p></div>";
 				$options = self::update_options( 'Reset' );

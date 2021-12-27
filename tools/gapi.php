@@ -9,9 +9,7 @@
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) )
 	exit();
-
 use Google\Service\Exception as GoogleServiceException;
-
 if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 
 	final class SEIWP_GAPI_Controller {
@@ -69,7 +67,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				$this->client->setClientSecret( $this->access[1] );
 				$this->client->setRedirectUri( SEIWP_ENDPOINT_URL . 'oauth2callback.php' );
 			}
-			$this->service = new Google\Service\SearchConsole( $this->client );
+
 			if ( $this->seiwp->config->options['token'] ) {
 				$token = $this->seiwp->config->options['token'];
 				if ( $token ) {
@@ -88,6 +86,9 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 						SEIWP_Tools::set_error( $e, $timeout );
 						$this->reset_token();
 					}
+
+					$this->service = new Google\Service\SearchConsole( $this->client );
+
 					if ( is_multisite() && $this->seiwp->config->options['network_mode'] ) {
 						$this->seiwp->config->set_plugin_options( true );
 					} else {
@@ -217,6 +218,10 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				$this->reset_token();
 				return true;
 			}
+			if ( 400 == $errors[0] || 401 == $errors[0] || 403 == $errors[0] ) {
+				$this->reset_token();
+				return true;
+			}
 			/**
 			 * Back-off system for subsequent requests - an Auth error generated after a Service request
 			 *  The native back-off system for Service requests is covered by the Google API Client
@@ -231,7 +236,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 					return true;
 				}
 			}
-			if ( 500 == $errors[0] || 503 == $errors[0] || 400 == $errors[0] || 401 == $errors[0] || 403 == $errors[0] || $errors[0] < - 50 ) {
+			if ( 500 == $errors[0] || 503 == $errors[0] || $errors[0] < - 50 ) {
 				return true;
 			}
 			return false;
@@ -376,13 +381,11 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 * @param
 		 *            $all
 		 */
-		public function reset_token( $all = true ) {
+		public function reset_token( $all = false ) {
 
 			$token = $this->client->getAccessToken();
 
 			if ( $all && $token ) {
-				$this->seiwp->config->options['site_jail'] = "";
-				$this->seiwp->config->options['sites_list'] = array();
 
 					if ( $this->seiwp->config->options['with_endpoint'] && ! $this->seiwp->config->options['user_api'] ) {
 
@@ -409,20 +412,16 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 						SEIWP_Tools::set_error( $e, $timeout );
 					}
 				} else {
-					try {
 						$this->client->revokeToken();
-					} catch ( Exception $e ) {
-						if ( is_multisite() && $this->seiwp->config->options['network_mode'] ) {
-							$this->seiwp->config->set_plugin_options( true );
-						} else {
-							$this->seiwp->config->set_plugin_options();
-						}
-					}
 				}
 			}
 
-			$this->seiwp->config->options['token'] = "";
+			if ( $all ){
+				$this->seiwp->config->options['site_jail'] = "";
+				$this->seiwp->config->options['sites_list'] = array();
+			}
 
+			$this->seiwp->config->options['token'] = "";
 			$this->seiwp->config->options['sites_list_locked'] = 0;
 
 			if ( is_multisite() && $this->seiwp->config->options['network_mode'] ) {
@@ -430,7 +429,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 			} else {
 				$this->seiwp->config->set_plugin_options();
 			}
-		}
+}
 
 		/**
 		 * Gets and stores Search Analytics Reports
