@@ -82,7 +82,8 @@ When new Properties are added to Google Search Console, it may take up to a few 
 == Changelog ==
 = 1.6 (2021.11.28)
 * Bug Fixes:
-	* fixing multiple notices and errors for PHP 8 
+	* fixing multiple notices and errors for PHP 8
+	* Search Console API improvements
 	
 = 1.5 (2021.10.27)
 * Important Note:
