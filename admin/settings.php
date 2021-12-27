@@ -947,7 +947,7 @@ final class SEIWP_Settings {
 										<?php foreach ( $options['sites_list'] as $items ) : ?>
 											<?php if ( $items[0] ) : ?>
 												<?php $temp_id = $blog['blog_id']; ?>
-												<option value="<?php echo esc_attr( $items[0] );?>" <?php selected( $items[0], isset( $options['network_tableid']->$temp_id ) ? $options['network_tableid']->$temp_id : '');?> title="<?php echo __( "Property Name:", 'search-engine-insights' ) . ' ' . esc_attr( $items[0] );?>">
+												<option <?php disabled($items[1],'siteUnverifiedUser') ?> value="<?php echo esc_attr( $items[0] );?>" <?php selected( $items[0], isset( $options['network_tableid']->$temp_id ) ? $options['network_tableid']->$temp_id : '');?> title="<?php echo __( "Property Name:", 'search-engine-insights' ) . ' ' . esc_attr( $items[0] );?>">
 													 <?php echo esc_html( rtrim( $items[0],'/' ) . ' &#8658; ' . $items[1] );?>
 												</option>
 											<?php endif; ?>
