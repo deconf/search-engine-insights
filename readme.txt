@@ -80,14 +80,14 @@ When new Properties are added to Google Search Console, it may take up to a few 
 == Upgrade Notice ==
 
 == Changelog ==
-= 1.6.1 (2021.12.27)
+= 1.6.1 (2021.12.28)
 * Bug Fixes:
-	* Search Console API auth fixes
+	* decrease token expiration time to avoid Google Search Console API random errors 
 	
 = 1.6 (2021.12.27)
 * Bug Fixes:
 	* fixing multiple notices and errors for PHP 8
-	* Search Console API improvements
+	* Google Search Console API improvements
 	* avoid setting unverified sites as defaults
 	
 = 1.5 (2021.10.27)
