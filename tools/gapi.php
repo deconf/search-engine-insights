@@ -9,7 +9,9 @@
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) )
 	exit();
+
 use Google\Service\Exception as GoogleServiceException;
+
 if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 
 	final class SEIWP_GAPI_Controller {
@@ -66,7 +68,9 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				$this->client->setClientId( $this->access[0] );
 				$this->client->setRedirectUri( SEIWP_ENDPOINT_URL . 'oauth2callback.php' );
 			}
-
+			/**
+			 * SEIWP Endpoint support
+			 */
 			if ( $this->seiwp->config->options['token'] ) {
 				$token = $this->seiwp->config->options['token'];
 				if ( $token ) {
@@ -213,6 +217,62 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 					$timeout = $this->get_timeouts( 'midnight' );
 					SEIWP_Tools::set_error( $e, $timeout );
 				}
+			}
+		}
+
+		/**
+		 * Handles the token reset process
+		 *
+		 * @param
+		 *            $all
+		 */
+		public function reset_token( $all = false ) {
+
+			$token = $this->client->getAccessToken();
+
+			if ( $all && $token ) {
+
+				if ( $this->seiwp->config->options['with_endpoint'] && ! $this->seiwp->config->options['user_api'] ) {
+
+					$endpoint = SEIWP_ENDPOINT_URL . 'seiwp-revoke.php';
+
+					$response = wp_remote_post( $endpoint, array(
+						'method' => 'POST',
+						'timeout' => 45,
+						'redirection' => 5,
+						'httpversion' => '1.0',
+						'blocking' => true,
+						'headers' => array(),
+						'body' => array(
+							'client_id' => $this->client->getClientId(),
+							'token' => json_encode( $this->client->getAccessToken() ),
+							'version' => SEIWP_CURRENT_VERSION
+						),
+						'cookies' => array()
+					)
+						);
+					if ( is_wp_error( $response ) ) { // SEIWP Endpoint Error
+						$e = __( "Endpoint Error:", 'search-engine-insights' ) . $response->get_error_message();
+						$timeout = $this->get_timeouts( 'midnight' );
+						SEIWP_Tools::set_error( $e, $timeout );
+					}
+				} else {
+					$this->client->revokeToken();
+				}
+			}
+
+			if ( $all ){
+				$this->seiwp->config->options['site_jail'] = "";
+				$this->seiwp->config->options['sites_list'] = array();
+			}
+
+			$this->seiwp->config->options['token'] = "";
+			$this->seiwp->config->options['sites_list_locked'] = 0;
+
+			if ( is_multisite() && $this->seiwp->config->options['network_mode'] ) {
+				$this->seiwp->config->set_plugin_options( true );
+			} else {
+				$this->seiwp->config->set_plugin_options();
 			}
 		}
 
@@ -386,62 +446,6 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				SEIWP_Tools::set_error( $e, $timeout );
 			}
 		}
-
-		/**
-		 * Handles the token reset process
-		 *
-		 * @param
-		 *            $all
-		 */
-		public function reset_token( $all = false ) {
-
-			$token = $this->client->getAccessToken();
-
-			if ( $all && $token ) {
-
-					if ( $this->seiwp->config->options['with_endpoint'] && ! $this->seiwp->config->options['user_api'] ) {
-
-						$endpoint = SEIWP_ENDPOINT_URL . 'seiwp-revoke.php';
-
-						$response = wp_remote_post( $endpoint, array(
-							'method' => 'POST',
-							'timeout' => 45,
-							'redirection' => 5,
-							'httpversion' => '1.0',
-							'blocking' => true,
-							'headers' => array(),
-							'body' => array(
-								'client_id' => $this->client->getClientId(),
-								'token' => json_encode( $this->client->getAccessToken() ),
-								'version' => SEIWP_CURRENT_VERSION
-							),
-							'cookies' => array()
-						)
-					);
-					if ( is_wp_error( $response ) ) { // SEIWP Endpoint Error
-						$e = __( "Endpoint Error:", 'search-engine-insights' ) . $response->get_error_message();
-						$timeout = $this->get_timeouts( 'midnight' );
-						SEIWP_Tools::set_error( $e, $timeout );
-					}
-				} else {
-						$this->client->revokeToken();
-				}
-			}
-
-			if ( $all ){
-				$this->seiwp->config->options['site_jail'] = "";
-				$this->seiwp->config->options['sites_list'] = array();
-			}
-
-			$this->seiwp->config->options['token'] = "";
-			$this->seiwp->config->options['sites_list_locked'] = 0;
-
-			if ( is_multisite() && $this->seiwp->config->options['network_mode'] ) {
-				$this->seiwp->config->set_plugin_options( true );
-			} else {
-				$this->seiwp->config->set_plugin_options();
-			}
-}
 
 		/**
 		 * Gets and stores Search Analytics Reports

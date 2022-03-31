@@ -4,7 +4,7 @@ Donate link: https://deconf.com/donate/
 Tags: search console dashboard, google search console, search console widget, search console metatag, search console, seo
 Requires at least: 3.5
 Tested up to: 5.9
-Stable tag: 1.6.1
+Stable tag: 1.6.2
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -80,6 +80,11 @@ When new Properties are added to Google Search Console, it may take up to a few 
 == Upgrade Notice ==
 
 == Changelog ==
+
+= 1.6.2 (2021.03.31)
+* Security:
+	* Google Search Console library update
+	
 = 1.6.1 (2021.12.28)
 * Bug Fixes:
 	* decrease token expiration time to avoid Google Search Console API random errors 
