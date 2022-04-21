@@ -181,7 +181,7 @@ jQuery.fn.extend( {
 				}
 
 				tpl += '<input type="text" id="seiwp-sel-period' + slug + '" name="seiwp-sel-period' + slug + '" size="21"/>';
-				tpl += '<select id="seiwp-sel-report' + slug + '" autofocus></select>';
+				tpl += '<select id="seiwp-sel-report' + slug + '"></select>';
 				tpl += '<div id="seiwp-sel-metric' + slug + '" style="float:right;display:none;">';
 				tpl += '</div>';
 				tpl += '<div id="seiwp-progressbar' + slug + '"></div>';
