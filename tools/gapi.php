@@ -150,6 +150,11 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 					$token = json_decode( $response['body'] );
 					$array_token = (array)$token;
 					if ( isset( $array_token['access_token'] ) ){
+
+						//Sync time with the EndPoint Server
+						$array_token['expires_in'] = $array_token['expires_in'] + ( time() - $array_token['created'] );
+						$array_token['created'] = time();
+
 						$this->client->setAccessToken( $array_token );
 						$this->seiwp->config->options['token'] = $this->client->getAccessToken();
 					} else{ //Google Endpoint Error
