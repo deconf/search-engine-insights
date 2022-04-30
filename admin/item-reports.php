@@ -24,19 +24,19 @@ if ( ! class_exists( 'SEIWP_Backend_Item_Reports' ) ) {
 				/**
 				 * Add custom column in Posts List
 				 */
-				add_filter( 'manage_posts_columns', array( $this, 'add_columns' ) );
+				add_filter( 'manage_posts_columns', array( $this, 'add_columns' ), 99 );
 				/**
 				 * Populate custom column in Posts List
 				 */
-				add_action( 'manage_posts_custom_column', array( $this, 'add_icons' ), 10, 2 );
+				add_action( 'manage_posts_custom_column', array( $this, 'add_icons' ), 99, 2 );
 				/**
 				 * Add custom column in Pages List
 				 */
-				add_filter( 'manage_pages_columns', array( $this, 'add_columns' ) );
+				add_filter( 'manage_pages_columns', array( $this, 'add_columns' ), 99 );
 				/**
 				 * Populate custom column in Pages List
 				 */
-				add_action( 'manage_pages_custom_column', array( $this, 'add_icons' ), 10, 2 );
+				add_action( 'manage_pages_custom_column', array( $this, 'add_icons' ), 99, 2 );
 			}
 		}
 
@@ -47,11 +47,11 @@ if ( ! class_exists( 'SEIWP_Backend_Item_Reports' ) ) {
 				return;
 			}
 
-			echo '<a id="seiwp-' . $id . '" title="' . get_the_title( $id ) . '" href="#' . $id . '" class="seiwp-icon dashicons-before dashicons-seiwp">&nbsp;</a>';
+			echo '<a id="seiwp-' . $id . '" title="' . get_the_title( $id ) . '" href="#' . $id . '" class="seiwp-icon dashicons-before dashicons-chart-bar">&nbsp;</a>';
 		}
 
 		public function add_columns( $columns ) {
-			return array_merge( $columns, array( 'seiwp_stats' => __( 'Search Engine', 'search-engine-insights' ) ) );
+			return array_merge( $columns, array( 'seiwp_stats' => '<span class="dashicons dashicons-seiwp" title="Search Engine Insights"></span>' ) );
 		}
 	}
 }

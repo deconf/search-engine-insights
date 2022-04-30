@@ -81,9 +81,15 @@ When new Properties are added to Google Search Console, it may take up to a few 
 
 == Changelog ==
 
+= 1.6.6 (2022.04.30) =
+* Enhancements:
+	* replace text with dashicons on Posts List to save column space
+* Bug Fixes:
+	* small CSS fixes
+	
 = 1.6.5 (2022.04.23) =
 * Enhancements:
-	* token handling improvements between DeConf EndPoint and Google API Client
+	* token handling improvements between DeConf EndPoint and Google API Client, to avoid random token resets
 	
 = 1.6.4 (2022.04.21)
 * Enhancements:

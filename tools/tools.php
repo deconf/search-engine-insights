@@ -269,10 +269,9 @@ if ( ! class_exists( 'SEIWP_Tools' ) ) {
 		 */
 		public static function set_error( $e, $timeout ) {
 			if ( is_object( $e ) ) {
-				self::set_cache( 'last_error', date( 'Y-m-d H:i:s' ) . ': ' . esc_html( $e ), $timeout );
+				self::set_cache( 'last_error', date( 'Y-m-d H:i:s' ) . ': ' . esc_html( print_r( $e, true ) ), $timeout );
 				if ( method_exists( $e, 'getCode' ) && method_exists( $e, 'getErrors' ) ) {
 					$errors = (array) $e->getErrors();
-					// $errors = array_map( 'sanitize_text_field', $errors );
 					self::set_cache( 'gapi_errors', array( (int) $e->getCode(), $errors ), $timeout );
 				}
 			} else {

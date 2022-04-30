@@ -115,8 +115,8 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 			if ( isset( $token['created'] ) ) {
 				$created = $token['created'];
 			}
-			// If the token is set to expire in the next 90 seconds.
-			return ( $created + ( $token['expires_in'] - 90 ) ) < time();
+			// If the token is set to expire in the next 30 seconds.
+			return ( $created + ( $token['expires_in'] - 30 ) ) < time();
 		}
 
 		public function fetch_new_token( $oldtoken ) {
