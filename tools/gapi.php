@@ -66,8 +66,12 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				$this->client->setRedirectUri( SEIWP_URL . 'tools/oauth2callback.php' );
 			} else {
 				$this->client->setClientId( $this->access[0] );
+				$this->client->setClientSecret( $this->access[1] );
 				$this->client->setRedirectUri( SEIWP_ENDPOINT_URL . 'oauth2callback.php' );
+				$this->client::$OAUTH2_REVOKE_URI = SEIWP_ENDPOINT_URL . 'seiwp-revoke.php';
+				$this->client::$OAUTH2_TOKEN_URI = SEIWP_ENDPOINT_URL . 'seiwp-token.php';
 			}
+
 			/**
 			 * SEIWP Endpoint support
 			 */
@@ -77,8 +81,17 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 					try {
 						$array_token = (array)$token;
 						$this->client->setAccessToken( $array_token );
-						if ( $this->isAccessTokenExpired() ) {
-							$this->fetch_new_token( $token );
+						if ( $this->client->isAccessTokenExpired() ) {
+							$creds = $this->client->fetchAccessTokenWithRefreshToken( $this->client->getRefreshToken() );
+							if ( $creds && isset( $creds['access_token'] ) ) {
+								$this->seiwp->config->options['token'] = $this->client->getAccessToken();
+							} else {
+								$timeout = $this->get_timeouts( 'midnight' );
+								SEIWP_Tools::set_error( $creds, $timeout );
+								if ( isset( $creds['error'] ) && 'invalid_grant' == $creds['error'] ){
+									$this->reset_token();
+								}
+							}
 						}
 					} catch ( GoogleServiceException $e ) {
 						$timeout = $this->get_timeouts( 'midnight' );
@@ -89,7 +102,6 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 						SEIWP_Tools::set_error( $e, $timeout );
 						$this->reset_token();
 					}
-
 					if ( is_multisite() && $this->seiwp->config->options['network_mode'] ) {
 						$this->seiwp->config->set_plugin_options( true );
 					} else {
@@ -102,126 +114,17 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 
 		}
 
-		/**
-		 * Returns if the access_token is expired.
-		 * @return bool Returns True if the access_token is expired.
-		 */
-		public function isAccessTokenExpired() {
-			$token = (array)$this->seiwp->config->options['token'];
-			if ( ! $token ) {
-				return true;
-			}
-			$created = 0;
-			if ( isset( $token['created'] ) ) {
-				$created = $token['created'];
-			}
-			// If the token is set to expire in the next 30 seconds.
-			return ( $created + ( $token['expires_in'] - 30 ) ) < time();
-		}
-
-		public function fetch_new_token( $oldtoken ) {
-			if ( $this->seiwp->config->options['with_endpoint'] && ! $this->seiwp->config->options['user_api'] ) {
-
-				$endpoint = SEIWP_ENDPOINT_URL . 'seiwp-token.php';
-
-				$token = json_encode( $oldtoken );
-
-				$response = wp_remote_post( $endpoint, array(
-					'method' => 'POST',
-					'timeout' => 45,
-					'redirection' => 5,
-					'httpversion' => '1.0',
-					'blocking' => true,
-					'headers' => array(),
-					'body' => array(
-						'token' => $token,
-						'client_id' => $this->client->getClientId(),
-						'version' => SEIWP_CURRENT_VERSION
-					),
-					'cookies' => array()
-				)
-					);
-
-				if ( is_wp_error( $response ) ) { //SEIWP Endpoint Error
-					$e = __("Endpoint Error:", 'search-engine-insights') . $response->get_error_message();
-					$timeout = $this->get_timeouts( 'midnight' );
-					SEIWP_Tools::set_error( $e, $timeout );
-				} else {
-					$token = json_decode( $response['body'] );
-					$array_token = (array)$token;
-					if ( isset( $array_token['access_token'] ) ){
-
-						//Sync time with the EndPoint Server
-						$array_token['expires_in'] = $array_token['expires_in'] + ( time() - $array_token['created'] );
-						$array_token['created'] = time();
-
-						$this->client->setAccessToken( $array_token );
-						$this->seiwp->config->options['token'] = $this->client->getAccessToken();
-					} else{ //Google Endpoint Error
-						$timeout = $this->get_timeouts( 'midnight' );
-						SEIWP_Tools::set_error( $token, $timeout );
-					}
-				}
-			} else {
-				try {
-					$this->client->refreshToken( $this->client->getRefreshToken() );
-					$this->seiwp->config->options['token'] = $this->client->getAccessToken();
-				} catch ( GoogleServiceException $e ) {
-					$timeout = $this->get_timeouts( 'midnight' );
-					SEIWP_Tools::set_error( $e, $timeout );
-				} catch ( Exception $e ) {
-					$timeout = $this->get_timeouts( 'midnight' );
-					SEIWP_Tools::set_error( $e, $timeout );
-				}
-			}
-		}
-
 		public function authenticate( $access_code ) {
-			if ( $this->seiwp->config->options['with_endpoint'] && ! $this->seiwp->config->options['user_api'] ) {
 
-				$endpoint = SEIWP_ENDPOINT_URL . 'seiwp-token.php';
-
-				$response = wp_remote_post( $endpoint, array(
-							'method' => 'POST',
-							'timeout' => 45,
-							'redirection' => 5,
-							'httpversion' => '1.0',
-							'blocking' => true,
-							'headers' => array(),
-							'body' => array(
-								'access_code' => $access_code,
-								'client_id' => $this->client->getClientId(),
-								'version' => SEIWP_CURRENT_VERSION
-							),
-							'cookies' => array()
-						)
-					);
-
-				if ( is_wp_error( $response ) ) { //SEIWP Endpoint Error
-					$e = __("Endpoint Error:", 'search-engine-insights') . $response->get_error_message();
-					$timeout = $this->get_timeouts( 'midnight' );
-					SEIWP_Tools::set_error( $e, $timeout );
-				} else {
-					$token = json_decode( $response['body'] );
-					$array_token = (array)$token;
-					if ( isset( $array_token['access_token'] ) ){
-						return $token;
-					} else { //Google Endpoint Error
-						$timeout = $this->get_timeouts( 'midnight' );
-						SEIWP_Tools::set_error( $token, $timeout );
-					}
-				}
-			} else {
-				try {
-					$this->client->fetchAccessTokenWithAuthCode( $access_code );
-					return $this->client->getAccessToken();
-				} catch ( GoogleServiceException $e ) {
-					$timeout = $this->get_timeouts( 'midnight' );
-					SEIWP_Tools::set_error( $e, $timeout );
-				} catch ( Exception $e ) {
-					$timeout = $this->get_timeouts( 'midnight' );
-					SEIWP_Tools::set_error( $e, $timeout );
-				}
+			try {
+				$this->client->fetchAccessTokenWithAuthCode( $access_code );
+				return $this->client->getAccessToken();
+			} catch ( GoogleServiceException $e ) {
+				$timeout = $this->get_timeouts( 'midnight' );
+				SEIWP_Tools::set_error( $e, $timeout );
+			} catch ( Exception $e ) {
+				$timeout = $this->get_timeouts( 'midnight' );
+				SEIWP_Tools::set_error( $e, $timeout );
 			}
 		}
 
@@ -235,35 +138,8 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 
 			$token = $this->client->getAccessToken();
 
-			if ( $all && $token ) {
-
-				if ( $this->seiwp->config->options['with_endpoint'] && ! $this->seiwp->config->options['user_api'] ) {
-
-					$endpoint = SEIWP_ENDPOINT_URL . 'seiwp-revoke.php';
-
-					$response = wp_remote_post( $endpoint, array(
-						'method' => 'POST',
-						'timeout' => 45,
-						'redirection' => 5,
-						'httpversion' => '1.0',
-						'blocking' => true,
-						'headers' => array(),
-						'body' => array(
-							'client_id' => $this->client->getClientId(),
-							'token' => json_encode( $this->client->getAccessToken() ),
-							'version' => SEIWP_CURRENT_VERSION
-						),
-						'cookies' => array()
-					)
-						);
-					if ( is_wp_error( $response ) ) { // SEIWP Endpoint Error
-						$e = __( "Endpoint Error:", 'search-engine-insights' ) . $response->get_error_message();
-						$timeout = $this->get_timeouts( 'midnight' );
-						SEIWP_Tools::set_error( $e, $timeout );
-					}
-				} else {
-					$this->client->revokeToken();
-				}
+			if ( $token ) {
+				$this->client->revokeToken( $token );
 			}
 
 			if ( $all ){
