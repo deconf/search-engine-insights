@@ -13,26 +13,29 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Google\Service\GoogleAnalyticsAdmin\Resource;
+namespace Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\Resource;
 
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaAcknowledgeUserDataCollectionRequest;
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaAcknowledgeUserDataCollectionResponse;
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaDataRetentionSettings;
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaGoogleSignalsSettings;
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaListPropertiesResponse;
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaProperty;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaAcknowledgeUserDataCollectionRequest;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaAcknowledgeUserDataCollectionResponse;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaDataRetentionSettings;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaGoogleSignalsSettings;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaListPropertiesResponse;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaProperty;
 
 /**
  * The "properties" collection of methods.
  * Typical usage is:
  *  <code>
- *   $analyticsadminService = new Google\Service\GoogleAnalyticsAdmin(...);
+ *   $analyticsadminService = new Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin(...);
  *   $properties = $analyticsadminService->properties;
  *  </code>
  */
-class Properties extends \Google\Service\Resource
+class Properties extends \Deconf\SEIWP\Google\Service\Resource
 {
   /**
    * Acknowledges the terms of user data collection for the specified property.

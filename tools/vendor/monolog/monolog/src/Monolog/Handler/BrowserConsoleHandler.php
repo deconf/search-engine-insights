@@ -7,11 +7,14 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Monolog\Handler;
+namespace Deconf\SEIWP\Monolog\Handler;
 
-use Monolog\Formatter\LineFormatter;
+use Deconf\SEIWP\Monolog\Formatter\LineFormatter;
 
 /**
  * Handler sending logs to browser's javascript console with no browser extension required
@@ -97,7 +100,7 @@ class BrowserConsoleHandler extends AbstractProcessingHandler
     protected function registerShutdownFunction()
     {
         if (PHP_SAPI !== 'cli') {
-            register_shutdown_function(array('Monolog\Handler\BrowserConsoleHandler', 'send'));
+            register_shutdown_function(array('Deconf\SEIWP\Monolog\Handler\BrowserConsoleHandler', 'send'));
         }
     }
 

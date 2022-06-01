@@ -1,6 +1,12 @@
 <?php
+/**
+ * @license MIT
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
+ */
 
-namespace GuzzleHttp\Promise;
+namespace Deconf\SEIWP\GuzzleHttp\Promise;
 
 /**
  * Represents a promise that iterates over many promises and invokes

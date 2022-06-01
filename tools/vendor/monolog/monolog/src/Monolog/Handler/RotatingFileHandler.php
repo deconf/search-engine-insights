@@ -7,12 +7,15 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Monolog\Handler;
+namespace Deconf\SEIWP\Monolog\Handler;
 
-use Monolog\Logger;
-use Monolog\Utils;
+use Deconf\SEIWP\Monolog\Logger;
+use Deconf\SEIWP\Monolog\Utils;
 
 /**
  * Stores logs to files that are rotated every day and a limited number of files are kept.

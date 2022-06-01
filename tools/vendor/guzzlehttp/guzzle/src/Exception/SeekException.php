@@ -1,5 +1,11 @@
 <?php
-namespace GuzzleHttp\Exception;
+/**
+ * @license MIT
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
+ */
+namespace Deconf\SEIWP\GuzzleHttp\Exception;
 
 use Psr\Http\Message\StreamInterface;
 

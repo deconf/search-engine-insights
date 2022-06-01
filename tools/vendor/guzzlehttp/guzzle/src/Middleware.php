@@ -1,10 +1,16 @@
 <?php
-namespace GuzzleHttp;
+/**
+ * @license MIT
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
+ */
+namespace Deconf\SEIWP\GuzzleHttp;
 
-use GuzzleHttp\Cookie\CookieJarInterface;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Promise\RejectedPromise;
-use GuzzleHttp\Psr7;
+use Deconf\SEIWP\GuzzleHttp\Cookie\CookieJarInterface;
+use Deconf\SEIWP\GuzzleHttp\Exception\RequestException;
+use Deconf\SEIWP\GuzzleHttp\Promise\RejectedPromise;
+use Deconf\SEIWP\GuzzleHttp\Psr7;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
@@ -102,7 +108,7 @@ final class Middleware
                             'error'    => $reason,
                             'options'  => $options
                         ];
-                        return \GuzzleHttp\Promise\rejection_for($reason);
+                        return \Deconf\SEIWP\GuzzleHttp\Promise\rejection_for($reason);
                     }
                 );
             };
@@ -198,7 +204,7 @@ final class Middleware
                             : null;
                         $message = $formatter->format($request, $response, $reason);
                         $logger->notice($message);
-                        return \GuzzleHttp\Promise\rejection_for($reason);
+                        return \Deconf\SEIWP\GuzzleHttp\Promise\rejection_for($reason);
                     }
                 );
             };

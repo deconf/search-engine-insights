@@ -1,9 +1,15 @@
 <?php
-namespace GuzzleHttp;
+/**
+ * @license MIT
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
+ */
+namespace Deconf\SEIWP\GuzzleHttp;
 
-use GuzzleHttp\Promise\EachPromise;
-use GuzzleHttp\Promise\PromiseInterface;
-use GuzzleHttp\Promise\PromisorInterface;
+use Deconf\SEIWP\GuzzleHttp\Promise\EachPromise;
+use Deconf\SEIWP\GuzzleHttp\Promise\PromiseInterface;
+use Deconf\SEIWP\GuzzleHttp\Promise\PromisorInterface;
 use Psr\Http\Message\RequestInterface;
 
 /**
@@ -51,7 +57,7 @@ class Pool implements PromisorInterface
             $opts = [];
         }
 
-        $iterable = \GuzzleHttp\Promise\iter_for($requests);
+        $iterable = \Deconf\SEIWP\GuzzleHttp\Promise\iter_for($requests);
         $requests = function () use ($iterable, $client, $opts) {
             foreach ($iterable as $key => $rfn) {
                 if ($rfn instanceof RequestInterface) {

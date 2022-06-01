@@ -13,24 +13,27 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Google\Service\SiteVerification\Resource;
+namespace Deconf\SEIWP\Google\Service\SiteVerification\Resource;
 
-use Google\Service\SiteVerification\SiteVerificationWebResourceGettokenRequest;
-use Google\Service\SiteVerification\SiteVerificationWebResourceGettokenResponse;
-use Google\Service\SiteVerification\SiteVerificationWebResourceListResponse;
-use Google\Service\SiteVerification\SiteVerificationWebResourceResource;
+use Deconf\SEIWP\Google\Service\SiteVerification\SiteVerificationWebResourceGettokenRequest;
+use Deconf\SEIWP\Google\Service\SiteVerification\SiteVerificationWebResourceGettokenResponse;
+use Deconf\SEIWP\Google\Service\SiteVerification\SiteVerificationWebResourceListResponse;
+use Deconf\SEIWP\Google\Service\SiteVerification\SiteVerificationWebResourceResource;
 
 /**
  * The "webResource" collection of methods.
  * Typical usage is:
  *  <code>
- *   $siteVerificationService = new Google\Service\SiteVerification(...);
+ *   $siteVerificationService = new Deconf\SEIWP\Google\Service\SiteVerification(...);
  *   $webResource = $siteVerificationService->webResource;
  *  </code>
  */
-class WebResource extends \Google\Service\Resource
+class WebResource extends \Deconf\SEIWP\Google\Service\Resource
 {
   /**
    * Relinquish ownership of a website or domain. (webResource.delete)

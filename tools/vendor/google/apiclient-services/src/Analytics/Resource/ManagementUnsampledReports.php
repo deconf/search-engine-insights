@@ -13,22 +13,25 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Google\Service\Analytics\Resource;
+namespace Deconf\SEIWP\Google\Service\Analytics\Resource;
 
-use Google\Service\Analytics\UnsampledReport;
-use Google\Service\Analytics\UnsampledReports;
+use Deconf\SEIWP\Google\Service\Analytics\UnsampledReport;
+use Deconf\SEIWP\Google\Service\Analytics\UnsampledReports;
 
 /**
  * The "unsampledReports" collection of methods.
  * Typical usage is:
  *  <code>
- *   $analyticsService = new Google\Service\Analytics(...);
+ *   $analyticsService = new Deconf\SEIWP\Google\Service\Analytics(...);
  *   $unsampledReports = $analyticsService->unsampledReports;
  *  </code>
  */
-class ManagementUnsampledReports extends \Google\Service\Resource
+class ManagementUnsampledReports extends \Deconf\SEIWP\Google\Service\Resource
 {
   /**
    * Deletes an unsampled report. (unsampledReports.delete)

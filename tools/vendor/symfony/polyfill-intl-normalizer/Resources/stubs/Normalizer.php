@@ -1,6 +1,12 @@
 <?php
+/**
+ * @license MIT
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
+ */
 
-class Normalizer extends Symfony\Polyfill\Intl\Normalizer\Normalizer
+class Deconf_SEIWP_Normalizer extends Deconf\SEIWP\Symfony\Polyfill\Intl\Normalizer\Normalizer
 {
     /**
      * @deprecated since ICU 56 and removed in PHP 8

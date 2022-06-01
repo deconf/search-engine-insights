@@ -1,9 +1,15 @@
 <?php
-namespace GuzzleHttp;
+/**
+ * @license MIT
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
+ */
+namespace Deconf\SEIWP\GuzzleHttp;
 
-use GuzzleHttp\Exception\InvalidArgumentException;
+use Deconf\SEIWP\GuzzleHttp\Exception\InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
-use Symfony\Polyfill\Intl\Idn\Idn;
+use Deconf\SEIWP\Symfony\Polyfill\Intl\Idn\Idn;
 
 final class Utils
 {

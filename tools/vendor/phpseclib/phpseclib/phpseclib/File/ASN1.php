@@ -19,12 +19,15 @@
  * @copyright 2012 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
  * @link      http://phpseclib.sourceforge.net
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace phpseclib\File;
+namespace Deconf\SEIWP\phpseclib\File;
 
-use phpseclib\File\ASN1\Element;
-use phpseclib\Math\BigInteger;
+use Deconf\SEIWP\phpseclib\File\ASN1\Element;
+use Deconf\SEIWP\phpseclib\Math\BigInteger;
 use DateTime;
 use DateTimeZone;
 

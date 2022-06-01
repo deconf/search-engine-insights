@@ -1,9 +1,15 @@
 <?php
-namespace GuzzleHttp;
+/**
+ * @license MIT
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
+ */
+namespace Deconf\SEIWP\GuzzleHttp;
 
-use GuzzleHttp\Promise\PromiseInterface;
-use GuzzleHttp\Promise\RejectedPromise;
-use GuzzleHttp\Psr7;
+use Deconf\SEIWP\GuzzleHttp\Promise\PromiseInterface;
+use Deconf\SEIWP\GuzzleHttp\Promise\RejectedPromise;
+use Deconf\SEIWP\GuzzleHttp\Psr7;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -110,7 +116,7 @@ class RetryMiddleware
                 null,
                 $reason
             )) {
-                return \GuzzleHttp\Promise\rejection_for($reason);
+                return \Deconf\SEIWP\GuzzleHttp\Promise\rejection_for($reason);
             }
             return $this->doRetry($req, $options);
         };

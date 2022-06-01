@@ -1,8 +1,14 @@
 <?php
-namespace GuzzleHttp;
+/**
+ * @license MIT
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
+ */
+namespace Deconf\SEIWP\GuzzleHttp;
 
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Promise\PromiseInterface;
+use Deconf\SEIWP\GuzzleHttp\Exception\GuzzleException;
+use Deconf\SEIWP\GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;

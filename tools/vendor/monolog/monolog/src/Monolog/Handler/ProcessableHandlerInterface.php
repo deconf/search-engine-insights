@@ -1,4 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+/**
+ * @license MIT
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
+ */ declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -9,9 +15,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Monolog\Handler;
+namespace Deconf\SEIWP\Monolog\Handler;
 
-use Monolog\Processor\ProcessorInterface;
+use Deconf\SEIWP\Monolog\Processor\ProcessorInterface;
 
 /**
  * Interface to describe loggers that have processors

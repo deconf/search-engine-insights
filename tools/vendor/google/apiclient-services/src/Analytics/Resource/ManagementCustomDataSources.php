@@ -13,21 +13,24 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Google\Service\Analytics\Resource;
+namespace Deconf\SEIWP\Google\Service\Analytics\Resource;
 
-use Google\Service\Analytics\CustomDataSources;
+use Deconf\SEIWP\Google\Service\Analytics\CustomDataSources;
 
 /**
  * The "customDataSources" collection of methods.
  * Typical usage is:
  *  <code>
- *   $analyticsService = new Google\Service\Analytics(...);
+ *   $analyticsService = new Deconf\SEIWP\Google\Service\Analytics(...);
  *   $customDataSources = $analyticsService->customDataSources;
  *  </code>
  */
-class ManagementCustomDataSources extends \Google\Service\Resource
+class ManagementCustomDataSources extends \Deconf\SEIWP\Google\Service\Resource
 {
   /**
    * List custom data sources to which the user has access.

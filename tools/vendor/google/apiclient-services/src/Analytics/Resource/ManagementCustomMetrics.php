@@ -13,22 +13,25 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Google\Service\Analytics\Resource;
+namespace Deconf\SEIWP\Google\Service\Analytics\Resource;
 
-use Google\Service\Analytics\CustomMetric;
-use Google\Service\Analytics\CustomMetrics;
+use Deconf\SEIWP\Google\Service\Analytics\CustomMetric;
+use Deconf\SEIWP\Google\Service\Analytics\CustomMetrics;
 
 /**
  * The "customMetrics" collection of methods.
  * Typical usage is:
  *  <code>
- *   $analyticsService = new Google\Service\Analytics(...);
+ *   $analyticsService = new Deconf\SEIWP\Google\Service\Analytics(...);
  *   $customMetrics = $analyticsService->customMetrics;
  *  </code>
  */
-class ManagementCustomMetrics extends \Google\Service\Resource
+class ManagementCustomMetrics extends \Deconf\SEIWP\Google\Service\Resource
 {
   /**
    * Get a custom metric to which the user has access. (customMetrics.get)

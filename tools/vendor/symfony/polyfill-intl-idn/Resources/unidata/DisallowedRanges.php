@@ -1,6 +1,12 @@
 <?php
+/**
+ * @license MIT
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
+ */
 
-namespace Symfony\Polyfill\Intl\Idn\Resources\unidata;
+namespace Deconf\SEIWP\Symfony\Polyfill\Intl\Idn\Resources\unidata;
 
 /**
  * @internal

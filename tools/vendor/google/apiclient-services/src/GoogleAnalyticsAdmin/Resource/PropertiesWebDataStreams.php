@@ -13,23 +13,26 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Google\Service\GoogleAnalyticsAdmin\Resource;
+namespace Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\Resource;
 
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaListWebDataStreamsResponse;
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaWebDataStream;
-use Google\Service\GoogleAnalyticsAdmin\GoogleProtobufEmpty;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaListWebDataStreamsResponse;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaWebDataStream;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleProtobufEmpty;
 
 /**
  * The "webDataStreams" collection of methods.
  * Typical usage is:
  *  <code>
- *   $analyticsadminService = new Google\Service\GoogleAnalyticsAdmin(...);
+ *   $analyticsadminService = new Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin(...);
  *   $webDataStreams = $analyticsadminService->webDataStreams;
  *  </code>
  */
-class PropertiesWebDataStreams extends \Google\Service\Resource
+class PropertiesWebDataStreams extends \Deconf\SEIWP\Google\Service\Resource
 {
   /**
    * Creates a web stream with the specified location and attributes.

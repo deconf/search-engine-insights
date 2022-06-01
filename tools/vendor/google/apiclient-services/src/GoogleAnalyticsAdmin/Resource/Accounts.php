@@ -13,28 +13,31 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Google\Service\GoogleAnalyticsAdmin\Resource;
+namespace Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\Resource;
 
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaAccount;
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaDataSharingSettings;
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaListAccountsResponse;
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaProvisionAccountTicketRequest;
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaProvisionAccountTicketResponse;
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaSearchChangeHistoryEventsRequest;
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaSearchChangeHistoryEventsResponse;
-use Google\Service\GoogleAnalyticsAdmin\GoogleProtobufEmpty;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaAccount;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaDataSharingSettings;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaListAccountsResponse;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaProvisionAccountTicketRequest;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaProvisionAccountTicketResponse;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaSearchChangeHistoryEventsRequest;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaSearchChangeHistoryEventsResponse;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleProtobufEmpty;
 
 /**
  * The "accounts" collection of methods.
  * Typical usage is:
  *  <code>
- *   $analyticsadminService = new Google\Service\GoogleAnalyticsAdmin(...);
+ *   $analyticsadminService = new Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin(...);
  *   $accounts = $analyticsadminService->accounts;
  *  </code>
  */
-class Accounts extends \Google\Service\Resource
+class Accounts extends \Deconf\SEIWP\Google\Service\Resource
 {
   /**
    * Marks target Account as soft-deleted (ie: "trashed") and returns it. This API

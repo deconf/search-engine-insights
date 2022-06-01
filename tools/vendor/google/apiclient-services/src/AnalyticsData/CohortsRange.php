@@ -13,11 +13,14 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Google\Service\AnalyticsData;
+namespace Deconf\SEIWP\Google\Service\AnalyticsData;
 
-class CohortsRange extends \Google\Model
+class CohortsRange extends \Deconf\SEIWP\Google\Model
 {
   /**
    * @var int

@@ -13,22 +13,25 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Google\Service\Analytics\Resource;
+namespace Deconf\SEIWP\Google\Service\Analytics\Resource;
 
-use Google\Service\Analytics\Experiment;
-use Google\Service\Analytics\Experiments;
+use Deconf\SEIWP\Google\Service\Analytics\Experiment;
+use Deconf\SEIWP\Google\Service\Analytics\Experiments;
 
 /**
  * The "experiments" collection of methods.
  * Typical usage is:
  *  <code>
- *   $analyticsService = new Google\Service\Analytics(...);
+ *   $analyticsService = new Deconf\SEIWP\Google\Service\Analytics(...);
  *   $experiments = $analyticsService->experiments;
  *  </code>
  */
-class ManagementExperiments extends \Google\Service\Resource
+class ManagementExperiments extends \Deconf\SEIWP\Google\Service\Resource
 {
   /**
    * Delete an experiment. (experiments.delete)

@@ -34,7 +34,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		public function __construct() {
 			$this->seiwp = SEIWP();
 			include_once ( SEIWP_DIR . 'tools/vendor/autoload.php' );
-			$this->client = new Google\Client();
+			$this->client = new Deconf\SEIWP\Google\Client();
 
 			// add Proxy server settings to Guzzle, if defined
 
@@ -44,7 +44,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				if ( defined( 'WP_PROXY_USERNAME' ) && defined( 'WP_PROXY_PASSWORD' ) ) {
 					$httpoptions [ 'auth' ] = array( WP_PROXY_USERNAME, WP_PROXY_PASSWORD );
 				}
-				$httpClient = new GuzzleHttp\Client( $httpoptions );
+				$httpClient = new Deconf\SEIWP\GuzzleHttp\Client( $httpoptions );
 				$this->client->setHttpClient( $httpClient );
 			}
 
@@ -110,7 +110,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				}
 			}
 
-			$this->service = new Google\Service\SearchConsole( $this->client );
+			$this->service = new Deconf\SEIWP\Google\Service\SearchConsole( $this->client );
 
 		}
 
@@ -230,24 +230,24 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		public function verify_property() {
 			try {
 				if ( empty( $this->seiwp->config->options['site_verification_meta'] ) ) {
-					$site = new Google\Service\SiteVerification\SiteVerificationWebResourceGettokenRequestSite();
+					$site = new Deconf\SEIWP\Google\Service\SiteVerification\SiteVerificationWebResourceGettokenRequestSite();
 					$site->setIdentifier( SEIWP_SITE_URL );
 					$site->setType( 'SITE' );
-					$request = new Google\Service\SiteVerification\SiteVerificationWebResourceGettokenRequest();
+					$request = new Deconf\SEIWP\Google\Service\SiteVerification\SiteVerificationWebResourceGettokenRequest();
 					$request->setSite( $site );
 					$request->setVerificationMethod( 'META' );
-					$service = new Google\Service\SiteVerification( $this->client );
+					$service = new Deconf\SEIWP\Google\Service\SiteVerification( $this->client );
 					$webResource = $service->webResource;
 					$result = $webResource->getToken( $request );
 					$this->seiwp->config->options['site_verification_meta'] = $result->token;
 					$this->seiwp->config->set_plugin_options();
 				}
-				$site = new Google\Service\SiteVerification\SiteVerificationWebResourceResourceSite();
+				$site = new Deconf\SEIWP\Google\Service\SiteVerification\SiteVerificationWebResourceResourceSite();
 				$site->setIdentifier( SEIWP_SITE_URL );
 				$site->setType( 'SITE' );
-				$request = new Google\Service\SiteVerification\SiteVerificationWebResourceResource();
+				$request = new Deconf\SEIWP\Google\Service\SiteVerification\SiteVerificationWebResourceResource();
 				$request->setSite( $site );
-				$service = new Google\Service\SiteVerification( $this->client );
+				$service = new Deconf\SEIWP\Google\Service\SiteVerification( $this->client );
 				$webResource = $service->webResource;
 				$result = $webResource->insert( 'META', $request );
 				return true;
@@ -355,15 +355,15 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 						return - 23;
 					}
 					$options['samplingLevel'] = 'HIGHER_PRECISION';
-					$request = new Google\Service\SearchConsole\SearchAnalyticsQueryRequest();
+					$request = new Deconf\SEIWP\Google\Service\SearchConsole\SearchAnalyticsQueryRequest();
 					$request->setStartDate( $from );
 					$request->setEndDate( $to );
 					if ( $dimensions ) {
 						$request->setDimensions( $dimensions );
 					}
 					if ( is_array( $filters ) ) {
-						$dimensionfiltergroup = new Google\Service\SearchConsole\ApiDimensionFilterGroup();
-						$filtergroup = new Google\Service\SearchConsole\ApiDimensionFilter();
+						$dimensionfiltergroup = new Deconf\SEIWP\Google\Service\SearchConsole\ApiDimensionFilterGroup();
+						$filtergroup = new Deconf\SEIWP\Google\Service\SearchConsole\ApiDimensionFilter();
 						$filtergroup->setDimension( $filters['dimension'] );
 						$filtergroup->setExpression( $filters['expression'] );
 						$filtergroup->setOperator( $filters['operator'] );

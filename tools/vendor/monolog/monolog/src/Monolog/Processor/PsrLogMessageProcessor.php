@@ -7,11 +7,14 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Monolog\Processor;
+namespace Deconf\SEIWP\Monolog\Processor;
 
-use Monolog\Utils;
+use Deconf\SEIWP\Monolog\Utils;
 
 /**
  * Processes a record's message according to PSR-3 rules

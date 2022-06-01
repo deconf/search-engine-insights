@@ -13,21 +13,24 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Google\Service\GoogleAnalyticsAdmin\Resource;
+namespace Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\Resource;
 
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaListAccountSummariesResponse;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaListAccountSummariesResponse;
 
 /**
  * The "accountSummaries" collection of methods.
  * Typical usage is:
  *  <code>
- *   $analyticsadminService = new Google\Service\GoogleAnalyticsAdmin(...);
+ *   $analyticsadminService = new Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin(...);
  *   $accountSummaries = $analyticsadminService->accountSummaries;
  *  </code>
  */
-class AccountSummaries extends \Google\Service\Resource
+class AccountSummaries extends \Deconf\SEIWP\Google\Service\Resource
 {
   /**
    * Returns summaries of all accounts accessible by the caller.

@@ -13,22 +13,25 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Google\Service\Analytics\Resource;
+namespace Deconf\SEIWP\Google\Service\Analytics\Resource;
 
-use Google\Service\Analytics\RemarketingAudience;
-use Google\Service\Analytics\RemarketingAudiences;
+use Deconf\SEIWP\Google\Service\Analytics\RemarketingAudience;
+use Deconf\SEIWP\Google\Service\Analytics\RemarketingAudiences;
 
 /**
  * The "remarketingAudience" collection of methods.
  * Typical usage is:
  *  <code>
- *   $analyticsService = new Google\Service\Analytics(...);
+ *   $analyticsService = new Deconf\SEIWP\Google\Service\Analytics(...);
  *   $remarketingAudience = $analyticsService->remarketingAudience;
  *  </code>
  */
-class ManagementRemarketingAudience extends \Google\Service\Resource
+class ManagementRemarketingAudience extends \Deconf\SEIWP\Google\Service\Resource
 {
   /**
    * Delete a remarketing audience. (remarketingAudience.delete)

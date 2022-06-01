@@ -13,24 +13,27 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Google\Service\GoogleAnalyticsAdmin\Resource;
+namespace Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\Resource;
 
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaDataStream;
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaGlobalSiteTag;
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaListDataStreamsResponse;
-use Google\Service\GoogleAnalyticsAdmin\GoogleProtobufEmpty;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaDataStream;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaGlobalSiteTag;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaListDataStreamsResponse;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleProtobufEmpty;
 
 /**
  * The "dataStreams" collection of methods.
  * Typical usage is:
  *  <code>
- *   $analyticsadminService = new Google\Service\GoogleAnalyticsAdmin(...);
+ *   $analyticsadminService = new Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin(...);
  *   $dataStreams = $analyticsadminService->dataStreams;
  *  </code>
  */
-class PropertiesDataStreams extends \Google\Service\Resource
+class PropertiesDataStreams extends \Deconf\SEIWP\Google\Service\Resource
 {
   /**
    * Creates a DataStream. (dataStreams.create)

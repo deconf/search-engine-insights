@@ -7,13 +7,16 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Monolog\Handler;
+namespace Deconf\SEIWP\Monolog\Handler;
 
-use Monolog\Logger;
-use Monolog\ResettableInterface;
-use Monolog\Formatter\FormatterInterface;
+use Deconf\SEIWP\Monolog\Logger;
+use Deconf\SEIWP\Monolog\ResettableInterface;
+use Deconf\SEIWP\Monolog\Formatter\FormatterInterface;
 
 /**
  * Buffers all records until closing the handler and then pass them as batch.

@@ -7,15 +7,18 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Monolog\Handler;
+namespace Deconf\SEIWP\Monolog\Handler;
 
-use Monolog\Handler\FingersCrossed\ErrorLevelActivationStrategy;
-use Monolog\Handler\FingersCrossed\ActivationStrategyInterface;
-use Monolog\Logger;
-use Monolog\ResettableInterface;
-use Monolog\Formatter\FormatterInterface;
+use Deconf\SEIWP\Monolog\Handler\FingersCrossed\ErrorLevelActivationStrategy;
+use Deconf\SEIWP\Monolog\Handler\FingersCrossed\ActivationStrategyInterface;
+use Deconf\SEIWP\Monolog\Logger;
+use Deconf\SEIWP\Monolog\ResettableInterface;
+use Deconf\SEIWP\Monolog\Formatter\FormatterInterface;
 
 /**
  * Buffers all records until a certain level is reached

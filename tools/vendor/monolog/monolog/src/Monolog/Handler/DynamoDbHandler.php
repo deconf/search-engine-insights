@@ -7,15 +7,18 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Monolog\Handler;
+namespace Deconf\SEIWP\Monolog\Handler;
 
 use Aws\Sdk;
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Marshaler;
-use Monolog\Formatter\ScalarFormatter;
-use Monolog\Logger;
+use Deconf\SEIWP\Monolog\Formatter\ScalarFormatter;
+use Deconf\SEIWP\Monolog\Logger;
 
 /**
  * Amazon DynamoDB handler (http://aws.amazon.com/dynamodb/)

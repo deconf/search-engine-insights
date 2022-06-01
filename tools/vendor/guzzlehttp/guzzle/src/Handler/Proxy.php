@@ -1,7 +1,13 @@
 <?php
-namespace GuzzleHttp\Handler;
+/**
+ * @license MIT
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
+ */
+namespace Deconf\SEIWP\GuzzleHttp\Handler;
 
-use GuzzleHttp\RequestOptions;
+use Deconf\SEIWP\GuzzleHttp\RequestOptions;
 use Psr\Http\Message\RequestInterface;
 
 /**

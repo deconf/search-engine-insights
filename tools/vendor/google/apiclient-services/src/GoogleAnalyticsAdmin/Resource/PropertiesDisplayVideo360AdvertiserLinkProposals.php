@@ -13,26 +13,29 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Google\Service\GoogleAnalyticsAdmin\Resource;
+namespace Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\Resource;
 
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaApproveDisplayVideo360AdvertiserLinkProposalRequest;
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaApproveDisplayVideo360AdvertiserLinkProposalResponse;
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaCancelDisplayVideo360AdvertiserLinkProposalRequest;
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaDisplayVideo360AdvertiserLinkProposal;
-use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaListDisplayVideo360AdvertiserLinkProposalsResponse;
-use Google\Service\GoogleAnalyticsAdmin\GoogleProtobufEmpty;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaApproveDisplayVideo360AdvertiserLinkProposalRequest;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaApproveDisplayVideo360AdvertiserLinkProposalResponse;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaCancelDisplayVideo360AdvertiserLinkProposalRequest;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaDisplayVideo360AdvertiserLinkProposal;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1alphaListDisplayVideo360AdvertiserLinkProposalsResponse;
+use Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin\GoogleProtobufEmpty;
 
 /**
  * The "displayVideo360AdvertiserLinkProposals" collection of methods.
  * Typical usage is:
  *  <code>
- *   $analyticsadminService = new Google\Service\GoogleAnalyticsAdmin(...);
+ *   $analyticsadminService = new Deconf\SEIWP\Google\Service\GoogleAnalyticsAdmin(...);
  *   $displayVideo360AdvertiserLinkProposals = $analyticsadminService->displayVideo360AdvertiserLinkProposals;
  *  </code>
  */
-class PropertiesDisplayVideo360AdvertiserLinkProposals extends \Google\Service\Resource
+class PropertiesDisplayVideo360AdvertiserLinkProposals extends \Deconf\SEIWP\Google\Service\Resource
 {
   /**
    * Approves a DisplayVideo360AdvertiserLinkProposal. The

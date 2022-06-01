@@ -13,22 +13,25 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Google\Service\Analytics\Resource;
+namespace Deconf\SEIWP\Google\Service\Analytics\Resource;
 
-use Google\Service\Analytics\EntityUserLink;
-use Google\Service\Analytics\EntityUserLinks;
+use Deconf\SEIWP\Google\Service\Analytics\EntityUserLink;
+use Deconf\SEIWP\Google\Service\Analytics\EntityUserLinks;
 
 /**
  * The "webpropertyUserLinks" collection of methods.
  * Typical usage is:
  *  <code>
- *   $analyticsService = new Google\Service\Analytics(...);
+ *   $analyticsService = new Deconf\SEIWP\Google\Service\Analytics(...);
  *   $webpropertyUserLinks = $analyticsService->webpropertyUserLinks;
  *  </code>
  */
-class ManagementWebpropertyUserLinks extends \Google\Service\Resource
+class ManagementWebpropertyUserLinks extends \Deconf\SEIWP\Google\Service\Resource
 {
   /**
    * Removes a user from the given web property. (webpropertyUserLinks.delete)

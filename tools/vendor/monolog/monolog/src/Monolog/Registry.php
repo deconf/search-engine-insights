@@ -7,9 +7,12 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Monolog;
+namespace Deconf\SEIWP\Monolog;
 
 use InvalidArgumentException;
 
@@ -20,8 +23,8 @@ use InvalidArgumentException;
  * via static method calls on this class.
  *
  * <code>
- * $application = new Monolog\Logger('application');
- * $api = new Monolog\Logger('api');
+ * $application = new Deconf\SEIWP\Monolog\Logger('application');
+ * $api = new Deconf\SEIWP\Monolog\Logger('api');
  *
  * Monolog\Registry::addLogger($application);
  * Monolog\Registry::addLogger($api);

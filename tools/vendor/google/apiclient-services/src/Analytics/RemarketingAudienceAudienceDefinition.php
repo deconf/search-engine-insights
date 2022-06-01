@@ -13,11 +13,14 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
+ *
+ * Modified by __root__ on 01-June-2022 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
  */
 
-namespace Google\Service\Analytics;
+namespace Deconf\SEIWP\Google\Service\Analytics;
 
-class RemarketingAudienceAudienceDefinition extends \Google\Model
+class RemarketingAudienceAudienceDefinition extends \Deconf\SEIWP\Google\Model
 {
   protected $includeConditionsType = IncludeConditions::class;
   protected $includeConditionsDataType = '';
