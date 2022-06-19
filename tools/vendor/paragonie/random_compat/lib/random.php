@@ -27,9 +27,6 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- *
- * Modified by __root__ on 17-June-2022 using Strauss.
- * @see https://github.com/BrianHenryIE/strauss
  */
 
 if (!defined('PHP_VERSION_ID')) {
@@ -113,7 +110,7 @@ if (!is_callable('random_bytes')) {
             &&
             @is_readable('/dev/urandom')
         ) {
-            // Deconf_AIWP_Error suppression on is_readable() in case of an open_basedir
+            // Error suppression on is_readable() in case of an open_basedir
             // or safe_mode failure. All we care about is whether or not we
             // can read it at this point. If the PHP environment is going to
             // panic over trying to see if the file can be read in the first

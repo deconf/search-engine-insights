@@ -64,12 +64,14 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				$this->client->setClientId( $this->seiwp->config->options['client_id'] );
 				$this->client->setClientSecret( $this->seiwp->config->options['client_secret'] );
 				$this->client->setRedirectUri( SEIWP_URL . 'tools/oauth2callback.php' );
+				define( 'SEIWP_OAUTH2_REVOKE_URI', 'https://oauth2.googleapis.com/revoke' );
+				define( 'SEIWP_OAUTH2_TOKEN_URI', 'https://oauth2.googleapis.com/token' );
 			} else {
 				$this->client->setClientId( $this->access[0] );
 				$this->client->setClientSecret( $this->access[1] );
 				$this->client->setRedirectUri( SEIWP_ENDPOINT_URL . 'oauth2callback.php' );
-				$this->client->OAUTH2_REVOKE_URI = SEIWP_ENDPOINT_URL . 'seiwp-revoke.php';
-				$this->client->OAUTH2_TOKEN_URI = SEIWP_ENDPOINT_URL . 'seiwp-token.php';
+				define( 'SEIWP_OAUTH2_REVOKE_URI', SEIWP_ENDPOINT_URL . 'seiwp-revoke.php' );
+				define( 'SEIWP_OAUTH2_TOKEN_URI', SEIWP_ENDPOINT_URL . 'seiwp-token.php' );
 			}
 
 			/**
