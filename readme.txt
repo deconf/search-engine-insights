@@ -81,6 +81,10 @@ When new Properties are added to Google Search Console, it may take up to a few 
 
 == Changelog ==
 
+= 2.1.4 (2022.07.30) =
+* Bug Fixes:
+	*some namespace fixes
+
 = 2.1.3 (2022.06.18) =
 * Bug Fixes:
 	* fixes on Google Console Client library

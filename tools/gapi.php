@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) )
 	exit();
 
-use Google\Service\Exception as GoogleServiceException;
+use Deconf\SEIWP\Google\Service\Exception as GoogleServiceException;
 
 if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 
@@ -347,7 +347,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 * 											$filters
 		 * @param
 		 *            $serial
-		 * @return int|Google\Service\SearchConsole
+		 * @return int|Deconf\SEIWP\Google\Service\SearchConsole
 		 */
 		private function handle_searchanalytics_reports( $projectId, $from, $to, $dimensions, $options, $filters, $serial ) {
 			try {
@@ -687,7 +687,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 * 		$filter
 		 * @param
 		 *   $metric
-		 * @return number|Google\Service\SearchConsole
+		 * @return number|Deconf\SEIWP\Google\Service\SearchConsole
 		 */
 		public function get( $projectId, $query, $from = false, $to = false, $filter = '', $metric = 'sessions' ) {
 			if ( empty( $projectId ) ) {
