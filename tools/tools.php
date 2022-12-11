@@ -99,14 +99,14 @@ if ( ! class_exists( 'SEIWP_Tools' ) ) {
 				$per = abs( $per );
 				for ( $x = 0; $x < 3; $x++ ) {
 					$c = hexdec( substr( $colour, ( 2 * $x ), 2 ) ) - $per;
-					$c = ( $c < 0 ) ? 0 : dechex( $c );
+					$c = ( $c < 0 ) ? 0 : dechex( (int)$c );
 					$rgb .= ( strlen( $c ) < 2 ) ? '0' . $c : $c;
 				}
 			} else {
 				// Lighter
 				for ( $x = 0; $x < 3; $x++ ) {
 					$c = hexdec( substr( $colour, ( 2 * $x ), 2 ) ) + $per;
-					$c = ( $c > 255 ) ? 'ff' : dechex( $c );
+					$c = ( $c > 255 ) ? 'ff' : dechex( (int)$c );
 					$rgb .= ( strlen( $c ) < 2 ) ? '0' . $c : $c;
 				}
 			}
@@ -269,13 +269,19 @@ if ( ! class_exists( 'SEIWP_Tools' ) ) {
 		 */
 		public static function set_error( $e, $timeout ) {
 			if ( is_object( $e ) ) {
-				self::set_cache( 'last_error', date( 'Y-m-d H:i:s' ) . ': ' . esc_html( print_r( $e, true ) ), $timeout );
 				if ( method_exists( $e, 'getCode' ) && method_exists( $e, 'getErrors' ) ) {
-					$errors = (array) $e->getErrors();
-					self::set_cache( 'gapi_errors', array( (int) $e->getCode(), $errors ), $timeout );
+					$error_code = $e->getCode();
+					if ( 500 == $error_code || 503 == $error_code ) {
+						$timeout = 60;
+					}
+					self::set_cache( 'gapi_errors', array( $e->getCode(), (array) $e->getErrors(), esc_html( print_r( $e, true ) ) ), $timeout );
+				} else {
+					self::set_cache( 'gapi_errors', array( 600, array(), esc_html( print_r( $e, true ) ) ), $timeout );
 				}
+			} else if ( is_array( $e ) ) {
+				self::set_cache( 'gapi_errors', array( 600, array(), esc_html( print_r( $e, true ) ) ), $timeout );
 			} else {
-				self::set_cache( 'last_error', date( 'Y-m-d H:i:s' ) . ': ' . esc_html( $e ), $timeout );
+				self::set_cache( 'gapi_errors', array( 600, array(), esc_html( print_r( $e, true ) ) ), $timeout );
 			}
 			// Count Errors until midnight
 			$midnight = strtotime( "tomorrow 00:00:00" ); // UTC midnight

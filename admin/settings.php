@@ -281,19 +281,24 @@ final class SEIWP_Settings {
 						<table class="seiwp-settings-logdata">
 							<tr>
 								<td>
-									<?php echo "<h2>" . __( "Error Details", 'search-engine-insights' ) . "</h2>"; ?>
+									<?php echo "<h2>" . __( "Detected Errors", 'search-engine-insights' ) . "</h2>"; ?>
 								</td>
 							</tr>
 							<tr>
-								<td>
-									<?php $errors_count = SEIWP_Tools::get_cache( 'errors_count' ); ?>
-									<pre class="seiwp-settings-logdata"><?php echo '<span>' . __("Count: ", 'search-engine-insights') . '</span>' . (int)$errors_count;?></pre>
-									<?php $errors = print_r( SEIWP_Tools::get_cache( 'last_error' ), true ) ? esc_html( print_r( SEIWP_Tools::get_cache( 'last_error' ), true ) ) : ''; ?>
-									<pre class="seiwp-settings-logdata"><?php echo '<span>' . __("Last Error: ", 'search-engine-insights') . '</span>' . "\n" . $errors;?></pre>
-									<pre class="seiwp-settings-logdata"><?php echo '<span>' . __("GAPI Error: ", 'search-engine-insights') . '</span>'; echo "\n" . esc_html( print_r( SEIWP_Tools::get_cache( 'gapi_errors' ), true ) ) ?></pre>
-									<br />
-									<hr>
-								</td>
+							<td>
+								<?php $errors_count = SEIWP_Tools::get_cache( 'errors_count' ); ?>
+								<pre class="seiwp-settings-logdata"><?php echo '<span>' . __("Count: ", 'analytics-insights') . '</span>' . (int)$errors_count;?></pre>
+								<?php $error = SEIWP_Tools::get_cache( 'gapi_errors' ) ?>
+								<?php $error_code = isset( $error[0] ) ? $error[0] : 'None' ?>
+								<?php $error_reason = ( isset( $error[1] ) && !empty($error[1]) ) ? print_r( $error[1], true) : 'None' ?>
+								<?php $error_details = isset( $error[2] ) ? print_r( $error[2], true) : 'None' ?>
+								<pre class="seiwp-settings-logdata"><?php echo '<span>' . __("Error Code: ", 'analytics-insights') . '</span>' . esc_html( $error_code );?></pre>
+								<pre class="seiwp-settings-logdata"><?php echo '<span>' . __("Error Reason: ", 'analytics-insights') . '</span>' . "\n" . esc_html( $error_reason );?></pre>
+								<?php $error_details = str_replace( 'Deconf_', 'Google_', $error_details); ?>
+								<pre class="seiwp-settings-logdata"><?php echo '<span>' . __("Error Details: ", 'analytics-insights') . '</span>' . "\n" . esc_html( $error_details );?></pre>
+								<br />
+								<hr>
+							</td>
 							</tr>
 							<tr>
 								<td>
@@ -367,7 +372,6 @@ final class SEIWP_Settings {
 					$seiwp_access_code = sanitize_text_field( $_REQUEST['seiwp_access_code'] );
 					update_option( 'seiwp_redeemed_code', $seiwp_access_code );
 					SEIWP_Tools::delete_cache( 'gapi_errors' );
-					SEIWP_Tools::delete_cache( 'last_error' );
 
 					$token = $seiwp->gapi_controller->authenticate( $seiwp_access_code );
 
@@ -394,10 +398,10 @@ final class SEIWP_Settings {
 						}
 					}
 				} catch ( GoogleServiceException $e ) {
-					$timeout = $seiwp->gapi_controller->get_timeouts( 'midnight' );
+					$timeout = $seiwp->gapi_controller->get_timeouts();
 					SEIWP_Tools::set_error( $e, $timeout );
 				} catch ( Exception $e ) {
-					$timeout = $seiwp->gapi_controller->get_timeouts( 'midnight' );
+					$timeout = $seiwp->gapi_controller->get_timeouts();
 					SEIWP_Tools::set_error( $e, $timeout );
 					$seiwp->gapi_controller->reset_token();
 				}
@@ -426,14 +430,13 @@ final class SEIWP_Settings {
 		if ( isset( $_POST['Reset_Err'] ) ) {
 			if ( isset( $_POST['seiwp_security'] ) && wp_verify_nonce( $_POST['seiwp_security'], 'seiwp_form' ) ) {
 
-				if ( SEIWP_Tools::get_cache( 'gapi_errors' ) || SEIWP_Tools::get_cache( 'last_error' ) ) {
+				if ( SEIWP_Tools::get_cache( 'gapi_errors' ) ) {
 
 					$info = SEIWP_Tools::system_info();
 					$info .= 'SEIWP Version: ' . SEIWP_CURRENT_VERSION;
 
 					$sep = "\n---------------------------\n";
-					$error_report = SEIWP_Tools::get_cache( 'last_error' );
-					$error_report .= $sep . print_r( SEIWP_Tools::get_cache( 'gapi_errors' ), true );
+					$error_report = $sep . print_r( SEIWP_Tools::get_cache( 'gapi_errors' ), true );
 					$error_report .= $sep . SEIWP_Tools::get_cache( 'errors_count' );
 					$error_report .= $sep . $info;
 
@@ -455,7 +458,6 @@ final class SEIWP_Settings {
 				}
 
 				/* @formatter:on */
-				SEIWP_Tools::delete_cache( 'last_error' );
 				SEIWP_Tools::delete_cache( 'gapi_errors' );
 				delete_option( 'seiwp_got_updated' );
 				$message = "<div class='updated' id='seiwp-autodismiss'><p>" . __( "All errors reseted.", 'search-engine-insights' ) . "</p></div>";
@@ -514,7 +516,7 @@ final class SEIWP_Settings {
 							<div id="post-body-content">
 								<div class="settings-wrapper">
 									<div class="inside">
-										<?php if ( ( $seiwp->gapi_controller->gapi_errors_handler() || SEIWP_Tools::get_cache( 'last_error' ) )  && strpos(SEIWP_Tools::get_cache( 'last_error' ), '-27') === false ) : ?>
+										<?php if ( $seiwp->gapi_controller->gapi_errors_handler() ) : ?>
 													<?php $message = sprintf( '<div class="error"><p>%s</p></div>', sprintf( __( 'Something went wrong, check %1$s or %2$s.', 'search-engine-insights' ), sprintf( '<a href="%1$s">%2$s</a>', menu_page_url( 'seiwp_errors_debugging', false ), __( 'Debug', 'search-engine-insights' ) ), sprintf( '<a href="%1$s">%2$s</a>', menu_page_url( 'seiwp_setup', false ), __( 'authorize the plugin', 'search-engine-insights' ) ) ) );?>
 										<?php endif;?>
 										<?php if ( isset( $message ) ) :?>
@@ -726,7 +728,6 @@ final class SEIWP_Settings {
 					$seiwp_access_code = sanitize_text_field( $_REQUEST['seiwp_access_code'] );
 					update_option( 'seiwp_redeemed_code', $seiwp_access_code );
 					SEIWP_Tools::delete_cache( 'gapi_errors' );
-					SEIWP_Tools::delete_cache( 'last_error' );
 
 					$token = $seiwp->gapi_controller->authenticate( $seiwp_access_code );
 					$array_token = (array)$token;
@@ -739,12 +740,10 @@ final class SEIWP_Settings {
 					if ( is_multisite() ) { // Cleanup errors on the entire network
 						foreach ( SEIWP_Tools::get_sites( array( 'number' => apply_filters( 'seiwp_sites_limit', 100 ) ) ) as $blog ) {
 							switch_to_blog( $blog['blog_id'] );
-							SEIWP_Tools::delete_cache( 'last_error' );
 							SEIWP_Tools::delete_cache( 'gapi_errors' );
 							restore_current_blog();
 						}
 					} else {
-						SEIWP_Tools::delete_cache( 'last_error' );
 						SEIWP_Tools::delete_cache( 'gapi_errors' );
 					}
 					if ( $seiwp->config->options['token'] && $seiwp->gapi_controller->client->getAccessToken() ) {
@@ -760,11 +759,11 @@ final class SEIWP_Settings {
 						}
 					}
 				} catch ( GoogleServiceException $e ) {
-					$timeout = $seiwp->gapi_controller->get_timeouts( 'midnight' );
+					$timeout = $seiwp->gapi_controller->get_timeouts();
 					SEIWP_Tools::set_error( $e, $timeout );
 					$seiwp->gapi_controller->reset_token();
 				} catch ( Exception $e ) {
-					$timeout = $seiwp->gapi_controller->get_timeouts( 'midnight' );
+					$timeout = $seiwp->gapi_controller->get_timeouts();
 					SEIWP_Tools::set_error( $e, $timeout );
 					$seiwp->gapi_controller->reset_token();
 				}
@@ -841,7 +840,7 @@ final class SEIWP_Settings {
 												<div id="post-body-content">
 													<div class="settings-wrapper">
 														<div class="inside">
-					<?php if ( ( $seiwp->gapi_controller->gapi_errors_handler() || SEIWP_Tools::get_cache( 'last_error' ) )  && strpos(SEIWP_Tools::get_cache( 'last_error' ), '-27') === false ) : ?>
+					<?php if ( $seiwp->gapi_controller->gapi_errors_handler() )  : ?>
 						<?php $message = sprintf( '<div class="error"><p>%s</p></div>', sprintf( __( 'Something went wrong, check %1$s or %2$s.', 'search-engine-insights' ), sprintf( '<a href="%1$s">%2$s</a>', menu_page_url( 'seiwp_errors_debugging', false ), __( 'Debug', 'search-engine-insights' ) ), sprintf( '<a href="%1$s">%2$s</a>', menu_page_url( 'seiwp_settings', false ), __( 'authorize the plugin', 'search-engine-insights' ) ) ) );?>
 					<?php endif; ?>
 						<?php if ( isset( $message ) ) : ?>

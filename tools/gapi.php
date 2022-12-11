@@ -36,17 +36,36 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 			include_once ( SEIWP_DIR . 'tools/vendor/autoload.php' );
 			$this->client = new Deconf\SEIWP\Google\Client();
 
-			// add Proxy server settings to Guzzle, if defined
+			// add cURL server settings to Guzzle
+
+			$httpoptions = array();
+
+			$origin = SEIWP_Tools::strip_protocol( get_site_url() );
+
+			$httpoptions [ 'headers' ] = array( 'referer' => SEIWP_CURRENT_VERSION, 'User-Agent' => $origin );
 
 			if ( defined( 'WP_PROXY_HOST' ) && defined( 'WP_PROXY_PORT' ) ) {
-				$httpoptions = array();
-				$httpoptions [ 'proxy' ] = "'" . WP_PROXY_HOST . ":". WP_PROXY_PORT ."'";
+				$httpoptions [ 'proxy' ] = WP_PROXY_HOST . ":". WP_PROXY_PORT;
 				if ( defined( 'WP_PROXY_USERNAME' ) && defined( 'WP_PROXY_PASSWORD' ) ) {
 					$httpoptions [ 'auth' ] = array( WP_PROXY_USERNAME, WP_PROXY_PASSWORD );
 				}
-				$httpClient = new Deconf\SEIWP\GuzzleHttp\Client( $httpoptions );
-				$this->client->setHttpClient( $httpClient );
 			}
+
+			if ( defined( 'SEIWP_FORCE_IP_RESOLVE' ) ){
+
+				if ( 'v4' == SEIWP_FORCE_IP_RESOLVE ) {
+					$httpoptions [ 'force_ip_resolve' ] = 'v4';
+				}
+
+				if ( 'v6' == SEIWP_FORCE_IP_RESOLVE ) {
+					$httpoptions [ 'force_ip_resolve' ] = 'v6';
+				}
+
+			}
+
+			$httpClient = new Deconf\SEIWP\GuzzleHttp\Client( $httpoptions );
+
+			$this->client->setHttpClient( $httpClient );
 
 			$this->client->setScopes( array( 'https://www.googleapis.com/auth/webmasters', 'https://www.googleapis.com/auth/siteverification' ) );
 			$this->client->setAccessType( 'offline' );
@@ -96,11 +115,11 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 							}
 						}
 					} catch ( GoogleServiceException $e ) {
-						$timeout = $this->get_timeouts( 'midnight' );
+						$timeout = $this->get_timeouts();
 						SEIWP_Tools::set_error( $e, $timeout );
 						$this->reset_token();
 					} catch ( Exception $e ) {
-						$timeout = $this->get_timeouts( 'midnight' );
+						$timeout = $this->get_timeouts();
 						SEIWP_Tools::set_error( $e, $timeout );
 						$this->reset_token();
 					}
@@ -122,10 +141,10 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				$this->client->fetchAccessTokenWithAuthCode( $access_code );
 				return $this->client->getAccessToken();
 			} catch ( GoogleServiceException $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
+				$timeout = $this->get_timeouts();
 				SEIWP_Tools::set_error( $e, $timeout );
 			} catch ( Exception $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
+				$timeout = $this->get_timeouts();
 				SEIWP_Tools::set_error( $e, $timeout );
 			}
 		}
@@ -140,10 +159,6 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 
 			$token = $this->client->getAccessToken();
 
-			if ( $token ) {
-				$this->client->revokeToken( $token );
-			}
-
 			if ( $all ){
 				$this->seiwp->config->options['site_jail'] = "";
 				$this->seiwp->config->options['sites_list'] = array();
@@ -157,6 +172,17 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 			} else {
 				$this->seiwp->config->set_plugin_options();
 			}
+
+			if ( $token ) {
+				try {
+					$this->client->revokeToken( $token );
+				} catch ( GoogleServiceException $e ) {
+					return;
+				} catch ( Exception $e ) {
+					return;
+				}
+			}
+
 		}
 
 		/**
@@ -174,7 +200,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				return true;
 			}
 			if ( 400 == $errors[0] || 401 == $errors[0] || 403 == $errors[0] ) {
-				$this->reset_token();
+				//$this->reset_token();
 				return true;
 			}
 			/**
@@ -219,7 +245,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				$newhour = mktime( $nexthour[0], 0, 0, $nexthour[1], $nexthour[2], $nexthour[3] );
 				return $newhour - $local_time;
 			} else {
-				$newtime = strtotime( ' +5 minutes', $local_time );
+				$newtime = strtotime( ' +10 minutes', $local_time );
 				return $newtime - $local_time;
 			}
 		}
@@ -269,10 +295,10 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				$this->service->sites->delete( $url );
 				return true;
 			} catch ( GoogleServiceException $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
+				$timeout = $this->get_timeouts();
 				SEIWP_Tools::set_error( $e, $timeout );
 			} catch ( Exception $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
+				$timeout = $this->get_timeouts();
 				SEIWP_Tools::set_error( $e, $timeout );
 			}
 		}
@@ -288,11 +314,11 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				$this->service->sites->add( $url );
 				return true;
 			} catch ( GoogleServiceException $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
+				$timeout = $this->get_timeouts();
 				SEIWP_Tools::set_error( $e, $timeout );
 				return false;
 			} catch ( Exception $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
+				$timeout = $this->get_timeouts();
 				SEIWP_Tools::set_error( $e, $timeout );
 				return false;
 			}
@@ -319,13 +345,12 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 						}
 					}
 				}
-				SEIWP_Tools::delete_cache( 'last_error' );
 				return $sites_list;
 			} catch ( GoogleServiceException $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
+				$timeout = $this->get_timeouts();
 				SEIWP_Tools::set_error( $e, $timeout );
 			} catch ( Exception $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
+				$timeout = $this->get_timeouts();
 				SEIWP_Tools::set_error( $e, $timeout );
 			}
 		}
@@ -378,11 +403,11 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 					$data = $transient;
 				}
 			} catch ( GoogleServiceException $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
+				$timeout = $this->get_timeouts();
 				SEIWP_Tools::set_error( $e, $timeout );
 				return $e->getCode();
 			} catch ( Exception $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
+				$timeout = $this->get_timeouts();
 				SEIWP_Tools::set_error( $e, $timeout );
 				return $e->getCode();
 			}
