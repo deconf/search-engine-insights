@@ -197,11 +197,11 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 			}
 			if ( isset( $errors[1][0]['reason'] ) && ( 'invalidParameter' == $errors[1][0]['reason'] || 'badRequest' == $errors[1][0]['reason'] || 'invalidCredentials' == $errors[1][0]['reason'] || 'insufficientPermissions' == $errors[1][0]['reason'] || 'required' == $errors[1][0]['reason'] ) ) {
 				$this->reset_token();
-				return true;
+				return $errors[0];
 			}
 			if ( 400 == $errors[0] || 401 == $errors[0] || 403 == $errors[0] ) {
 				//$this->reset_token();
-				return true;
+				return $errors[0];
 			}
 			/**
 			 * Back-off system for subsequent requests - an Auth error generated after a Service request
@@ -214,11 +214,11 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 					$this->seiwp->config->set_plugin_options();
 					return false;
 				} else {
-					return true;
+					return $errors[0];
 				}
 			}
 			if ( 500 == $errors[0] || 503 == $errors[0] || $errors[0] < - 50 ) {
-				return true;
+				return $errors[0];
 			}
 			return false;
 		}
@@ -379,7 +379,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				$transient = SEIWP_Tools::get_cache( $serial );
 				if ( false === $transient ) {
 					if ( $this->gapi_errors_handler() ) {
-						return - 23;
+						return $this->gapi_errors_handler();
 					}
 					$options['samplingLevel'] = 'HIGHER_PRECISION';
 					$request = new Deconf\SEIWP\Google\Service\SearchConsole\SearchAnalyticsQueryRequest();
@@ -477,7 +477,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 			}
 			if ( empty( $data->rows ) ) {
 				// unable to render it as an Area Chart, returns a numeric value to be handled by reportsx.js
-				return - 21;
+				return 621;
 			}
 			$seiwp_data = array( array( __( "Date", 'search-engine-insights' ), $title ) );
 			foreach ( $data->getRows() as $row ) {
@@ -680,7 +680,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 			}
 			if ( empty( $data->rows ) ) {
 				// unable to render as an Org Chart, returns a numeric value to be handled by reportsx.js
-				return - 21;
+				return 621;
 			}
 			$res_data['Impressions'] = $data->getRows()[0]->getImpressions() ? SEIWP_Tools::number_to_kmb( $data->getRows()[0]->getImpressions() ) : 0;
 			$res_data['Clicks'] = $data->getRows()[0]->getClicks() ? SEIWP_Tools::number_to_kmb( $data->getRows()[0]->getClicks() ) : 0;
@@ -716,7 +716,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 */
 		public function get( $projectId, $query, $from = false, $to = false, $filter = '', $metric = 'sessions' ) {
 			if ( empty( $projectId ) ) {
-				wp_die( - 26 );
+				wp_die( 626 );
 			}
 			if ( 'summary' == $query ) {
 				return $this->get_summary( $projectId, $from, $to, $filter );
@@ -736,7 +736,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 			if ( 'keywords' == $query ) {
 				return $this->get_keywords( $projectId, $from, $to, $metric, $filter );
 			}
-			wp_die( - 27 );
+			wp_die( 627 );
 		}
 	}
 }

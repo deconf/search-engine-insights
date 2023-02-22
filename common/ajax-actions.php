@@ -32,7 +32,7 @@ if ( ! class_exists( 'SEIWP_Common_Ajax' ) ) {
 		 */
 		public function ajax_set_error() {
 			if ( ! isset( $_POST['seiwp_security_set_error'] ) || ! ( wp_verify_nonce( $_POST['seiwp_security_set_error'], 'seiwp_backend_item_reports' ) || wp_verify_nonce( $_POST['seiwp_security_set_error'], 'seiwp_frontend_item_reports' ) ) ) {
-				wp_die( - 40 );
+				wp_die( 640 );
 			}
 			$timeout = 24 * 60 * 60;
 			SEIWP_Tools::set_error( $_POST['response'], $timeout );

@@ -41,7 +41,7 @@ if ( ! class_exists( 'SEIWP_Backend_Ajax' ) ) {
 		 */
 		public function ajax_item_reports() {
 			if ( ! isset( $_POST['seiwp_security_backend_item_reports'] ) || ! wp_verify_nonce( $_POST['seiwp_security_backend_item_reports'], 'seiwp_backend_item_reports' ) ) {
-				wp_die( - 30 );
+				wp_die( 630 );
 			}
 			if ( isset( $_POST['projectId'] ) && $this->seiwp->config->options['switch_profile'] && 'false' !== $_POST['projectId'] ) {
 				$projectId = sanitize_text_field( $_POST['projectId'] );
@@ -67,14 +67,14 @@ if ( ! class_exists( 'SEIWP_Backend_Ajax' ) ) {
 			}
 
 			if ( ! ( SEIWP_Tools::check_roles( $this->seiwp->config->options['access_back'] ) && ( ( 1 == $this->seiwp->config->options['backend_item_reports'] ) || ( 1 == $this->seiwp->config->options['dashboard_widget'] ) ) ) ) {
-				wp_die( - 31 );
+				wp_die( 631 );
 			}
 			if ( $this->seiwp->config->options['token'] && $this->seiwp->config->options['site_jail'] && $from && $to ) {
 				if ( null === $this->seiwp->gapi_controller ) {
 					$this->seiwp->gapi_controller = new SEIWP_GAPI_Controller();
 				}
 			} else {
-				wp_die( - 24 );
+				wp_die( 624 );
 			}
 			if ( false == $projectId ) {
 				$projectId = $this->seiwp->config->options['site_jail'];
@@ -108,11 +108,11 @@ if ( ! class_exists( 'SEIWP_Backend_Ajax' ) ) {
 		 */
 		public function ajax_dismiss_notices() {
 			if ( ! isset( $_POST['seiwp_security_dismiss_notices'] ) || ! wp_verify_nonce( $_POST['seiwp_security_dismiss_notices'], 'seiwp_dismiss_notices' ) ) {
-				wp_die( - 30 );
+				wp_die( 630 );
 			}
 
 			if ( ! current_user_can( 'manage_options' ) ) {
-				wp_die( - 31 );
+				wp_die( 631 );
 			}
 
 			delete_option( 'seiwp_got_updated' );
