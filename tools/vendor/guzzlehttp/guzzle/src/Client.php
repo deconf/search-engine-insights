@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by __root__ on 18-June-2022 using Strauss.
+ * Modified by __root__ on 31-May-2023 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 namespace Deconf\SEIWP\GuzzleHttp;
@@ -11,9 +11,9 @@ use Deconf\SEIWP\GuzzleHttp\Cookie\CookieJar;
 use Deconf\SEIWP\GuzzleHttp\Exception\GuzzleException;
 use Deconf\SEIWP\GuzzleHttp\Promise;
 use Deconf\SEIWP\GuzzleHttp\Psr7;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\UriInterface;
+use Deconf\SEIWP\Psr\Http\Message\RequestInterface;
+use Deconf\SEIWP\Psr\Http\Message\ResponseInterface;
+use Deconf\SEIWP\Psr\Http\Message\UriInterface;
 
 /**
  * @method ResponseInterface get(string|UriInterface $uri, array $options = [])

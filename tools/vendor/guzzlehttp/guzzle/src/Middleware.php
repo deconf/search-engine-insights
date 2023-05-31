@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by __root__ on 18-June-2022 using Strauss.
+ * Modified by __root__ on 31-May-2023 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 namespace Deconf\SEIWP\GuzzleHttp;
@@ -11,8 +11,8 @@ use Deconf\SEIWP\GuzzleHttp\Cookie\CookieJarInterface;
 use Deconf\SEIWP\GuzzleHttp\Exception\RequestException;
 use Deconf\SEIWP\GuzzleHttp\Promise\RejectedPromise;
 use Deconf\SEIWP\GuzzleHttp\Psr7;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Log\LoggerInterface;
+use Deconf\SEIWP\Psr\Http\Message\ResponseInterface;
+use Deconf\SEIWP\Psr\Log\LoggerInterface;
 
 /**
  * Functions used to create and wrap handlers with handler middleware.

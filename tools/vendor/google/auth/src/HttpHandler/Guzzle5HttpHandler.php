@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Modified by __root__ on 18-June-2022 using Strauss.
+ * Modified by __root__ on 31-May-2023 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 namespace Deconf\SEIWP\Google\Auth\HttpHandler;
@@ -25,8 +25,8 @@ use Deconf\SEIWP\GuzzleHttp\Message\ResponseInterface as Guzzle5ResponseInterfac
 use Deconf\SEIWP\GuzzleHttp\Promise\Promise;
 use Deconf\SEIWP\GuzzleHttp\Promise\RejectedPromise;
 use Deconf\SEIWP\GuzzleHttp\Psr7\Response;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use Deconf\SEIWP\Psr\Http\Message\RequestInterface;
+use Deconf\SEIWP\Psr\Http\Message\ResponseInterface;
 
 class Guzzle5HttpHandler
 {

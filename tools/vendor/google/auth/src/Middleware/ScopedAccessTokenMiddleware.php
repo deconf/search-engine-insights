@@ -14,15 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Modified by __root__ on 18-June-2022 using Strauss.
+ * Modified by __root__ on 31-May-2023 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
 namespace Deconf\SEIWP\Google\Auth\Middleware;
 
 use Deconf\SEIWP\Google\Auth\CacheTrait;
-use Psr\Cache\CacheItemPoolInterface;
-use Psr\Http\Message\RequestInterface;
+use Deconf\SEIWP\Psr\Cache\CacheItemPoolInterface;
+use Deconf\SEIWP\Psr\Http\Message\RequestInterface;
 
 /**
  * ScopedAccessTokenMiddleware is a Guzzle Middleware that adds an Authorization

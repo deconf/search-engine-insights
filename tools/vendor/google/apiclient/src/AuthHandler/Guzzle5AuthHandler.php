@@ -2,7 +2,7 @@
 /**
  * @license Apache-2.0
  *
- * Modified by __root__ on 18-June-2022 using Strauss.
+ * Modified by __root__ on 31-May-2023 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -16,7 +16,7 @@ use Deconf\SEIWP\Google\Auth\Subscriber\ScopedAccessTokenSubscriber;
 use Deconf\SEIWP\Google\Auth\Subscriber\SimpleSubscriber;
 use Deconf\SEIWP\GuzzleHttp\Client;
 use Deconf\SEIWP\GuzzleHttp\ClientInterface;
-use Psr\Cache\CacheItemPoolInterface;
+use Deconf\SEIWP\Psr\Cache\CacheItemPoolInterface;
 
 /**
  * This supports Guzzle 5

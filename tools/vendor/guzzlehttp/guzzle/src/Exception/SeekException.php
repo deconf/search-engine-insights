@@ -2,12 +2,12 @@
 /**
  * @license MIT
  *
- * Modified by __root__ on 18-June-2022 using Strauss.
+ * Modified by __root__ on 31-May-2023 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 namespace Deconf\SEIWP\GuzzleHttp\Exception;
 
-use Psr\Http\Message\StreamInterface;
+use Deconf\SEIWP\Psr\Http\Message\StreamInterface;
 
 /**
  * Exception thrown when a seek fails on a stream.

@@ -1,6 +1,12 @@
 <?php
+/**
+ * @license MIT
+ *
+ * Modified by __root__ on 31-May-2023 using Strauss.
+ * @see https://github.com/BrianHenryIE/strauss
+ */
 
-namespace Psr\Log;
+namespace Deconf\SEIWP\Psr\Log;
 
 /**
  * This is a simple Logger trait that classes unable to extend AbstractLogger
@@ -136,7 +142,7 @@ trait LoggerTrait
      *
      * @return void
      *
-     * @throws \Psr\Log\InvalidArgumentException
+     * @throws \Deconf\SEIWP\Psr\Log\InvalidArgumentException
      */
     abstract public function log($level, $message, array $context = array());
 }

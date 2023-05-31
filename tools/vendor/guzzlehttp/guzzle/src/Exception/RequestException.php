@@ -2,15 +2,15 @@
 /**
  * @license MIT
  *
- * Modified by __root__ on 18-June-2022 using Strauss.
+ * Modified by __root__ on 31-May-2023 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 namespace Deconf\SEIWP\GuzzleHttp\Exception;
 
 use Deconf\SEIWP\GuzzleHttp\Promise\PromiseInterface;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\UriInterface;
+use Deconf\SEIWP\Psr\Http\Message\RequestInterface;
+use Deconf\SEIWP\Psr\Http\Message\ResponseInterface;
+use Deconf\SEIWP\Psr\Http\Message\UriInterface;
 
 /**
  * HTTP Request exception

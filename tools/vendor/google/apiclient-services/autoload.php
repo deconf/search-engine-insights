@@ -12,8 +12,8 @@ if (
     ) {
         $servicesClassMap = [
             'Deconf\SEIWP\Google\\Client' => 'Deconf_SEIWP_Google_Client',
-            'Deconf\\SEIWP\\Google\\Service' => 'Deconf_SEIWP_Google_Service',
-            'Deconf\\SEIWP\\Google\\Service\\Resource' => 'Deconf_SEIWP_Google_Service_Resource',
+            'Deconf\SEIWP\Google\\Service' => 'Deconf_SEIWP_Google_Service',
+            'Deconf\SEIWP\Google\\Service\\Resource' => 'Deconf_SEIWP_Google_Service_Resource',
             'Deconf\SEIWP\Google\\Model' => 'Deconf_SEIWP_Google_Model',
             'Deconf\SEIWP\Google\\Collection' => 'Deconf_SEIWP_Google_Collection',
         ];

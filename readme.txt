@@ -3,8 +3,8 @@ Contributors: deconf
 Donate link: https://deconf.com/donate/
 Tags: search console dashboard, google search console, search console widget, search console metatag, search console, seo
 Requires at least: 3.5
-Tested up to: 6.1
-Stable tag: 2.1.5
+Tested up to: 6.2
+Stable tag: 2.1.6
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -80,6 +80,12 @@ When new Properties are added to Google Search Console, it may take up to a few 
 == Upgrade Notice ==
 
 == Changelog ==
+
+= 2.1.6 (2023.05.31) =
+* Bug Fixes:
+	* Prefix PSR classes and namespace to avoid conflicts
+* Enhancements:
+	* Google Analytics library update
 
 = 2.1.5 (2022.12.10) =
 * Enhancements:

@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by __root__ on 18-June-2022 using Strauss.
+ * Modified by __root__ on 31-May-2023 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 namespace Deconf\SEIWP\GuzzleHttp\Handler;
@@ -14,9 +14,9 @@ use Deconf\SEIWP\GuzzleHttp\Promise\PromiseInterface;
 use Deconf\SEIWP\GuzzleHttp\Psr7;
 use Deconf\SEIWP\GuzzleHttp\TransferStats;
 use Deconf\SEIWP\GuzzleHttp\Utils;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
+use Deconf\SEIWP\Psr\Http\Message\RequestInterface;
+use Deconf\SEIWP\Psr\Http\Message\ResponseInterface;
+use Deconf\SEIWP\Psr\Http\Message\StreamInterface;
 
 /**
  * HTTP handler that uses PHP's HTTP stream wrapper.
