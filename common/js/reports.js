@@ -238,10 +238,10 @@ jQuery.fn.extend( {
 				tpl = '<div id="seiwp-areachartsummary' + slug + '">';
 				tpl += '<div id="seiwp-summary' + slug + '">';
 				tpl += '<div class="inside">';
-				tpl += '<div class="small-box first"><h3>' + seiwpItemData.i18n[ 5 ] + '</h3><p id="gdimpressions' + slug + '">&nbsp;</p></div>';
-				tpl += '<div class="small-box second"><h3>' + seiwpItemData.i18n[ 6 ] + '</h3><p id="gdclicks' + slug + '">&nbsp;</p></div>';
-				tpl += '<div class="small-box third"><h3>' + seiwpItemData.i18n[ 7 ] + '</h3><p id="gdposition' + slug + '">&nbsp;</p></div>';
-				tpl += '<div class="small-box last"><h3>' + seiwpItemData.i18n[ 8 ] + '</h3><p id="gdctr' + slug + '">&nbsp;</p></div>';
+				tpl += '<div class="small-box first"><h3>' + seiwpItemData.i18n[ 5 ] + '</h3><p id="seiwpimpressions' + slug + '">&nbsp;</p></div>';
+				tpl += '<div class="small-box second"><h3>' + seiwpItemData.i18n[ 6 ] + '</h3><p id="seiwpclicks' + slug + '">&nbsp;</p></div>';
+				tpl += '<div class="small-box third"><h3>' + seiwpItemData.i18n[ 7 ] + '</h3><p id="seiwpposition' + slug + '">&nbsp;</p></div>';
+				tpl += '<div class="small-box last"><h3>' + seiwpItemData.i18n[ 8 ] + '</h3><p id="seiwpctr' + slug + '">&nbsp;</p></div>';
 				tpl += '</div>';
 				tpl += '<div id="seiwp-areachart' + slug + '"></div>';
 				tpl += '</div>';
@@ -597,12 +597,12 @@ jQuery.fn.extend( {
 			},
 
 			drawSummary : function ( data ) {
-				jQuery( "#gdimpressions" + slug ).html( data[ 0 ] );
-				jQuery( "#gdclicks" + slug ).html( data[ 1 ] );
-				jQuery( "#gdposition" + slug ).html( data[ 2 ] );
-				jQuery( "#gdctr" + slug ).html( data[ 3 ] );
-				jQuery( "#gdservererrors" + slug ).html( data[ 5 ] );
-				jQuery( "#gdnotfound" + slug ).html( data[ 4 ] );
+				jQuery( "#seiwpimpressions" + slug ).html( data[ 0 ] );
+				jQuery( "#seiwpclicks" + slug ).html( data[ 1 ] );
+				jQuery( "#seiwpposition" + slug ).html( data[ 2 ] );
+				jQuery( "#seiwpctr" + slug ).html( data[ 3 ] );
+				jQuery( "#seiwpservererrors" + slug ).html( data[ 5 ] );
+				jQuery( "#seiwpnotfound" + slug ).html( data[ 4 ] );
 			},
 
 			throwDebug : function ( response ) {

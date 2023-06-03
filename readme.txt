@@ -81,11 +81,15 @@ When new Properties are added to Google Search Console, it may take up to a few 
 
 == Changelog ==
 
+= 2.1.7 (2023.06.03) =
+* Bug Fixes:
+	* Multiple CSS fixes on item reports 
+	
 = 2.1.6 (2023.05.31) =
 * Bug Fixes:
 	* Prefix PSR classes and namespace to avoid conflicts
 * Enhancements:
-	* Google Analytics library update
+	* Google Search Console library update
 
 = 2.1.5 (2022.12.10) =
 * Enhancements:
@@ -98,7 +102,7 @@ When new Properties are added to Google Search Console, it may take up to a few 
 
 = 2.1.3 (2022.06.18) =
 * Bug Fixes:
-	* fixes on Google Console Client library
+	* fixes on Google Search Console client library
 
 = 2.1.2 (2022.06.17) =
 * Bug Fixes:
@@ -113,7 +117,7 @@ When new Properties are added to Google Search Console, it may take up to a few 
 	* Depending on your setup, it might require re-authorization after the upgrade!
 * Enhancements:
 	* replace text with dashicons on Posts List to save column space
-	* simplify the Google Analytics API token revoke method
+	* simplify the Google Search Console API token revoke method
 	* API Client library update 
 * Bug Fixes:
 	* small CSS fixes

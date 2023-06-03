@@ -123,37 +123,6 @@
 	margin: 2px auto 10px 0;
 }
 
-[id^=seiwp-sel-period-], .seiwp-dashboard-control input {
-	-webkit-box-sizing: border-box !important;
-	-moz-box-sizing: border-box !important;
-	box-sizing: border-box !important;
-	width: auto !important;
-	font-size: 14px !important;
-	height: 28px !important;
-	float: left;
-	color: #32373c;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-	border: 1px solid #ddd !important;
-	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.07) !important;
-	background-color: #fff !important;
-	padding: 0 5px 0 5px !important;
-}
-
-[id^=seiwp-sel-report-] {
-	-webkit-box-sizing: border-box !important;
-	-moz-box-sizing: border-box !important;
-	box-sizing: border-box !important;
-	width: auto !important;
-	font-size: 14px !important;
-	margin-left: 5px;
-	height: 28px !important;
-	color: #32373c;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-	border: 1px solid #ddd;
-	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.07);
-	background-color: #fff;
-}
-
 .seiwp-dashboard-control {
 	padding-bottom: 10px;	
 }
@@ -174,9 +143,113 @@
 }
 
 .ui-dialog.seiwp {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 	font-size: 13px;
 	-webkit-box-sizing: initial;
 	-moz-box-sizing: initial;
+	width: min-content !important;
+}
+
+.ui-dialog.seiwp select, .ui-dialog.seiwp input {
+    --wp-admin--admin-bar--height: 32px;
+    -webkit-font-smoothing: subpixel-antialiased;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-weight: inherit;
+    margin: 0 1px;
+    border: 1px solid #8c8f94;
+    font-size: 14px;
+    line-height: 2;
+    color: #2c3338;
+    border-color: #8c8f94;
+    box-shadow: none;
+    border-radius: 3px;
+    padding: 0 24px 0 8px;
+    min-height: 30px;
+    -webkit-appearance: none;
+    background: #fff url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E') no-repeat right 5px top 55%;
+    background-size: 16px 16px;
+    cursor: pointer;
+    vertical-align: middle;
+    max-width: 100%;
+}
+
+.ui-dialog.seiwp select:hover, .ui-dialog.seiwp input:hover {
+	color: #2271b1;
+}
+
+.ui-dialog.seiwp select:focus, .ui-dialog.seiwp input:focus {
+	border-color: #2271b1;
+	outline-offset: 0px;
+	outline: 0px;
+	color: #0a4b78;
+	box-shadow: 0 0 0 1px #2271b1;
+}
+
+.ui-dialog.seiwp select:active, .ui-dialog.seiwp input:active {
+	border-color: #8c8f94;
+	box-shadow: none;
+}
+
+.ui-dialog.seiwp select.disabled,
+.ui-dialog.seiwp select:disabled,
+.ui-dialog.seiwp input.disabled,
+.ui-dialog.seiwp input:disabled  {
+	color: #a7aaad;
+	border-color: #dcdcde;
+	background-color: #f6f7f7;
+	/* The SVG is arrow-down-alt2 from Dashicons. */
+	background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23a0a5aa%22%2F%3E%3C%2Fsvg%3E');
+	box-shadow: none;
+	text-shadow: 0 1px 0 #fff;
+	cursor: default;
+	transform: none;
+}
+
+/* Reset Firefox inner outline that appears on :focus. */
+/* This ruleset overrides the color change on :focus thus needs to be after select:focus. */
+.ui-dialog.seiwp select:-moz-focusring, .ui-dialog.seiwp input:-moz-focusring {
+	color: transparent;
+	text-shadow: 0 0 0 #0a4b78;
+}
+
+/* Remove background focus style from IE11 while keeping focus style available on option elements. */
+.ui-dialog.seiwp select::-ms-value, .ui-dialog.seiwp input::-ms-value {
+	background: transparent;
+	color: #50575e;
+}
+
+.ui-dialog.seiwp select:hover::-ms-value, .ui-dialog.seiwp input:hover::-ms-value {
+	color: #2271b1;
+}
+
+.ui-dialog.seiwp select:focus::-ms-value, .ui-dialog.seiwp input:focus::-ms-value {
+	color: #0a4b78;
+}
+
+.ui-dialog.seiwp select.disabled::-ms-value,
+.ui-dialog.seiwp select:disabled::-ms-value,
+.ui-dialog.seiwp input.disabled::-ms-value,
+.ui-dialog.seiwp input:disabled::-ms-value {
+	color: #a7aaad;
+}
+
+/* Hide the native down arrow for select element on IE. */
+.ui-dialog.seiwp select::-ms-expand, .ui-dialog.seiwp input::-ms-expand {
+	display: none;
+}
+
+.ui-dialog.seiwp select option {
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 2;
+    cursor: pointer;
+    color: #2c3338;
+}
+
+.ui-dialog.seiwp button{
+	color: #646970;
+	background-color: inherit !important;
 }
 
 .ui-dialog.seiwp table {
