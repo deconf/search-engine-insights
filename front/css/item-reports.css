@@ -24,7 +24,7 @@
 }
 
 [id^=seiwp-container-] {
-	width: 480px;
+	width: 400px;
 }
 
 [id^=seiwp-areachart-] {
@@ -289,7 +289,7 @@
 
 @media screen and (max-width: 500px) {
 	[id^=seiwp-container-] {
-		width: 410px;
+		width: 400px;
 	}
 	[id^=seiwp-summary-] .inside .small-box {
 		width: 30.8%;
