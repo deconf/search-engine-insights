@@ -47,7 +47,7 @@ In addition, you can control who can view specific search console reports by set
 
 = Further reading =
 
-* [Search Engine Insights](https://wordpress.org/plugins/search-engine-insights/) - The perfect tool for viewing Google Search Console stats in your WordPress dashboard.
+* [Clicky Analytics](https://wordpress.org/plugins/clicky-analytics/) - An easy to use and cookie-free analytics service for website tracking.
 * [Analytics Insights](https://wordpress.org/plugins/analytics-insights/) - Connects Google Analytics with your WordPress site.
 
 == Installation ==
