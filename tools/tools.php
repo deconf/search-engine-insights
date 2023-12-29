@@ -167,8 +167,12 @@ if ( ! class_exists( 'SEIWP_Tools' ) ) {
 		 * @param mixed $value
 		 * @param number $expiration
 		 */
-		public static function set_cache( $name, $value, $expiration = 0) {
-			$option = array( 'value' => $value, 'expires' => time() + (int) $expiration );
+		public static function set_cache( $name, $value, $expiration = 1 ) {
+			if ( 0 == $expiration ) {
+				$option = array( 'value' => $value, 'expires' => 0 );
+			} else {
+				$option = array( 'value' => $value, 'expires' => time() + (int) $expiration );
+			}
 			update_option( 'seiwp_cache_' . $name, $option, 'no' );
 		}
 
@@ -190,11 +194,12 @@ if ( ! class_exists( 'SEIWP_Tools' ) ) {
 		 */
 		public static function get_cache( $name ) {
 			$option = get_option( 'seiwp_cache_' . $name );
-
 			if ( false === $option || ! isset( $option['value'] ) || ! isset( $option['expires'] ) ) {
 				return false;
 			}
-
+			if ( 0 == $option['expires'] ) {
+				return $option['value'];
+			}
 			if ( $option['expires'] < time() ) {
 				delete_option( 'seiwp_cache_' . $name );
 				return false;
@@ -269,19 +274,19 @@ if ( ! class_exists( 'SEIWP_Tools' ) ) {
 		 */
 		public static function set_error( $e, $timeout ) {
 			if ( is_object( $e ) ) {
-				if ( method_exists( $e, 'getCode' ) && method_exists( $e, 'getErrors' ) ) {
-					$error_code = $e->getCode();
+				if ( method_exists( $e, 'get_error_code' ) && method_exists( $e, 'get_error_message' ) ) {
+					$error_code = $e->get_error_code();
 					if ( 500 == $error_code || 503 == $error_code ) {
 						$timeout = 60;
 					}
-					self::set_cache( 'gapi_errors', array( $e->getCode(), (array) $e->getErrors(), esc_html( print_r( $e, true ) ) ), $timeout );
+					self::set_cache( 'api_errors', array( $e->get_error_code(), $e->get_error_message(), $e->get_error_data() ), $timeout );
 				} else {
-					self::set_cache( 'gapi_errors', array( 600, array(), esc_html( print_r( $e, true ) ) ), $timeout );
+					self::set_cache( 'api_errors', array( 600, array(), esc_html( print_r( $e, true ) ) ), $timeout );
 				}
 			} else if ( is_array( $e ) ) {
-				self::set_cache( 'gapi_errors', array( 600, array(), esc_html( print_r( $e, true ) ) ), $timeout );
+				self::set_cache( 'api_errors', array( 601, array(), esc_html( print_r( $e, true ) ) ), $timeout );
 			} else {
-				self::set_cache( 'gapi_errors', array( 600, array(), esc_html( print_r( $e, true ) ) ), $timeout );
+				self::set_cache( 'api_errors', array( 602, array(), esc_html( print_r( $e, true ) ) ), $timeout );
 			}
 			// Count Errors until midnight
 			$midnight = strtotime( "tomorrow 00:00:00" ); // UTC midnight
@@ -299,20 +304,17 @@ if ( ! class_exists( 'SEIWP_Tools' ) ) {
 		 */
 		public static function anonymize_options( $options ) {
 			global $wp_version;
-
-			if ( defined( 'SCRIPT_DEBUG' ) and SCRIPT_DEBUG ) {
-				return $options; //don't hide credentials when DEBUG is enabled
-			}
-
 			$options['wp_version'] = $wp_version;
 			$options['seiwp_version'] = SEIWP_CURRENT_VERSION;
-			if ( $options['token'] ) {
+			if ( $options['token'] && ( ! WP_DEBUG || ( is_multisite() && ! current_user_can( 'manage_network_options' ) ) ) ) {
 				$options['token'] = 'HIDDEN';
+			} else {
+				$options['token'] = (array)$options['token'];
+				//unset($options['token']['challenge']);
 			}
 			if ( $options['client_secret'] ) {
 				$options['client_secret'] = 'HIDDEN';
 			}
-
 			return $options;
 		}
 

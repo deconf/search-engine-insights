@@ -36,20 +36,11 @@ if ( ! class_exists( 'SEIWP_Backend_Widgets' ) ) {
 				return;
 			}
 
-			if ( current_user_can( 'manage_options' ) ) {
-				if ( $this->seiwp->config->options['site_jail'] ) {
-					$projectId = $this->seiwp->config->options['site_jail'];
-				} else {
-					echo '<p>' . __( "An admin should asign a default Search Engine Insights Profile.", 'search-engine-insights' ) . '</p><form action="' . menu_page_url( 'seiwp_setup', false ) . '" method="POST">' . get_submit_button( __( "Select Domain", 'search-engine-insights' ), 'secondary' ) . '</form>';
-					return;
-				}
+			if ( $this->seiwp->config->options['site_jail'] ) {
+				$projectId = $this->seiwp->config->options['site_jail'];
 			} else {
-				if ( $this->seiwp->config->options['site_jail'] ) {
-					$projectId = $this->seiwp->config->options['site_jail'];
-				} else {
-					echo '<p>' . __( "An admin should asign a default Search Engine Insights Profile.", 'search-engine-insights' ) . '</p><form action="' . menu_page_url( 'seiwp_setup', false ) . '" method="POST">' . get_submit_button( __( "Select Domain", 'search-engine-insights' ), 'secondary' ) . '</form>';
-					return;
-				}
+				echo '<p>' . __( "An admin should asign a default Search Engine Insights Profile.", 'search-engine-insights' ) . '</p><form action="' . menu_page_url( 'seiwp_setup', false ) . '" method="POST">' . get_submit_button( __( "Select Domain", 'search-engine-insights' ), 'secondary' ) . '</form>';
+				return;
 			}
 
 			if ( ! ( $projectId ) ) {

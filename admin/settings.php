@@ -288,7 +288,7 @@ final class SEIWP_Settings {
 							<td>
 								<?php $errors_count = SEIWP_Tools::get_cache( 'errors_count' ); ?>
 								<pre class="seiwp-settings-logdata"><?php echo '<span>' . __("Count: ", 'analytics-insights') . '</span>' . (int)$errors_count;?></pre>
-								<?php $error = SEIWP_Tools::get_cache( 'gapi_errors' ) ?>
+								<?php $error = SEIWP_Tools::get_cache( 'api_errors' ) ?>
 								<?php $error_code = isset( $error[0] ) ? $error[0] : 'None' ?>
 								<?php $error_reason = ( isset( $error[1] ) && !empty($error[1]) ) ? print_r( $error[1], true) : 'None' ?>
 								<?php $error_details = isset( $error[2] ) ? print_r( $error[2], true) : 'None' ?>
@@ -368,25 +368,21 @@ final class SEIWP_Settings {
 
 		if ( isset( $_REQUEST['seiwp_access_code'] ) ) {
 			if ( $_REQUEST['seiwp_access_code'] != get_option( 'seiwp_redeemed_code' ) ) {
-				try {
 					$seiwp_access_code = sanitize_text_field( $_REQUEST['seiwp_access_code'] );
 					update_option( 'seiwp_redeemed_code', $seiwp_access_code );
-					SEIWP_Tools::delete_cache( 'gapi_errors' );
+					SEIWP_Tools::delete_cache( 'api_errors' );
 
 					$token = $seiwp->gapi_controller->authenticate( $seiwp_access_code );
 
-					$array_token = (array)$token;
 
-					$seiwp->gapi_controller->client->setAccessToken( $array_token );
-
-					$seiwp->config->options['token'] = $seiwp->gapi_controller->client->getAccessToken();
+					$seiwp->config->options['token'] = $token;
 
 					$seiwp->config->set_plugin_options();
 
 					$options = self::update_options( 'setup' );
 					$message = "<div class='updated' id='seiwp-autodismiss'><p>" . __( "Plugin authorization succeeded.", 'search-engine-insights' ) . "</p></div>";
-					if ( $seiwp->config->options['token'] && $seiwp->gapi_controller->client->getAccessToken() ) {
-						$sites = $seiwp->gapi_controller->get_sites_info();
+					if ( $seiwp->config->options['token'] ) {
+						$sites = $seiwp->gapi_controller->get_sites();
 						if ( is_array( $sites ) && ! empty( $sites ) ) {
 							$seiwp->config->options['sites_list'] = $sites;
 							if ( ! $seiwp->config->options['site_jail'] ) {
@@ -397,14 +393,6 @@ final class SEIWP_Settings {
 							$options = self::update_options( 'setup' );
 						}
 					}
-				} catch ( GoogleServiceException $e ) {
-					$timeout = $seiwp->gapi_controller->get_timeouts();
-					SEIWP_Tools::set_error( $e, $timeout );
-				} catch ( Exception $e ) {
-					$timeout = $seiwp->gapi_controller->get_timeouts();
-					SEIWP_Tools::set_error( $e, $timeout );
-					$seiwp->gapi_controller->reset_token();
-				}
 			} else {
 					$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "You can only use the access code <strong>once</strong>, please generate a <strong>new access</strong> code following the instructions!", 'search-engine-insights' ) . ".</p></div>";
 			}
@@ -430,13 +418,13 @@ final class SEIWP_Settings {
 		if ( isset( $_POST['Reset_Err'] ) ) {
 			if ( isset( $_POST['seiwp_security'] ) && wp_verify_nonce( $_POST['seiwp_security'], 'seiwp_form' ) ) {
 
-				if ( SEIWP_Tools::get_cache( 'gapi_errors' ) ) {
+				if ( SEIWP_Tools::get_cache( 'api_errors' ) ) {
 
 					$info = SEIWP_Tools::system_info();
 					$info .= 'SEIWP Version: ' . SEIWP_CURRENT_VERSION;
 
 					$sep = "\n---------------------------\n";
-					$error_report = $sep . print_r( SEIWP_Tools::get_cache( 'gapi_errors' ), true );
+					$error_report = $sep . print_r( SEIWP_Tools::get_cache( 'api_errors' ), true );
 					$error_report .= $sep . SEIWP_Tools::get_cache( 'errors_count' );
 					$error_report .= $sep . $info;
 
@@ -458,7 +446,7 @@ final class SEIWP_Settings {
 				}
 
 				/* @formatter:on */
-				SEIWP_Tools::delete_cache( 'gapi_errors' );
+				SEIWP_Tools::delete_cache( 'api_errors' );
 				delete_option( 'seiwp_got_updated' );
 				$message = "<div class='updated' id='seiwp-autodismiss'><p>" . __( "All errors reseted.", 'search-engine-insights' ) . "</p></div>";
 			} else {
@@ -472,8 +460,8 @@ final class SEIWP_Settings {
 			}
 		}
 		if ( isset( $_POST['Add_Property'] ) ) {
-			if ( $seiwp->gapi_controller->add_property() ){
-				$sites = $seiwp->gapi_controller->get_sites_info();
+			if ( $seiwp->gapi_controller->add_site() ){
+				$sites = $seiwp->gapi_controller->get_sites();
 				if ( is_array( $sites ) && ! empty( $sites ) ) {
 					$seiwp->config->options['sites_list'] = $sites;
 					$site = SEIWP_Tools::guess_default_domain( $sites );
@@ -483,10 +471,10 @@ final class SEIWP_Settings {
 			}
 		}
 		if ( isset( $_POST['Verify_Property'] ) ) {
-			if ( false == $seiwp->gapi_controller->verify_property() ){
+			if ( false == $seiwp->gapi_controller->verify_site() ){
 				$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "Unable to verify site. Please disable your cache plugin or clear the page cache before retrying.", 'search-engine-insights' ) . "</p></div>";
 			} else {
-				$sites = $seiwp->gapi_controller->get_sites_info();
+				$sites = $seiwp->gapi_controller->get_sites();
 				if ( is_array( $sites ) && ! empty( $sites ) ) {
 					$seiwp->config->options['sites_list'] = $sites;
 					$site = SEIWP_Tools::guess_default_domain( $sites );
@@ -516,7 +504,7 @@ final class SEIWP_Settings {
 							<div id="post-body-content">
 								<div class="settings-wrapper">
 									<div class="inside">
-										<?php if ( $seiwp->gapi_controller->gapi_errors_handler() ) : ?>
+										<?php if ( $seiwp->gapi_controller->api_errors_handler() ) : ?>
 													<?php $message = sprintf( '<div class="error"><p>%s</p></div>', sprintf( __( 'Something went wrong, check %1$s or %2$s.', 'search-engine-insights' ), sprintf( '<a href="%1$s">%2$s</a>', menu_page_url( 'seiwp_errors_debugging', false ), __( 'Debug', 'search-engine-insights' ) ), sprintf( '<a href="%1$s">%2$s</a>', menu_page_url( 'seiwp_setup', false ), __( 'authorize the plugin', 'search-engine-insights' ) ) ) );?>
 										<?php endif;?>
 										<?php if ( isset( $message ) ) :?>
@@ -682,7 +670,7 @@ final class SEIWP_Settings {
 												</tr>
 												<tr>
 													<td colspan="2">
-													 <?php $auth = $seiwp->gapi_controller->client->createAuthUrl();?>
+													 <?php $auth = $seiwp->gapi_controller->createAuthUrl();?>
 														<button type="submit" class="button button-secondary" formaction="<?php echo esc_url_raw( $auth ); ?>"><?php _e( "Authorize Plugin", 'search-engine-insights' ); ?></button>
 														<button type="submit" name="Clear" class="button button-secondary"><?php _e( "Clear Cache", 'search-engine-insights' ); ?></button>
 													</td>
@@ -724,30 +712,29 @@ final class SEIWP_Settings {
 		echo '<script type="text/javascript">jQuery("#gapi-warning").hide()</script>';
 		if ( isset( $_REQUEST['seiwp_access_code'] ) ) {
 			if ( $_REQUEST['seiwp_access_code'] != get_option( 'seiwp_redeemed_code' ) ) {
-				try {
 					$seiwp_access_code = sanitize_text_field( $_REQUEST['seiwp_access_code'] );
 					update_option( 'seiwp_redeemed_code', $seiwp_access_code );
-					SEIWP_Tools::delete_cache( 'gapi_errors' );
+					SEIWP_Tools::delete_cache( 'api_errors' );
 
 					$token = $seiwp->gapi_controller->authenticate( $seiwp_access_code );
-					$array_token = (array)$token;
-					$seiwp->gapi_controller->client->setAccessToken( $array_token );
-					$seiwp->config->options['token'] = $seiwp->gapi_controller->client->getAccessToken();
+
+					$seiwp->config->options['token'] = $token;
 
 					$seiwp->config->set_plugin_options( true );
+
 					$options = self::update_options( 'network' );
 					$message = "<div class='updated' id='seiwp-action'><p>" . __( "Plugin authorization succeeded.", 'search-engine-insights' ) . "</p></div>";
 					if ( is_multisite() ) { // Cleanup errors on the entire network
 						foreach ( SEIWP_Tools::get_sites( array( 'number' => apply_filters( 'seiwp_sites_limit', 100 ) ) ) as $blog ) {
 							switch_to_blog( $blog['blog_id'] );
-							SEIWP_Tools::delete_cache( 'gapi_errors' );
+							SEIWP_Tools::delete_cache( 'api_errors' );
 							restore_current_blog();
 						}
 					} else {
-						SEIWP_Tools::delete_cache( 'gapi_errors' );
+						SEIWP_Tools::delete_cache( 'api_errors' );
 					}
-					if ( $seiwp->config->options['token'] && $seiwp->gapi_controller->client->getAccessToken() ) {
-						$sites = $seiwp->gapi_controller->get_sites_info();
+					if ( $seiwp->config->options['token'] ) {
+						$sites = $seiwp->gapi_controller->get_sites();
 						if ( is_array( $sites ) && ! empty( $sites ) ) {
 							$seiwp->config->options['sites_list'] = $sites;
 							if ( isset( $seiwp->config->options['site_jail'] ) && ! $seiwp->config->options['site_jail'] ) {
@@ -758,15 +745,6 @@ final class SEIWP_Settings {
 							$options = self::update_options( 'network' );
 						}
 					}
-				} catch ( GoogleServiceException $e ) {
-					$timeout = $seiwp->gapi_controller->get_timeouts();
-					SEIWP_Tools::set_error( $e, $timeout );
-					$seiwp->gapi_controller->reset_token();
-				} catch ( Exception $e ) {
-					$timeout = $seiwp->gapi_controller->get_timeouts();
-					SEIWP_Tools::set_error( $e, $timeout );
-					$seiwp->gapi_controller->reset_token();
-				}
 			} else {
 					$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "You can only use the access code once.", 'search-engine-insights' ) . "!</p></div>";
 			}
@@ -776,11 +754,11 @@ final class SEIWP_Settings {
 				$seiwp->config->options['sites_list'] = array();
 				$message = "<div class='updated' id='seiwp-autodismiss'><p>" . __( "Properties refreshed.", 'search-engine-insights' ) . "</p></div>";
 				$options = self::update_options( 'network' );
-				if ( $seiwp->config->options['token'] && $seiwp->gapi_controller->client->getAccessToken() ) {
+				if ( $seiwp->config->options['token'] ) {
 					if ( ! empty( $seiwp->config->options['sites_list'] ) ) {
 						$sites = $seiwp->config->options['sites_list'];
 					} else {
-						$sites = $seiwp->gapi_controller->get_sites_info();
+						$sites = $seiwp->gapi_controller->get_sites();
 					}
 					if ( $sites ) {
 						$seiwp->config->options['sites_list'] = $sites;
@@ -840,7 +818,7 @@ final class SEIWP_Settings {
 												<div id="post-body-content">
 													<div class="settings-wrapper">
 														<div class="inside">
-					<?php if ( $seiwp->gapi_controller->gapi_errors_handler() )  : ?>
+					<?php if ( $seiwp->gapi_controller->api_errors_handler() )  : ?>
 						<?php $message = sprintf( '<div class="error"><p>%s</p></div>', sprintf( __( 'Something went wrong, check %1$s or %2$s.', 'search-engine-insights' ), sprintf( '<a href="%1$s">%2$s</a>', menu_page_url( 'seiwp_errors_debugging', false ), __( 'Debug', 'search-engine-insights' ) ), sprintf( '<a href="%1$s">%2$s</a>', menu_page_url( 'seiwp_settings', false ), __( 'authorize the plugin', 'search-engine-insights' ) ) ) );?>
 					<?php endif; ?>
 						<?php if ( isset( $message ) ) : ?>
@@ -979,7 +957,7 @@ final class SEIWP_Settings {
 																	</tr>
 																	<tr>
 																		<td colspan="2">
-																		 <?php $auth = $seiwp->gapi_controller->client->createAuthUrl();?>
+																		 <?php $auth = $seiwp->gapi_controller->createAuthUrl();?>
 																			<button type="submit" class="button button-secondary" formaction="<?php echo esc_url_raw( $auth ); ?>"><?php _e( "Authorize Plugin", 'search-engine-insights' ); ?></button>
 																			<button type="submit" name="Clear" class="button button-secondary"><?php _e( "Clear Cache", 'search-engine-insights' ); ?></button>
 																		</td>

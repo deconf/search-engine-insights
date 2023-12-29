@@ -89,7 +89,7 @@ if ( ! class_exists( 'SEIWP_Backend_Setup' ) ) {
 			/**
 			 * SEIWP UI
 			 */
-			if ( SEIWP_Tools::get_cache( 'gapi_errors' ) ) {
+			if ( SEIWP_Tools::get_cache( 'api_errors' ) ) {
 				$ed_bubble = '!';
 			} else {
 				$ed_bubble = '';

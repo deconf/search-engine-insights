@@ -3,8 +3,8 @@ Contributors: deconf
 Donate link: https://deconf.com/donate/
 Tags: search console dashboard, google search console, search console widget, search console metatag, search console, seo
 Requires at least: 3.5
-Tested up to: 6.3
-Stable tag: 2.1.8
+Tested up to: 6.4
+Stable tag: 2.3
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -27,8 +27,6 @@ Search Engine Insights will help you understand your site's search engine traffi
 In addition to a set of general Search Console reports, per Page and Post statistics will allow further segmentation of your search engine data, providing search engine insights for your web pages.
 
 #### Google Search Console stats on your admin dashboard
-
-[youtube https://www.youtube.com/watch?v=8SAOtwRNsGk]
 
 - Four reports with overview stats about Impressions, Clicks, Position and Click Through Rate 
 - Location statistics with insights about your search engine performance by country   
@@ -80,6 +78,17 @@ When new Properties are added to Google Search Console, it may take up to a few 
 == Upgrade Notice ==
 
 == Changelog ==
+
+= 2.3 (2023.12.20) =
+* Enhancements:
+	* refactoring code and switching to wp_remote_* instead of using Google Search Console PHP library
+	* code cleanup and optimization
+* Upgrade Note:
+	* we're switching to the new, v2, Google OAuth2 flow, so re-authorizing may be required
+
+= 2.2 (2023.12.02) =
+* Bug Fixes:
+	* fixes a bug which was causing all tokens corresponding to a Gooogle Analytics account to be invalidated when clearing authorization on a website
 
 = 2.1.8 (2023.07.17) =
 * Bug Fixes:
