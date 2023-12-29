@@ -83,6 +83,8 @@ When new Properties are added to Google Search Console, it may take up to a few 
 * Enhancements:
 	* refactoring code and switching to wp_remote_* instead of using Google Search Console PHP library
 	* code cleanup and optimization
+* Bug Fixes:
+	* daterange picker bug fix, store the last selected date interval label instead of the actual date range
 * Upgrade Note:
 	* we're switching to the new, v2, Google OAuth2 flow, so re-authorizing may be required
 

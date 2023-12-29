@@ -123,20 +123,22 @@ jQuery.fn.extend( {
 		template = {
 
 			addOptions : function ( id, list ) {
-				var defaultMetric, defaultDimension, defaultView, output = [];
+				var defaultMetric, defaultDimension, defaultView, defaultInterval, output = [];
 
-				if ( !tools.getCookie( 'default_metric' ) || !tools.getCookie( 'default_dimension' ) || !tools.getCookie( 'default_swmetric' ) ) {
+				if ( !tools.getCookie( 'default_metric' ) || !tools.getCookie( 'default_dimension' ) || !tools.getCookie( 'default_swmetric' ) || !tools.getCookie( 'default_interval' ) ) {
 					defaultMetric = 'sessions';
 					defaultDimension = moment().subtract( 30, 'days' ).format( "YYYY-MM-DD" ) + ' - ' + moment().subtract( 1, 'days' ).format( "YYYY-MM-DD" );
 					swmetric = 'impressions';
 					tools.setCookie( 'default_metric', defaultMetric );
 					tools.setCookie( 'default_dimension', defaultDimension );
+					tools.setCookie( 'default_interval', defaultInterval );					
 					tools.setCookie( 'default_swmetric', swmetric );
 				} else {
 					defaultMetric = tools.getCookie( 'default_metric' );
 					defaultDimension = tools.getCookie( 'default_dimension' );
 					defaultView = tools.getCookie( 'default_view' );
 					swmetric = tools.getCookie( 'default_swmetric' );
+					defaultInterval = tools.getCookie( 'default_interval' );					
 				}
 
 				if ( list == 'submetrics' ) {
@@ -837,7 +839,7 @@ jQuery.fn.extend( {
 				locale : {
 					format : 'YYYY-MM-DD'
 				}
-			} );
+			}, function(start, end, label) { tools.setCookie( 'default_interval', label ); } );
 		} );
 
 		jQuery( 'input[name="seiwp-sel-period' + slug + '"]' ).change( function () {
