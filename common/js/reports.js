@@ -129,6 +129,7 @@ jQuery.fn.extend( {
 					defaultMetric = 'sessions';
 					defaultDimension = moment().subtract( 30, 'days' ).format( "YYYY-MM-DD" ) + ' - ' + moment().subtract( 1, 'days' ).format( "YYYY-MM-DD" );
 					swmetric = 'impressions';
+					defaultInterval = 'Last 30 Days';
 					tools.setCookie( 'default_metric', defaultMetric );
 					tools.setCookie( 'default_dimension', defaultDimension );
 					tools.setCookie( 'default_interval', defaultInterval );					
@@ -137,8 +138,33 @@ jQuery.fn.extend( {
 					defaultMetric = tools.getCookie( 'default_metric' );
 					defaultDimension = tools.getCookie( 'default_dimension' );
 					defaultView = tools.getCookie( 'default_view' );
-					swmetric = tools.getCookie( 'default_swmetric' );
-					defaultInterval = tools.getCookie( 'default_interval' );					
+					defaultInterval = tools.getCookie( 'default_interval' );	
+					switch ( defaultInterval ) {
+
+						case "Today":
+							defaultDimension = moment().subtract( 0, 'days' ).format( "YYYY-MM-DD" ) + ' - ' + moment().format( "YYYY-MM-DD" );
+							break;
+						case "Yesterday":
+							defaultDimension = moment().subtract( 1, 'days' ).format( "YYYY-MM-DD" ) + ' - ' + moment().subtract( 1, 'days').format( "YYYY-MM-DD" );						
+							break;
+						case "Last 7 Days":
+							defaultDimension = moment().subtract( 6, 'days' ).format( "YYYY-MM-DD" ) + ' - ' + moment().format( "YYYY-MM-DD" );						
+							break;
+						case "Last 30 Days":
+							defaultDimension = moment().subtract( 29, 'days' ).format( "YYYY-MM-DD" ) + ' - ' + moment().format( "YYYY-MM-DD" );						
+							break;
+						case "Last 90 Days":
+							defaultDimension = moment().subtract( 89, 'days' ).format( "YYYY-MM-DD" ) + ' - ' + moment().format( "YYYY-MM-DD" );						
+							break;
+						case "This Month":
+							defaultDimension = moment().startOf( 'month' ).format( "YYYY-MM-DD" ) + ' - ' + moment().endOf( 'month' ).format( "YYYY-MM-DD" );						
+							break;
+						case "Last Month":
+							defaultDimension = moment().subtract( 1, 'month' ).startOf( 'month' ).format( "YYYY-MM-DD" ) + ' - ' + moment().subtract( 1, 'month' ).endOf( 'month' ).format( "YYYY-MM-DD" );						
+							break;														
+					}
+					
+					swmetric = tools.getCookie( 'default_swmetric' );					
 				}
 
 				if ( list == 'submetrics' ) {

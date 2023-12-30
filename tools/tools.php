@@ -310,7 +310,7 @@ if ( ! class_exists( 'SEIWP_Tools' ) ) {
 				$options['token'] = 'HIDDEN';
 			} else {
 				$options['token'] = (array)$options['token'];
-				//unset($options['token']['challenge']);
+				unset($options['token']['challenge']);
 			}
 			if ( $options['client_secret'] ) {
 				$options['client_secret'] = 'HIDDEN';
