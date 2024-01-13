@@ -54,6 +54,11 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				$this->token_uri = SEIWP_ENDPOINT_URL . 'seiwp-token.php';
 				$this->revoke_uri = SEIWP_ENDPOINT_URL . 'seiwp-revoke.php';
 			}
+
+			if ( $this->seiwp->config->options['token'] ) {
+				$this->refresh_token();
+			}
+
 		}
 
 		/**
@@ -316,9 +321,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 * @return boolean
 		 */
 		public function verify_site() {
-			if ( $this->seiwp->config->options['token'] ) {
-				$this->refresh_token();
-			}
+
 			$token = (array) $this->seiwp->config->options['token'];
 			$access_token = $token['access_token'];
 			$headers = array( 'Authorization' => 'Bearer ' . $access_token, 'Content-Type' => 'application/json', 'Referer' => SEIWP_CURRENT_VERSION );
@@ -391,9 +394,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 * @return boolean || array
 		 */
 		public function delete_site() {
-			if ( $this->seiwp->config->options['token'] ) {
-				$this->refresh_token();
-			}
+
 			$token = (array) $this->seiwp->config->options['token'];
 			$access_token = $token['access_token'];
 			$headers = array( 'Authorization' => 'Bearer ' . $access_token, 'Content-Type' => 'application/json', 'Content-Length' => 0, 'Referer' => SEIWP_CURRENT_VERSION );
@@ -429,9 +430,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 * @return boolean || array
 		 */
 		public function add_site() {
-			if ( $this->seiwp->config->options['token'] ) {
-				$this->refresh_token();
-			}
+
 			$token = (array) $this->seiwp->config->options['token'];
 			$access_token = $token['access_token'];
 			$headers = array( 'Authorization' => 'Bearer ' . $access_token, 'Content-Type' => 'application/json', 'Content-Length' => 0, 'Referer' => SEIWP_CURRENT_VERSION );
@@ -467,9 +466,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 * @return array
 		 */
 		public function get_sites() {
-			if ( $this->seiwp->config->options['token'] ) {
-				$this->refresh_token();
-			}
+
 			$token = (array) $this->seiwp->config->options['token'];
 			$access_token = $token['access_token'];
 			$headers = array( 'Authorization' => 'Bearer ' . $access_token, 'Content-Type' => 'application/json', 'Content-Length' => 0, 'Referer' => SEIWP_CURRENT_VERSION );
@@ -576,10 +573,6 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		} **/
 
 		private function handle_searchanalytics_reports( $projectId, $from, $to, $dimensions, $options, $filters, $serial ) {
-
-			if ( $this->seiwp->config->options['token'] ) {
-				$this->refresh_token();
-			}
 
 				$transient = SEIWP_Tools::get_cache( $serial );
 				if ( false === $transient ) {
