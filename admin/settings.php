@@ -355,7 +355,6 @@ final class SEIWP_Settings {
 
 	public static function setup() {
 		$seiwp = SEIWP();
-
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
@@ -366,37 +365,35 @@ final class SEIWP_Settings {
 		}
 		echo '<script type="text/javascript">jQuery("#gapi-warning").hide()</script>';
 
-		if ( isset( $_REQUEST['seiwp_access_code'] ) ) {
-			if ( $_REQUEST['seiwp_access_code'] != get_option( 'seiwp_redeemed_code' ) ) {
+		if ( isset( $_REQUEST['seiwp_access_code'] ) || isset( $_REQUEST['code'] ) ) {
+			if ( isset( $_REQUEST['state'] ) && wp_verify_nonce( $_REQUEST['state'], 'seiwp_state' ) ) {
+				if ( isset( $_REQUEST['code'] ) ) {
+					$seiwp_access_code = sanitize_text_field( $_REQUEST['code'] );
+				} else {
 					$seiwp_access_code = sanitize_text_field( $_REQUEST['seiwp_access_code'] );
-					update_option( 'seiwp_redeemed_code', $seiwp_access_code );
-					SEIWP_Tools::delete_cache( 'api_errors' );
-
-					$token = $seiwp->gapi_controller->authenticate( $seiwp_access_code );
-
-
-					$seiwp->config->options['token'] = $token;
-
-					$seiwp->config->set_plugin_options();
-
-					$options = self::update_options( 'setup' );
-					$message = "<div class='updated' id='seiwp-autodismiss'><p>" . __( "Plugin authorization succeeded.", 'search-engine-insights' ) . "</p></div>";
-					if ( $seiwp->config->options['token'] ) {
-						$sites = $seiwp->gapi_controller->get_sites();
-						if ( is_array( $sites ) && ! empty( $sites ) ) {
-							$seiwp->config->options['sites_list'] = $sites;
-							if ( ! $seiwp->config->options['site_jail'] ) {
-								$site = SEIWP_Tools::guess_default_domain( $sites );
-								$seiwp->config->options['site_jail'] = $site;
-							}
-							$seiwp->config->set_plugin_options();
-							$options = self::update_options( 'setup' );
+				}
+				update_option( 'seiwp_redeemed_code', $seiwp_access_code );
+				SEIWP_Tools::delete_cache( 'api_errors' );
+				$token = $seiwp->gapi_controller->authenticate( $seiwp_access_code );
+				$seiwp->config->options['token'] = $token;
+				$seiwp->config->set_plugin_options();
+				$options = self::update_options( 'setup' );
+				$message = "<div class='updated' id='seiwp-autodismiss'><p>" . __( "Plugin authorization succeeded.", 'search-engine-insights' ) . "</p></div>";
+				if ( $seiwp->config->options['token'] ) {
+					$sites = $seiwp->gapi_controller->get_sites();
+					if ( is_array( $sites ) && ! empty( $sites ) ) {
+						$seiwp->config->options['sites_list'] = $sites;
+						if ( ! $seiwp->config->options['site_jail'] ) {
+							$site = SEIWP_Tools::guess_default_domain( $sites );
+							$seiwp->config->options['site_jail'] = $site;
 						}
+						$seiwp->config->set_plugin_options();
+						$options = self::update_options( 'setup' );
 					}
-			} else {
-					$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "You can only use the access code <strong>once</strong>, please generate a <strong>new access</strong> code following the instructions!", 'search-engine-insights' ) . ".</p></div>";
+				}
 			}
 		}
+
 		if ( isset( $_POST['Clear'] ) ) {
 			if ( isset( $_POST['seiwp_security'] ) && wp_verify_nonce( $_POST['seiwp_security'], 'seiwp_form' ) ) {
 				SEIWP_Tools::clear_cache();
@@ -510,7 +507,7 @@ final class SEIWP_Settings {
 										<?php if ( isset( $message ) ) :?>
 											<?php echo $message;?>
 										<?php endif; ?>
-										<form name="seiwp_form" method="post" action="<?php echo esc_url($_SERVER['REQUEST_URI']); ?>">
+										<form name="seiwp_form" method="post" action="<?php echo admin_url( 'admin.php?page=seiwp_setup' ); ?>">
 											<input type="hidden" name="options[seiwp_hidden]" value="Y">
 											<?php wp_nonce_field('seiwp_form','seiwp_security'); ?>
 											<table class="seiwp-settings-options">
@@ -638,7 +635,8 @@ final class SEIWP_Settings {
 															<?php endif; ?>
 														</select>
 														<?php if ( count( $options['sites_list'] ) > 1 ) : ?>
-														&nbsp;<input type="submit" name="Hide" class="button button-secondary" value="<?php _e( "Lock Selection", 'search-engine-insights' ); ?>" />
+														&nbsp;
+														<input type="submit" name="Hide" class="button button-secondary" value="<?php _e( "Lock Selection", 'search-engine-insights' ); ?>" />
 														<?php endif; ?>
 														<?php if ( empty( $options['sites_list'] ) ) : ?>
 															<input type="submit" name="Add_Property" class="button button-secondary" value="<?php _e( "Add & Verify your site", 'search-engine-insights' ); ?>" />
@@ -660,6 +658,11 @@ final class SEIWP_Settings {
 												<tr>
 													<td colspan="2">
 														<hr>
+													</td>
+												</tr>
+												<tr>
+													<td colspan="2" class="submit">
+														<input type="submit" name="Submit" class="button button-primary" value="<?php _e('Save Changes', 'search-engine-insights' ) ?>" />
 													</td>
 												</tr>
 												<?php else : ?>
@@ -710,45 +713,44 @@ final class SEIWP_Settings {
 		}
 
 		echo '<script type="text/javascript">jQuery("#gapi-warning").hide()</script>';
-		if ( isset( $_REQUEST['seiwp_access_code'] ) ) {
-			if ( $_REQUEST['seiwp_access_code'] != get_option( 'seiwp_redeemed_code' ) ) {
+
+		if ( isset( $_REQUEST['seiwp_access_code'] ) || isset( $_REQUEST['code'] ) ) {
+			if ( isset( $_REQUEST['state'] ) && wp_verify_nonce( $_REQUEST['state'], 'seiwp_state' ) ) {
+				if ( isset( $_REQUEST['code'] ) ) {
+					$seiwp_access_code = sanitize_text_field( $_REQUEST['code'] );
+				} else {
 					$seiwp_access_code = sanitize_text_field( $_REQUEST['seiwp_access_code'] );
-					update_option( 'seiwp_redeemed_code', $seiwp_access_code );
-					SEIWP_Tools::delete_cache( 'api_errors' );
-
-					$token = $seiwp->gapi_controller->authenticate( $seiwp_access_code );
-
-					$seiwp->config->options['token'] = $token;
-
-					$seiwp->config->set_plugin_options( true );
-
-					$options = self::update_options( 'network' );
-					$message = "<div class='updated' id='seiwp-action'><p>" . __( "Plugin authorization succeeded.", 'search-engine-insights' ) . "</p></div>";
-					if ( is_multisite() ) { // Cleanup errors on the entire network
-						foreach ( SEIWP_Tools::get_sites( array( 'number' => apply_filters( 'seiwp_sites_limit', 100 ) ) ) as $blog ) {
-							switch_to_blog( $blog['blog_id'] );
-							SEIWP_Tools::delete_cache( 'api_errors' );
-							restore_current_blog();
-						}
-					} else {
+				}
+				SEIWP_Tools::delete_cache( 'api_errors' );
+				$token = $seiwp->gapi_controller->authenticate( $seiwp_access_code );
+				$seiwp->config->options['token'] = $token;
+				$seiwp->config->set_plugin_options( true );
+				$options = self::update_options( 'network' );
+				$message = "<div class='updated' id='seiwp-action'><p>" . __( "Plugin authorization succeeded.", 'search-engine-insights' ) . "</p></div>";
+				if ( is_multisite() ) { // Cleanup errors on the entire network
+					foreach ( SEIWP_Tools::get_sites( array( 'number' => apply_filters( 'seiwp_sites_limit', 100 ) ) ) as $blog ) {
+						switch_to_blog( $blog['blog_id'] );
 						SEIWP_Tools::delete_cache( 'api_errors' );
+						restore_current_blog();
 					}
-					if ( $seiwp->config->options['token'] ) {
-						$sites = $seiwp->gapi_controller->get_sites();
-						if ( is_array( $sites ) && ! empty( $sites ) ) {
-							$seiwp->config->options['sites_list'] = $sites;
-							if ( isset( $seiwp->config->options['site_jail'] ) && ! $seiwp->config->options['site_jail'] ) {
-								$site = SEIWP_Tools::guess_default_domain( $sites );
-								$seiwp->config->options['site_jail'] = $site;
-							}
-							$seiwp->config->set_plugin_options( true );
-							$options = self::update_options( 'network' );
+				} else {
+					SEIWP_Tools::delete_cache( 'api_errors' );
+				}
+				if ( $seiwp->config->options['token'] ) {
+					$sites = $seiwp->gapi_controller->get_sites();
+					if ( is_array( $sites ) && ! empty( $sites ) ) {
+						$seiwp->config->options['sites_list'] = $sites;
+						if ( isset( $seiwp->config->options['site_jail'] ) && ! $seiwp->config->options['site_jail'] ) {
+							$site = SEIWP_Tools::guess_default_domain( $sites );
+							$seiwp->config->options['site_jail'] = $site;
 						}
+						$seiwp->config->set_plugin_options( true );
+						$options = self::update_options( 'network' );
 					}
-			} else {
-					$message = "<div class='error' id='seiwp-autodismiss'><p>" . __( "You can only use the access code once.", 'search-engine-insights' ) . "!</p></div>";
+				}
 			}
 		}
+
 		if ( isset( $_POST['Refresh'] ) ) {
 			if ( isset( $_POST['seiwp_security'] ) && wp_verify_nonce( $_POST['seiwp_security'], 'seiwp_form' ) ) {
 				$seiwp->config->options['sites_list'] = array();
@@ -824,7 +826,7 @@ final class SEIWP_Settings {
 						<?php if ( isset( $message ) ) : ?>
 							<?php echo $message; ?>
 						<?php endif; ?>
-					<form name="seiwp_form" method="post" action="<?php echo esc_url($_SERVER['REQUEST_URI']); ?>">
+					<form name="seiwp_form" method="post" action="<?php echo network_admin_url( 'admin.php?page=seiwp_setup' ); ?>">
 																<input type="hidden" name="options[seiwp_hidden]" value="Y">
 						<?php wp_nonce_field('seiwp_form','seiwp_security'); ?>
 						<table class="seiwp-settings-options">

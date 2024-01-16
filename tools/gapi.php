@@ -34,25 +34,27 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		public function __construct() {
 			$this->seiwp = SEIWP();
 			$this->quotauser = 'u' . get_current_user_id() . 's' . get_current_blog_id();
-			$security = wp_create_nonce( 'seiwp_security' );
-			if ( is_multisite() && $this->seiwp->config->options['network_mode'] ) {
-				$state_uri = network_admin_url( 'admin.php?page=seiwp_setup' ) . '&seiwp_security=' . $security;
-			} else {
-				$state_uri = admin_url( 'admin.php?page=seiwp_setup' ) . '&seiwp_security=' . $security;
-			}
-			$this->state = $state_uri;
+			$security = wp_create_nonce( 'seiwp_state' );
+
 			if ( $this->seiwp->config->options['user_api'] ) {
 				$this->client_id = $this->seiwp->config->options['client_id'];
 				$this->client_secret = $this->seiwp->config->options['client_secret'];
 				$this->redirect_uri = SEIWP_URL . 'tools/oauth2callback.php';
 				$this->token_uri = 'https://oauth2.googleapis.com/token';
 				$this->revoke_uri = 'https://oauth2.googleapis.com/revoke';
+				$this->state = $security;
 			} else {
 				$this->client_id = '445209225034-q1dg4p5se5rh3dkvtpvj323tlr5ibt1q.apps.googleusercontent.com';
 				$this->client_secret = 'GOCSPX';
 				$this->redirect_uri = SEIWP_ENDPOINT_URL . 'oauth2callback.php';
 				$this->token_uri = SEIWP_ENDPOINT_URL . 'seiwp-token.php';
 				$this->revoke_uri = SEIWP_ENDPOINT_URL . 'seiwp-revoke.php';
+				if ( is_multisite() && $this->seiwp->config->options['network_mode'] ) {
+					$state_uri = network_admin_url( 'admin.php?page=seiwp_setup' ) . '&state=' . $security;
+				} else {
+					$state_uri = admin_url( 'admin.php?page=seiwp_setup' ) . '&state=' . $security;
+				}
+				$this->state = $state_uri;
 			}
 
 			if ( $this->seiwp->config->options['token'] ) {

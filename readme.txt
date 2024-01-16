@@ -4,7 +4,7 @@ Donate link: https://deconf.com/donate/
 Tags: search console dashboard, google search console, search console widget, search console metatag, search console, seo
 Requires at least: 3.5
 Tested up to: 6.4
-Stable tag: 2.4
+Stable tag: 2.5
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -79,6 +79,12 @@ When new Properties are added to Google Search Console, it may take up to a few 
 
 == Changelog ==
 
+= 2.5 (2024.01.16) =
+* Enhancements:
+	* fixed a bug causing the plugin to lose authentication when saving settings
+* Security:
+	* Level: medium; multiple conditions must be met and valid only for websites which are using their own Google API Projects; credits [WPScan Team](https://wpscan.com/)
+	 	
 = 2.4 (2024.01.10) =
 * Enhancements:
 	* refresh Google Search Console API token only once per session
