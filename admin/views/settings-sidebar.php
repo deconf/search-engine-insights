@@ -38,13 +38,13 @@
 			</h3>
 			<div class="inside">
 				<div class="seiwp-desc">
-					<div class="g-ytsubscribe" data-channel="TheDeConf" data-layout="default" data-count="default"></div>
-					<script src="https://apis.google.com/js/platform.js" async defer></script>
+					<script src="https://apis.google.com/js/platform.js"></script>
+					<div class="g-ytsubscribe" data-channelid="UC1OwHlBYIYqVJQDNVqXFA8g" data-layout="default" data-count="default"></div>
 				</div>
 				<br />
 				<div class="seiwp-desc">
-					<a href="https://twitter.com/deconfcom" class="twitter-follow-button" data-show-screen-name="false"></a>
 					<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+					<a class="twitter-follow-button" href="https://twitter.com/deconfcom" data-show-screen-name="true" data-size="large" >Follow @deconfcom</a>
 				</div>
 			</div>
 		</div>
