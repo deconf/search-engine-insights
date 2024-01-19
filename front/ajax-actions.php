@@ -35,7 +35,7 @@ if ( ! class_exists( 'SEIWP_Frontend_Ajax' ) ) {
 		 */
 		public function ajax_item_reports() {
 			if ( ! isset( $_POST['seiwp_security_frontend_item_reports'] ) || ! wp_verify_nonce( $_POST['seiwp_security_frontend_item_reports'], 'seiwp_frontend_item_reports' ) ) {
-				wp_die( - 30 );
+				wp_die( 630 );
 			}
 
 			$from = sanitize_option( 'date_format', $_POST['from'] );
@@ -54,7 +54,7 @@ if ( ! class_exists( 'SEIWP_Frontend_Ajax' ) ) {
 			}
 
 			if ( ! SEIWP_Tools::check_roles( $this->seiwp->config->options['access_front'] ) || 0 == $this->seiwp->config->options['frontend_item_reports'] ) {
-				wp_die( - 31 );
+				wp_die( 631 );
 			}
 
 			if ( $this->seiwp->config->options['token'] && $this->seiwp->config->options['site_jail'] ) {
@@ -62,13 +62,13 @@ if ( ! class_exists( 'SEIWP_Frontend_Ajax' ) ) {
 					$this->seiwp->gapi_controller = new SEIWP_GAPI_Controller();
 				}
 			} else {
-				wp_die( - 24 );
+				wp_die( 624 );
 			}
 
 			if ( $this->seiwp->config->options['site_jail'] ) {
 				$projectId = $this->seiwp->config->options['site_jail'];
 			} else {
-				wp_die( - 26 );
+				wp_die( 626 );
 			}
 
 			$this->seiwp->gapi_controller->timeshift = (int) current_time( 'timestamp' ) - time();

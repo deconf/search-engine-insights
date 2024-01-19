@@ -151,17 +151,18 @@ if ( ! class_exists( 'SEIWP_Config' ) ) {
 				update_option( 'seiwp_version', SEIWP_CURRENT_VERSION );
 				update_option( 'seiwp_got_updated', true );
 				SEIWP_Tools::clear_cache();
-				SEIWP_Tools::delete_cache( 'last_error' );
 				if ( is_multisite() ) { // Cleanup errors and cookies on the entire network
 					foreach ( SEIWP_Tools::get_sites( array( 'number' => apply_filters( 'seiwp_sites_limit', 100 ) ) ) as $blog ) {
 						switch_to_blog( $blog['blog_id'] );
-						SEIWP_Tools::delete_cache( 'gapi_errors' );
+						SEIWP_Tools::delete_cache( 'api_errors' );
 						restore_current_blog();
 					}
 				} else {
-					SEIWP_Tools::delete_cache( 'gapi_errors' );
+					SEIWP_Tools::delete_cache( 'api_errors' );
 				}
 			}
+
+			SEIWP_Tools::delete_cache( 'last_error' ); // removed since 2.1.5
 
 			/* @formatter:off */
 			$zeros = array('sites_list_locked');

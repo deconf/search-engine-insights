@@ -123,20 +123,48 @@ jQuery.fn.extend( {
 		template = {
 
 			addOptions : function ( id, list ) {
-				var defaultMetric, defaultDimension, defaultView, output = [];
+				var defaultMetric, defaultDimension, defaultView, defaultInterval, output = [];
 
-				if ( !tools.getCookie( 'default_metric' ) || !tools.getCookie( 'default_dimension' ) || !tools.getCookie( 'default_swmetric' ) ) {
+				if ( !tools.getCookie( 'default_metric' ) || !tools.getCookie( 'default_dimension' ) || !tools.getCookie( 'default_swmetric' ) || !tools.getCookie( 'default_interval' ) ) {
 					defaultMetric = 'sessions';
 					defaultDimension = moment().subtract( 30, 'days' ).format( "YYYY-MM-DD" ) + ' - ' + moment().subtract( 1, 'days' ).format( "YYYY-MM-DD" );
 					swmetric = 'impressions';
+					defaultInterval = 'Last 30 Days';
 					tools.setCookie( 'default_metric', defaultMetric );
 					tools.setCookie( 'default_dimension', defaultDimension );
+					tools.setCookie( 'default_interval', defaultInterval );					
 					tools.setCookie( 'default_swmetric', swmetric );
 				} else {
 					defaultMetric = tools.getCookie( 'default_metric' );
 					defaultDimension = tools.getCookie( 'default_dimension' );
 					defaultView = tools.getCookie( 'default_view' );
-					swmetric = tools.getCookie( 'default_swmetric' );
+					defaultInterval = tools.getCookie( 'default_interval' );	
+					switch ( defaultInterval ) {
+
+						case "Today":
+							defaultDimension = moment().subtract( 0, 'days' ).format( "YYYY-MM-DD" ) + ' - ' + moment().format( "YYYY-MM-DD" );
+							break;
+						case "Yesterday":
+							defaultDimension = moment().subtract( 1, 'days' ).format( "YYYY-MM-DD" ) + ' - ' + moment().subtract( 1, 'days').format( "YYYY-MM-DD" );						
+							break;
+						case "Last 7 Days":
+							defaultDimension = moment().subtract( 6, 'days' ).format( "YYYY-MM-DD" ) + ' - ' + moment().format( "YYYY-MM-DD" );						
+							break;
+						case "Last 30 Days":
+							defaultDimension = moment().subtract( 29, 'days' ).format( "YYYY-MM-DD" ) + ' - ' + moment().format( "YYYY-MM-DD" );						
+							break;
+						case "Last 90 Days":
+							defaultDimension = moment().subtract( 89, 'days' ).format( "YYYY-MM-DD" ) + ' - ' + moment().format( "YYYY-MM-DD" );						
+							break;
+						case "This Month":
+							defaultDimension = moment().startOf( 'month' ).format( "YYYY-MM-DD" ) + ' - ' + moment().endOf( 'month' ).format( "YYYY-MM-DD" );						
+							break;
+						case "Last Month":
+							defaultDimension = moment().subtract( 1, 'month' ).startOf( 'month' ).format( "YYYY-MM-DD" ) + ' - ' + moment().subtract( 1, 'month' ).endOf( 'month' ).format( "YYYY-MM-DD" );						
+							break;														
+					}
+					
+					swmetric = tools.getCookie( 'default_swmetric' );					
 				}
 
 				if ( list == 'submetrics' ) {
@@ -205,6 +233,7 @@ jQuery.fn.extend( {
 
 		reports = {
 			oldViewPort : 0,
+			inProgress : 0,
 			orgChartTableChartData : '',
 			tableChartData : '',
 			orgChartPieChartsData : '',
@@ -238,10 +267,10 @@ jQuery.fn.extend( {
 				tpl = '<div id="seiwp-areachartsummary' + slug + '">';
 				tpl += '<div id="seiwp-summary' + slug + '">';
 				tpl += '<div class="inside">';
-				tpl += '<div class="small-box first"><h3>' + seiwpItemData.i18n[ 5 ] + '</h3><p id="gdimpressions' + slug + '">&nbsp;</p></div>';
-				tpl += '<div class="small-box second"><h3>' + seiwpItemData.i18n[ 6 ] + '</h3><p id="gdclicks' + slug + '">&nbsp;</p></div>';
-				tpl += '<div class="small-box third"><h3>' + seiwpItemData.i18n[ 7 ] + '</h3><p id="gdposition' + slug + '">&nbsp;</p></div>';
-				tpl += '<div class="small-box last"><h3>' + seiwpItemData.i18n[ 8 ] + '</h3><p id="gdctr' + slug + '">&nbsp;</p></div>';
+				tpl += '<div class="small-box first"><h3>' + seiwpItemData.i18n[ 5 ] + '</h3><p id="seiwpimpressions' + slug + '">&nbsp;</p></div>';
+				tpl += '<div class="small-box second"><h3>' + seiwpItemData.i18n[ 6 ] + '</h3><p id="seiwpclicks' + slug + '">&nbsp;</p></div>';
+				tpl += '<div class="small-box third"><h3>' + seiwpItemData.i18n[ 7 ] + '</h3><p id="seiwpposition' + slug + '">&nbsp;</p></div>';
+				tpl += '<div class="small-box last"><h3>' + seiwpItemData.i18n[ 8 ] + '</h3><p id="seiwpctr' + slug + '">&nbsp;</p></div>';
 				tpl += '</div>';
 				tpl += '<div id="seiwp-areachart' + slug + '"></div>';
 				tpl += '</div>';
@@ -597,12 +626,12 @@ jQuery.fn.extend( {
 			},
 
 			drawSummary : function ( data ) {
-				jQuery( "#gdimpressions" + slug ).html( data[ 0 ] );
-				jQuery( "#gdclicks" + slug ).html( data[ 1 ] );
-				jQuery( "#gdposition" + slug ).html( data[ 2 ] );
-				jQuery( "#gdctr" + slug ).html( data[ 3 ] );
-				jQuery( "#gdservererrors" + slug ).html( data[ 5 ] );
-				jQuery( "#gdnotfound" + slug ).html( data[ 4 ] );
+				jQuery( "#seiwpimpressions" + slug ).html( data[ 0 ] );
+				jQuery( "#seiwpclicks" + slug ).html( data[ 1 ] );
+				jQuery( "#seiwpposition" + slug ).html( data[ 2 ] );
+				jQuery( "#seiwpctr" + slug ).html( data[ 3 ] );
+				jQuery( "#seiwpservererrors" + slug ).html( data[ 5 ] );
+				jQuery( "#seiwpnotfound" + slug ).html( data[ 4 ] );
 			},
 
 			throwDebug : function ( response ) {
@@ -791,26 +820,34 @@ jQuery.fn.extend( {
 			},
 
 			init : function () {
-
-				try {
-					SEIWPNProgress.configure( {
-						parent : "#seiwp-progressbar" + slug,
-						showSpinner : false
-					} );
-					SEIWPNProgress.start();
-				} catch ( e ) {
-					reports.alertMessage( seiwpItemData.i18n[ 0 ] );
-				}
-
-				reports.render( jQuery( '#seiwp-sel-property' + slug ).val(), jQuery( 'input[name="seiwp-sel-period' + slug + '"]' ).val(), jQuery( '#seiwp-sel-report' + slug ).val() );
-
-				jQuery( window ).resize( function () {
-					var diff = jQuery( window ).width() - reports.oldViewPort;
-					if ( ( diff < -5 ) || ( diff > 5 ) ) {
-						reports.oldViewPort = jQuery( window ).width();
-						reports.refresh(); // refresh only on over 5px viewport width changes
+			
+				if ( !reports.inProgress ) {
+					
+					reports.inProgress = 1;
+					
+					try {
+						SEIWPNProgress.configure( {
+							parent : "#seiwp-progressbar" + slug,
+							showSpinner : false
+						} );
+						SEIWPNProgress.start();
+					} catch ( e ) {
+						reports.alertMessage( seiwpItemData.i18n[ 0 ] );
 					}
-				} );
+	
+					reports.render( jQuery( '#seiwp-sel-property' + slug ).val(), jQuery( 'input[name="seiwp-sel-period' + slug + '"]' ).val(), jQuery( '#seiwp-sel-report' + slug ).val() );
+	
+					jQuery( window ).resize( function () {
+						var diff = jQuery( window ).width() - reports.oldViewPort;
+						if ( ( diff < -5 ) || ( diff > 5 ) ) {
+							reports.oldViewPort = jQuery( window ).width();
+							reports.refresh(); // refresh only on over 5px viewport width changes
+						}
+					} );
+					
+					reports.inProgress = 0;
+					
+				}
 			}
 		}
 
@@ -822,6 +859,14 @@ jQuery.fn.extend( {
 			reports.init();
 		} );
 
+		jQuery( 'input[name="seiwp-sel-period' + slug + '"]' ).change( function () {
+			reports.init();
+		} );
+
+		jQuery( '#seiwp-sel-report' + slug ).change( function () {
+			reports.init();
+		} );	
+				
 		jQuery( function () {
 			jQuery( 'input[name="seiwp-sel-period' + slug + '"]' ).daterangepicker( {
 				ranges : {
@@ -837,15 +882,7 @@ jQuery.fn.extend( {
 				locale : {
 					format : 'YYYY-MM-DD'
 				}
-			} );
-		} );
-
-		jQuery( 'input[name="seiwp-sel-period' + slug + '"]' ).change( function () {
-			reports.init();
-		} );
-
-		jQuery( '#seiwp-sel-report' + slug ).change( function () {
-			reports.init();
+			}, function(start, end, label) { tools.setCookie( 'default_interval', label ); } );
 		} );
 
 		jQuery( '[id^=seiwp-swmetric-]' ).click( function () {

@@ -3,8 +3,8 @@ Contributors: deconf
 Donate link: https://deconf.com/donate/
 Tags: search console dashboard, google search console, search console widget, search console metatag, search console, seo
 Requires at least: 3.5
-Tested up to: 6.0
-Stable tag: 2.1.3
+Tested up to: 6.4
+Stable tag: 2.5
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -28,8 +28,6 @@ In addition to a set of general Search Console reports, per Page and Post statis
 
 #### Google Search Console stats on your admin dashboard
 
-[youtube https://www.youtube.com/watch?v=8SAOtwRNsGk]
-
 - Four reports with overview stats about Impressions, Clicks, Position and Click Through Rate 
 - Location statistics with insights about your search engine performance by country   
 - Page stats which will show you how your web pages are performing
@@ -47,7 +45,7 @@ In addition, you can control who can view specific search console reports by set
 
 = Further reading =
 
-* [Search Engine Insights](https://wordpress.org/plugins/search-engine-insights/) - The perfect tool for viewing Google Search Console stats in your WordPress dashboard.
+* [Clicky Analytics](https://wordpress.org/plugins/clicky-analytics/) - An easy to use and cookie-free analytics service for website tracking.
 * [Analytics Insights](https://wordpress.org/plugins/analytics-insights/) - Connects Google Analytics with your WordPress site.
 
 == Installation ==
@@ -81,9 +79,60 @@ When new Properties are added to Google Search Console, it may take up to a few 
 
 == Changelog ==
 
+= 2.6 (2024.01.18) =
+* Bug Fixes:
+	* fixes a bug preventing Google Search Console report to have more than 1000 lines
+	* prevent multiple Google Search Console reports calls at first widget render	
+	
+= 2.5 (2024.01.16) =
+* Bug Fixes:
+	* fixed a bug causing the plugin to lose authentication when saving settings
+* Security:
+	* Level: medium; multiple conditions must be met and valid only for websites which are using their own Google API Projects; credits [WPScan Team](https://wpscan.com/)
+	 	
+= 2.4 (2024.01.10) =
+* Enhancements:
+	* refresh Google Search Console API token only once per session
+
+= 2.3 (2023.12.20) =
+* Enhancements:
+	* refactoring code and switching to wp_remote_* instead of using Google Search Console PHP library
+	* code cleanup and optimization
+* Bug Fixes:
+	* daterange picker bug fix, store the last selected date interval label instead of the actual date range
+* Upgrade Note:
+	* we're switching to the new, v2, Google OAuth2 flow, so re-authorizing may be required
+
+= 2.2 (2023.12.02) =
+* Bug Fixes:
+	* fixes a bug which was causing all tokens corresponding to a Gooogle Analytics account to be invalidated when clearing authorization on a website
+
+= 2.1.8 (2023.07.17) =
+* Bug Fixes:
+	* fixes the authorization endpoint which was causing issues with refresh toknes
+
+= 2.1.7 (2023.06.03) =
+* Bug Fixes:
+	* Multiple CSS fixes on item reports 
+	
+= 2.1.6 (2023.05.31) =
+* Bug Fixes:
+	* Prefix PSR classes and namespace to avoid conflicts
+* Enhancements:
+	* Google Search Console library update
+
+= 2.1.5 (2022.12.10) =
+* Enhancements:
+	* Error handling improvements
+
+= 2.1.4 (2022.10.17) =
+* Bug Fixes:
+	* solves precision loses warning for PHP 8.1 
+	* some namespace fixes
+
 = 2.1.3 (2022.06.18) =
 * Bug Fixes:
-	* fixes on Google Console Client library
+	* fixes on Google Search Console client library
 
 = 2.1.2 (2022.06.17) =
 * Bug Fixes:
@@ -98,7 +147,7 @@ When new Properties are added to Google Search Console, it may take up to a few 
 	* Depending on your setup, it might require re-authorization after the upgrade!
 * Enhancements:
 	* replace text with dashicons on Posts List to save column space
-	* simplify the Google Analytics API token revoke method
+	* simplify the Google Search Console API token revoke method
 	* API Client library update 
 * Bug Fixes:
 	* small CSS fixes

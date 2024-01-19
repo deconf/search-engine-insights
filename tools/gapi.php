@@ -9,9 +9,7 @@
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) )
 	exit();
-
-use Google\Service\Exception as GoogleServiceException;
-
+use Deconf\SEIWP\Google\Service\Exception as GoogleServiceException;
 if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 
 	final class SEIWP_GAPI_Controller {
@@ -26,83 +24,168 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 
 		private $seiwp;
 
-		private $access = array( '445209225034-q1dg4p5se5rh3dkvtpvj323tlr5ibt1q.apps.googleusercontent.com', 'secret' );
+		private $redirect_uri;
+
+		private $state;
 
 		/**
 		 * Google API Client Initialization
 		 */
 		public function __construct() {
 			$this->seiwp = SEIWP();
-			include_once ( SEIWP_DIR . 'tools/vendor/autoload.php' );
-			$this->client = new Deconf\SEIWP\Google\Client();
-
-			// add Proxy server settings to Guzzle, if defined
-
-			if ( defined( 'WP_PROXY_HOST' ) && defined( 'WP_PROXY_PORT' ) ) {
-				$httpoptions = array();
-				$httpoptions [ 'proxy' ] = "'" . WP_PROXY_HOST . ":". WP_PROXY_PORT ."'";
-				if ( defined( 'WP_PROXY_USERNAME' ) && defined( 'WP_PROXY_PASSWORD' ) ) {
-					$httpoptions [ 'auth' ] = array( WP_PROXY_USERNAME, WP_PROXY_PASSWORD );
-				}
-				$httpClient = new Deconf\SEIWP\GuzzleHttp\Client( $httpoptions );
-				$this->client->setHttpClient( $httpClient );
-			}
-
-			$this->client->setScopes( array( 'https://www.googleapis.com/auth/webmasters', 'https://www.googleapis.com/auth/siteverification' ) );
-			$this->client->setAccessType( 'offline' );
-			$this->client->setApprovalPrompt( 'force' );
-			$this->client->setApplicationName( 'SEIWP ' . SEIWP_CURRENT_VERSION );
-			$security = wp_create_nonce( 'seiwp_security' );
-			if ( is_multisite() && $this->seiwp->config->options['network_mode'] ) {
-				$state_uri = network_admin_url( 'admin.php?page=seiwp_setup' ) . '&seiwp_security=' . $security;
-			} else {
-				$state_uri = admin_url( 'admin.php?page=seiwp_setup' ) . '&seiwp_security=' . $security;
-			}
-			$this->client->setState( $state_uri );
-			$this->managequota = 'u' . get_current_user_id() . 's' . get_current_blog_id();
+			$this->quotauser = 'u' . get_current_user_id() . 's' . get_current_blog_id();
+			$security = wp_create_nonce( 'seiwp_state' );
 			if ( $this->seiwp->config->options['user_api'] ) {
-				$this->client->setClientId( $this->seiwp->config->options['client_id'] );
-				$this->client->setClientSecret( $this->seiwp->config->options['client_secret'] );
-				$this->client->setRedirectUri( SEIWP_URL . 'tools/oauth2callback.php' );
-				define( 'SEIWP_OAUTH2_REVOKE_URI', 'https://oauth2.googleapis.com/revoke' );
-				define( 'SEIWP_OAUTH2_TOKEN_URI', 'https://oauth2.googleapis.com/token' );
+				$this->client_id = $this->seiwp->config->options['client_id'];
+				$this->client_secret = $this->seiwp->config->options['client_secret'];
+				$this->redirect_uri = SEIWP_URL . 'tools/oauth2callback.php';
+				$this->token_uri = 'https://oauth2.googleapis.com/token';
+				$this->revoke_uri = 'https://oauth2.googleapis.com/revoke';
+				$this->state = $security;
 			} else {
-				$this->client->setClientId( $this->access[0] );
-				$this->client->setClientSecret( $this->access[1] );
-				$this->client->setRedirectUri( SEIWP_ENDPOINT_URL . 'oauth2callback.php' );
-				define( 'SEIWP_OAUTH2_REVOKE_URI', SEIWP_ENDPOINT_URL . 'seiwp-revoke.php' );
-				define( 'SEIWP_OAUTH2_TOKEN_URI', SEIWP_ENDPOINT_URL . 'seiwp-token.php' );
+				$this->client_id = '445209225034-q1dg4p5se5rh3dkvtpvj323tlr5ibt1q.apps.googleusercontent.com';
+				$this->client_secret = 'GOCSPX';
+				$this->redirect_uri = SEIWP_ENDPOINT_URL . 'oauth2callback.php';
+				$this->token_uri = SEIWP_ENDPOINT_URL . 'seiwp-token.php';
+				$this->revoke_uri = SEIWP_ENDPOINT_URL . 'seiwp-revoke.php';
+				if ( is_multisite() && $this->seiwp->config->options['network_mode'] ) {
+					$state_uri = network_admin_url( 'admin.php?page=seiwp_setup' ) . '&state=' . $security;
+				} else {
+					$state_uri = admin_url( 'admin.php?page=seiwp_setup' ) . '&state=' . $security;
+				}
+				$this->state = $state_uri;
 			}
-
-			/**
-			 * SEIWP Endpoint support
-			 */
 			if ( $this->seiwp->config->options['token'] ) {
-				$token = $this->seiwp->config->options['token'];
-				if ( $token ) {
-					try {
-						$array_token = (array)$token;
-						$this->client->setAccessToken( $array_token );
-						if ( $this->client->isAccessTokenExpired() ) {
-							$creds = $this->client->fetchAccessTokenWithRefreshToken( $this->client->getRefreshToken() );
-							if ( $creds && isset( $creds['access_token'] ) ) {
-								$this->seiwp->config->options['token'] = $this->client->getAccessToken();
-							} else {
-								$timeout = $this->get_timeouts( 'midnight' );
-								SEIWP_Tools::set_error( $creds, $timeout );
-								if ( isset( $creds['error'] ) && 'invalid_grant' == $creds['error'] ){
-									$this->reset_token();
-								}
+				$this->refresh_token();
+			}
+		}
+
+		/**
+		 * Creates the oauth2 link for Google API authorization
+		 * @return string
+		 */
+		public function createAuthUrl() {
+			$scope = 'https://www.googleapis.com/auth/webmasters https://www.googleapis.com/auth/siteverification';
+			// @formatter:off
+			$auth_url = 'https://accounts.google.com/o/oauth2/v2/auth?';
+			$query_arr = array(
+				'client_id' => $this->client_id,
+				'redirect_uri' => $this->redirect_uri,
+				'response_type' => 'code',
+				'scope' => $scope,
+				'state' => $this->state,
+				'access_type' => 'offline',
+				'prompt' => 'consent',
+			);
+			// @formatter:on
+			$auth_url = $auth_url . http_build_query( $query_arr );
+			return $auth_url;
+		}
+
+		/**
+		 * Handles the exchange of an access code with a token
+		 * @param string $access_code
+		 * @return string|mixed
+		 */
+		public function authenticate( $access_code ) {
+			// @formatter:off
+			$token_data = array(
+				'client_id' => $this->client_id,
+				'client_secret' => $this->client_secret,
+				'code' => $access_code,
+				'redirect_uri' => $this->redirect_uri,
+				'grant_type' => 'authorization_code',
+			);
+			$request_args = array( 'body' => $token_data, 'headers' => array( 'Referer' => SEIWP_CURRENT_VERSION ) );
+			// @formatter:on
+			$response = wp_remote_post( $this->token_uri, $request_args );
+			if ( is_wp_error( $response ) ) {
+				$timeout = $this->get_timeouts();
+				SEIWP_Tools::set_error( $response, $timeout );
+				return false;
+			}
+			$body = wp_remote_retrieve_body( $response );
+			$token = json_decode( $body, true );
+			if ( isset( $token['error'] ) ) {
+				$timeout = $this->get_timeouts();
+				$error = new WP_Error();
+				if ( isset( $token['error']['code'] ) && isset( $token['error']['code'] ) && isset( $token['error']['status'] ) ) {
+					$error->add( $token['error']['code'], $token['error']['message'], array( $token['error']['status'], 'trying to exchange access code for token' ) );
+				} else if ( isset( $token['error'] ) && isset( $token['error_description'] ) ) {
+					$error->add( $token['error'], $token['error_description'], 'trying to exchange access code for token' );
+				} else if ( isset( $token['error']['code'] ) && isset( $token['error']['message'] ) ) {
+					$error->add( $token['error']['code'], $token['error']['message'], 'trying to get site META' );
+				}
+				SEIWP_Tools::set_error( $error, $timeout );
+				return false;
+			}
+			if ( isset( $token['access_token'] ) ) {
+				return $token;
+			} else {
+				return false;
+			}
+		}
+
+		/**
+		 * Handles the token refresh process
+		 * @return string|number|boolean
+		 */
+		public function refresh_token() {
+			$token = (array) $this->seiwp->config->options['token'];
+			$refresh_token = $token['refresh_token'];
+			$challenge = ( isset( $token['challenge'] ) && '' != $token['challenge'] ) ? $token['challenge'] : '';
+			if ( ! $token || ! isset( $token['expires_in'] ) || ( $token['created'] + ( $token['expires_in'] - 30 ) ) < time() ) {
+				// @formatter:off
+				$post_data = array(
+					'client_id' => $this->client_id,
+					'client_secret' => $this->seiwp->config->options['user_api'] ? $this->client_secret : $this->client_secret . '-' . $challenge,
+					'refresh_token' => $refresh_token,
+					'grant_type' => 'refresh_token'
+				);
+				// @formatter:on
+				$request_args = array( 'body' => $post_data, 'headers' => array( 'Referer' => SEIWP_CURRENT_VERSION ) );
+				if ( $this->seiwp->config->options['user_api'] ) {
+					$token_uri = 'https://oauth2.googleapis.com/token';
+				} else {
+					$token_uri = $challenge ? 'https://oauth2.googleapis.com/token' : SEIWP_ENDPOINT_URL . 'seiwp-token.php';
+				}
+				$response = wp_remote_post( $token_uri, $request_args );
+				if ( is_wp_error( $response ) ) {
+					$timeout = $this->get_timeouts();
+					SEIWP_Tools::set_error( $response, $timeout );
+				} else {
+					$body = wp_remote_retrieve_body( $response );
+					if ( is_string( $body ) && ! empty( $body ) ) {
+						$newtoken = json_decode( $body, true );
+						if ( isset( $newtoken['error'] ) ) {
+							$timeout = $this->get_timeouts();
+							$error = new WP_Error();
+							if ( isset( $newtoken['error']['code'] ) && isset( $newtoken['error']['code'] ) && isset( $newtoken['error']['status'] ) ) {
+								$error->add( $newtoken['error']['code'], $newtoken['error']['message'], array( $newtoken['error']['status'], 'trying to refresh token' ) );
+							} else if ( isset( $newtoken['error'] ) && isset( $newtoken['error_description'] ) ) {
+								$error->add( $newtoken['error'], $newtoken['error_description'], 'trying to refresh token' );
+							} else if ( isset( $newtoken['error']['code'] ) && isset( $newtoken['error']['message'] ) ) {
+								$error->add( $newtoken['error']['code'], $newtoken['error']['message'], 'trying to get site META' );
 							}
+							SEIWP_Tools::set_error( $error, $timeout );
+							return false;
 						}
-					} catch ( GoogleServiceException $e ) {
-						$timeout = $this->get_timeouts( 'midnight' );
-						SEIWP_Tools::set_error( $e, $timeout );
-						$this->reset_token();
-					} catch ( Exception $e ) {
-						$timeout = $this->get_timeouts( 'midnight' );
-						SEIWP_Tools::set_error( $e, $timeout );
-						$this->reset_token();
+						if ( ! empty( $newtoken ) && isset( $newtoken['access_token'] ) ) {
+							if ( ! isset( $newtoken['created'] ) ) {
+								$newtoken['created'] = time();
+							}
+							if ( ! isset( $newtoken['refresh_token'] ) ) {
+								$newtoken['refresh_token'] = $refresh_token;
+							}
+							if ( ! isset( $newtoken['challenge'] ) && '' != $challenge ) {
+								$newtoken['challenge'] = $challenge;
+							}
+							$this->seiwp->config->options['token'] = $newtoken;
+						} else {
+							$this->seiwp->config->options['token'] = false;
+						}
+					} else {
+						$this->seiwp->config->options['token'] = false;
 					}
 					if ( is_multisite() && $this->seiwp->config->options['network_mode'] ) {
 						$this->seiwp->config->set_plugin_options( true );
@@ -111,22 +194,10 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 					}
 				}
 			}
-
-			$this->service = new Deconf\SEIWP\Google\Service\SearchConsole( $this->client );
-
-		}
-
-		public function authenticate( $access_code ) {
-
-			try {
-				$this->client->fetchAccessTokenWithAuthCode( $access_code );
-				return $this->client->getAccessToken();
-			} catch ( GoogleServiceException $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
-				SEIWP_Tools::set_error( $e, $timeout );
-			} catch ( Exception $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
-				SEIWP_Tools::set_error( $e, $timeout );
+			if ( $this->seiwp->config->options['token'] ) {
+				return true;
+			} else {
+				return false;
 			}
 		}
 
@@ -136,22 +207,13 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 * @param
 		 *            $all
 		 */
-		public function reset_token( $all = false ) {
-
-			$token = $this->client->getAccessToken();
-
-			if ( $token ) {
-				$this->client->revokeToken( $token );
-			}
-
-			if ( $all ){
-				$this->seiwp->config->options['site_jail'] = "";
+		public function reset_token( $all = false, $valid_token = true ) {
+			if ( $all ) {
 				$this->seiwp->config->options['sites_list'] = array();
+				$this->seiwp->config->options['site_jail'] = '';
 			}
-
-			$this->seiwp->config->options['token'] = "";
+			$this->seiwp->config->options['token'] = false;
 			$this->seiwp->config->options['sites_list_locked'] = 0;
-
 			if ( is_multisite() && $this->seiwp->config->options['network_mode'] ) {
 				$this->seiwp->config->set_plugin_options( true );
 			} else {
@@ -160,27 +222,56 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		}
 
 		/**
-		 * Handles errors returned by Google API Client to avoid unnecessary requests
+		 * Handles the token revoke process
+		 *
+		 * @param
+		 *            $all
+		 */
+		public function revoke_token( $all = false, $valid_token = true ) {
+			// See notes don't use unless mandatory
+			$token = (array) $this->seiwp->config->options['token'];
+			if ( isset( $token['refresh_token'] ) && $valid_token ) {
+				// @formatter:off
+				$post_data = array(
+					'token' => $token['refresh_token'],
+				);
+				// @formatter:on
+				$request_args = array( 'body' => $post_data, 'headers' => array( 'Referer' => SEIWP_CURRENT_VERSION ) );
+				$response = wp_remote_post( $this->revoke_uri, $request_args );
+			}
+		}
+
+		/**
+		 * Handles errors returned by GAPI Library
 		 *
 		 * @return boolean
 		 */
-		public function gapi_errors_handler() {
-			$errors = SEIWP_Tools::get_cache( 'gapi_errors' );
-			if ( false === $errors || ! isset( $errors[0] ) ) { // invalid error
+		public function api_errors_handler() {
+			$errors = SEIWP_Tools::get_cache( 'api_errors' );
+			// Proceed as normal if we don't know the error
+			if ( false === $errors || ! isset( $errors[0] ) ) {
 				return false;
 			}
-			if ( isset( $errors[1][0]['reason'] ) && ( 'invalidParameter' == $errors[1][0]['reason'] || 'badRequest' == $errors[1][0]['reason'] || 'invalidCredentials' == $errors[1][0]['reason'] || 'insufficientPermissions' == $errors[1][0]['reason'] || 'required' == $errors[1][0]['reason'] ) ) {
-				$this->reset_token();
-				return true;
+			// Reset the token since these are unrecoverable errors and need user intervention
+			// We can also add 'INVALID_ARGUMENT'
+			if ( isset( $errors[2][0] ) && ( 'INVALID_ARGUMENTS' == $errors[2][0] || 'UNAUTHENTICATED' == $errors[2][0] || 'PERMISSION_DENIED' == $errors[2][0] ) ) {
+				$this->reset_token( false, false );
+				return $errors[0];
 			}
-			if ( 400 == $errors[0] || 401 == $errors[0] || 403 == $errors[0] ) {
-				$this->reset_token();
-				return true;
+			// Reset the token since these are unrecoverable errors and need user intervention
+			// We can also add 'invalid_grant'
+			if ( isset( $errors[0] ) && ( 'invalid_grant' == $errors[0] || 'invalid_token' == $errors[0] ) ) {
+				$this->reset_token( false, false );
+				return $errors[0];
 			}
-			/**
-			 * Back-off system for subsequent requests - an Auth error generated after a Service request
-			 *  The native back-off system for Service requests is covered by the Google API Client
-			 */
+			if ( 401 == $errors[0] || 403 == $errors[0] ) {
+				return $errors[0];
+			}
+			// Back-off processing until the error timeouts, usually at midnight
+			if ( isset( $errors[1][0]['reason'] ) && ( 'dailyLimitExceeded' == $errors[1][0]['reason'] || 'userRateLimitExceeded' == $errors[1][0]['reason'] || 'rateLimitExceeded' == $errors[1][0]['reason'] || 'quotaExceeded' == $errors[1][0]['reason'] ) ) {
+				return $errors[0];
+			}
+			// Back-off system for subsequent requests - an Auth error generated after a Service request
 			if ( isset( $errors[1][0]['reason'] ) && ( 'authError' == $errors[1][0]['reason'] ) ) {
 				if ( $this->seiwp->config->options['api_backoff'] <= 5 ) {
 					usleep( $this->seiwp->config->options['api_backoff'] * 1000000 + rand( 100000, 1000000 ) );
@@ -188,11 +279,11 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 					$this->seiwp->config->set_plugin_options();
 					return false;
 				} else {
-					return true;
+					return $errors[0];
 				}
 			}
-			if ( 500 == $errors[0] || 503 == $errors[0] || $errors[0] < - 50 ) {
-				return true;
+			if ( 500 == $errors[0] || 503 == $errors[0] ) {
+				return $errors[0];
 			}
 			return false;
 		}
@@ -219,8 +310,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				$newhour = mktime( $nexthour[0], 0, 0, $nexthour[1], $nexthour[2], $nexthour[3] );
 				return $newhour - $local_time;
 			} else {
-				$newtime = strtotime( ' +5 minutes', $local_time );
-				return $newtime - $local_time;
+				return 0;
 			}
 		}
 
@@ -229,31 +319,67 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 *
 		 * @return boolean
 		 */
-		public function verify_property() {
-			try {
-				if ( empty( $this->seiwp->config->options['site_verification_meta'] ) ) {
-					$site = new Deconf\SEIWP\Google\Service\SiteVerification\SiteVerificationWebResourceGettokenRequestSite();
-					$site->setIdentifier( SEIWP_SITE_URL );
-					$site->setType( 'SITE' );
-					$request = new Deconf\SEIWP\Google\Service\SiteVerification\SiteVerificationWebResourceGettokenRequest();
-					$request->setSite( $site );
-					$request->setVerificationMethod( 'META' );
-					$service = new Deconf\SEIWP\Google\Service\SiteVerification( $this->client );
-					$webResource = $service->webResource;
-					$result = $webResource->getToken( $request );
-					$this->seiwp->config->options['site_verification_meta'] = $result->token;
+		public function verify_site() {
+			$token = (array) $this->seiwp->config->options['token'];
+			$access_token = $token['access_token'];
+			$headers = array( 'Authorization' => 'Bearer ' . $access_token, 'Content-Type' => 'application/json', 'Referer' => SEIWP_CURRENT_VERSION );
+			if ( empty( $this->seiwp->config->options['site_verification_meta'] ) ) {
+				$body = array( 'site' => array( 'type' => 'SITE', 'identifier' => SEIWP_SITE_URL ), 'verificationMethod' => 'META' );
+				$request_args = array( 'method' => 'POST', 'headers' => $headers );
+				$request_url = 'https://www.googleapis.com/siteVerification/v1/token';
+				$response = wp_remote_request( $request_url, $request_args );
+				if ( is_wp_error( $response ) ) {
+					$timeout = $this->get_timeouts();
+					SEIWP_Tools::set_error( $response, $timeout );
+					return false;
+				}
+				$body = wp_remote_retrieve_body( $response );
+				$response = json_decode( $body, true );
+				if ( isset( $response['error'] ) ) {
+					$timeout = $this->get_timeouts();
+					$error = new WP_Error();
+					if ( isset( $response['error']['code'] ) && isset( $response['error']['status'] ) ) {
+						$error->add( $response['error']['code'], $response['error']['message'], array( $response['error']['status'], 'trying to get site META' ) );
+					} else if ( isset( $response['error'] ) && isset( $response['error_description'] ) ) {
+						$error->add( $response['error'], $response['error_description'], 'trying to get site META' );
+					} else if ( isset( $response['error']['code'] ) && isset( $response['error']['message'] ) ) {
+						$error->add( $response['error']['code'], $response['error']['message'], 'trying to get site META' );
+					}
+					SEIWP_Tools::set_error( $error, $timeout );
+					return false;
+				}
+				if ( isset( $response['token'] ) ) {
+					$this->seiwp->config->options['site_verification_meta'] = $response['token'];
 					$this->seiwp->config->set_plugin_options();
 				}
-				$site = new Deconf\SEIWP\Google\Service\SiteVerification\SiteVerificationWebResourceResourceSite();
-				$site->setIdentifier( SEIWP_SITE_URL );
-				$site->setType( 'SITE' );
-				$request = new Deconf\SEIWP\Google\Service\SiteVerification\SiteVerificationWebResourceResource();
-				$request->setSite( $site );
-				$service = new Deconf\SEIWP\Google\Service\SiteVerification( $this->client );
-				$webResource = $service->webResource;
-				$result = $webResource->insert( 'META', $request );
+			}
+			$request_body = array( 'site' => array( 'type' => 'SITE', 'identifier' => SEIWP_SITE_URL ) );
+			$request_args = array( 'method' => 'POST', 'headers' => $headers, 'body' => json_encode( $request_body ) );
+			$request_url = 'https://www.googleapis.com/siteVerification/v1/webResource?verificationMethod=META';
+			$response = wp_remote_request( $request_url, $request_args );
+			if ( is_wp_error( $response ) ) {
+				$timeout = $this->get_timeouts();
+				SEIWP_Tools::set_error( $response, $timeout );
+				return false;
+			}
+			$body = wp_remote_retrieve_body( $response );
+			$response = json_decode( $body, true );
+			if ( isset( $response['error'] ) ) {
+				$timeout = $this->get_timeouts();
+				$error = new WP_Error();
+				if ( isset( $response['error']['code'] ) && isset( $response['error']['status'] ) ) {
+					$error->add( $response['error']['code'], $response['error']['message'], array( $response['error']['status'], 'trying to verify site' ) );
+				} else if ( isset( $response['error'] ) && isset( $response['error_description'] ) ) {
+					$error->add( $response['error'], $response['error_description'], 'trying to verify site' );
+				} else if ( isset( $response['error']['code'] ) && isset( $response['error']['message'] ) ) {
+					$error->add( $response['error']['code'], $response['error']['message'], 'trying to verify site' );
+				}
+				SEIWP_Tools::set_error( $error, $timeout );
+				return false;
+			}
+			if ( isarray( $response ) ) {
 				return true;
-			} catch ( Exception $e ) {
+			} else {
 				return false;
 			}
 		}
@@ -263,18 +389,34 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 *
 		 * @return boolean || array
 		 */
-		public function delete_property() {
-			try {
-				$url = SEIWP_SITE_URL;
-				$this->service->sites->delete( $url );
-				return true;
-			} catch ( GoogleServiceException $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
-				SEIWP_Tools::set_error( $e, $timeout );
-			} catch ( Exception $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
-				SEIWP_Tools::set_error( $e, $timeout );
+		public function delete_site() {
+			$token = (array) $this->seiwp->config->options['token'];
+			$access_token = $token['access_token'];
+			$headers = array( 'Authorization' => 'Bearer ' . $access_token, 'Content-Type' => 'application/json', 'Content-Length' => 0, 'Referer' => SEIWP_CURRENT_VERSION );
+			$request_args = array( 'method' => 'DELETE', 'headers' => $headers );
+			$request_url = 'https://www.googleapis.com/webmasters/v3/sites/' . urlencode( SEIWP_SITE_URL );
+			$response = wp_remote_request( $request_url, $request_args );
+			if ( is_wp_error( $response ) ) {
+				$timeout = $this->get_timeouts();
+				SEIWP_Tools::set_error( $response, $timeout );
+				return false;
 			}
+			$body = wp_remote_retrieve_body( $response );
+			$response = json_decode( $body, true );
+			if ( isset( $response['error'] ) ) {
+				$timeout = $this->get_timeouts();
+				$error = new WP_Error();
+				if ( isset( $response['error']['code'] ) && isset( $response['error']['status'] ) ) {
+					$error->add( $response['error']['code'], $response['error']['message'], array( $response['error']['status'], 'trying to delete site' ) );
+				} else if ( isset( $response['error'] ) && isset( $response['error_description'] ) ) {
+					$error->add( $response['error'], $response['error_description'], 'trying to delete site' );
+				} else if ( isset( $response['error']['code'] ) && isset( $response['error']['message'] ) ) {
+					$error->add( $response['error']['code'], $response['error']['message'], 'trying to delete site' );
+				}
+				SEIWP_Tools::set_error( $error, $timeout );
+				return false;
+			}
+			return true;
 		}
 
 		/**
@@ -282,20 +424,34 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 *
 		 * @return boolean || array
 		 */
-		public function add_property() {
-			try {
-				$url = SEIWP_SITE_URL;
-				$this->service->sites->add( $url );
-				return true;
-			} catch ( GoogleServiceException $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
-				SEIWP_Tools::set_error( $e, $timeout );
-				return false;
-			} catch ( Exception $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
-				SEIWP_Tools::set_error( $e, $timeout );
+		public function add_site() {
+			$token = (array) $this->seiwp->config->options['token'];
+			$access_token = $token['access_token'];
+			$headers = array( 'Authorization' => 'Bearer ' . $access_token, 'Content-Type' => 'application/json', 'Content-Length' => 0, 'Referer' => SEIWP_CURRENT_VERSION );
+			$request_args = array( 'method' => 'PUT', 'headers' => $headers );
+			$request_url = 'https://www.googleapis.com/webmasters/v3/sites/' . urlencode( SEIWP_SITE_URL );
+			$response = wp_remote_request( $request_url, $request_args );
+			if ( is_wp_error( $response ) ) {
+				$timeout = $this->get_timeouts();
+				SEIWP_Tools::set_error( $response, $timeout );
 				return false;
 			}
+			$body = wp_remote_retrieve_body( $response );
+			$response = json_decode( $body, true );
+			if ( isset( $response['error'] ) ) {
+				$timeout = $this->get_timeouts();
+				$error = new WP_Error();
+				if ( isset( $response['error']['code'] ) && isset( $response['error']['status'] ) ) {
+					$error->add( $response['error']['code'], $response['error']['message'], array( $response['error']['status'], 'trying to add property' ) );
+				} else if ( isset( $response['error'] ) && isset( $response['error_description'] ) ) {
+					$error->add( $response['error'], $response['error_description'], 'trying to add site' );
+				} else if ( isset( $response['error']['code'] ) && isset( $response['error']['message'] ) ) {
+					$error->add( $response['error']['code'], $response['error']['message'], 'trying to add site' );
+				}
+				SEIWP_Tools::set_error( $error, $timeout );
+				return false;
+			}
+			return true;
 		}
 
 		/**
@@ -303,30 +459,43 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 *
 		 * @return array
 		 */
-		public function get_sites_info() {
-			try {
-				$sites_list = array();
-				$startindex = 1;
-				$totalresults = 65535; // use something big
-				while ( $startindex < $totalresults ) {
-					$sites = $this->service->sites->listSites();
-					$totalresults = $sites->count();
-					if ( $totalresults > 0 ) {
-						$siteentry = $sites->getSiteEntry();
-						foreach ( $siteentry as $site ) {
-							$sites_list[] = array( $site->getSiteUrl(), $site->getPermissionLevel() );
-							$startindex++;
-						}
-					}
+		public function get_sites() {
+			$token = (array) $this->seiwp->config->options['token'];
+			$access_token = $token['access_token'];
+			$headers = array( 'Authorization' => 'Bearer ' . $access_token, 'Content-Type' => 'application/json', 'Content-Length' => 0, 'Referer' => SEIWP_CURRENT_VERSION );
+			$request_args = array( 'method' => 'GET', 'headers' => $headers );
+			$request_url = 'https://www.googleapis.com/webmasters/v3/sites';
+			$response = wp_remote_request( $request_url, $request_args );
+			if ( is_wp_error( $response ) ) {
+				$timeout = $this->get_timeouts();
+				SEIWP_Tools::set_error( $response, $timeout );
+				return false;
+			}
+			$body = wp_remote_retrieve_body( $response );
+			$response = json_decode( $body, true );
+			if ( isset( $response['error'] ) ) {
+				$timeout = $this->get_timeouts();
+				$error = new WP_Error();
+				if ( isset( $response['error']['code'] ) && isset( $response['error']['status'] ) ) {
+					$error->add( $response['error']['code'], $response['error']['message'], array( $response['error']['status'], 'trying to get sites list' ) );
+				} else if ( isset( $response['error'] ) && isset( $response['error_description'] ) ) {
+					$error->add( $response['error'], $response['error_description'], 'trying to get sites list' );
+				} else if ( isset( $response['error']['code'] ) && isset( $response['error']['message'] ) ) {
+					$error->add( $response['error']['code'], $response['error']['message'], 'trying to get sites list' );
 				}
-				SEIWP_Tools::delete_cache( 'last_error' );
+				SEIWP_Tools::set_error( $error, $timeout );
+				return false;
+			}
+			if ( isset( $response['siteEntry'] ) ) {
+				$sites_list = array();
+				foreach ( $response['siteEntry'] as $site ) {
+					$sites_list[] = array( $site['siteUrl'], $site['permissionLevel'] );
+				}
+			}
+			if ( ! empty( $sites_list ) ) {
 				return $sites_list;
-			} catch ( GoogleServiceException $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
-				SEIWP_Tools::set_error( $e, $timeout );
-			} catch ( Exception $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
-				SEIWP_Tools::set_error( $e, $timeout );
+			} else {
+				return false;
 			}
 		}
 
@@ -347,51 +516,94 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 * 											$filters
 		 * @param
 		 *            $serial
-		 * @return int|Google\Service\SearchConsole
+		 * @return int|Deconf\SEIWP\Google\Service\SearchConsole
 		 */
 		private function handle_searchanalytics_reports( $projectId, $from, $to, $dimensions, $options, $filters, $serial ) {
-			try {
-				$transient = SEIWP_Tools::get_cache( $serial );
-				if ( false === $transient ) {
-					if ( $this->gapi_errors_handler() ) {
-						return - 23;
-					}
-					$options['samplingLevel'] = 'HIGHER_PRECISION';
-					$request = new Deconf\SEIWP\Google\Service\SearchConsole\SearchAnalyticsQueryRequest();
-					$request->setStartDate( $from );
-					$request->setEndDate( $to );
-					if ( $dimensions ) {
-						$request->setDimensions( $dimensions );
-					}
-					if ( is_array( $filters ) ) {
-						$dimensionfiltergroup = new Deconf\SEIWP\Google\Service\SearchConsole\ApiDimensionFilterGroup();
-						$filtergroup = new Deconf\SEIWP\Google\Service\SearchConsole\ApiDimensionFilter();
-						$filtergroup->setDimension( $filters['dimension'] );
-						$filtergroup->setExpression( $filters['expression'] );
-						$filtergroup->setOperator( $filters['operator'] );
-						$dimensionfiltergroup->setFilters( array( $filtergroup ) );
-						$request->setDimensionFilterGroups( array( $dimensionfiltergroup ) );
-					}
-					$data = $this->service->searchanalytics->query( $projectId, $request );
-					SEIWP_Tools::set_cache( $serial, $data, $this->get_timeouts( 'daily' ) );
-				} else {
-					$data = $transient;
+			$transient = SEIWP_Tools::get_cache( $serial );
+			if ( false === $transient ) {
+				if ( $this->api_errors_handler() ) {
+					return $this->api_errors_handler();
 				}
-			} catch ( GoogleServiceException $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
-				SEIWP_Tools::set_error( $e, $timeout );
-				return $e->getCode();
-			} catch ( Exception $e ) {
-				$timeout = $this->get_timeouts( 'midnight' );
-				SEIWP_Tools::set_error( $e, $timeout );
-				return $e->getCode();
+				$options['samplingLevel'] = 'HIGHER_PRECISION';
+				$token = (array) $this->seiwp->config->options['token'];
+				if ( isset( $token['access_token'] ) ) {
+					$access_token = $token['access_token'];
+				} else {
+					return 624;
+				}
+				// @formatter:off
+					$headers = array(
+						'Authorization' => 'Bearer ' . $access_token,
+						'Content-Type' => 'application/json',
+					);
+					// @formatter:on
+				$request_body = array( 'startDate' => $from, 'endDate' => $to );
+				if ( $dimensions ) {
+					if ( is_array( $dimensions ) ) {
+						$request_body['dimensions'] = array();
+						foreach ( $dimensions as $dimension ) {
+							$request_body['dimensions'][] = $dimension;
+						}
+					} else {
+						$request_body['dimensions'] = array();
+						$request_body['dimensions'][] = $dimensions;
+					}
+				}
+				if ( is_array( $filters ) ) {
+					$request_body['dimensionFilterGroups'] = array( 'filters' => $filters );
+				}
+				$itr = 0;
+				$data['rows'] = array();
+				do {
+
+					$limit = 25000;
+					$request_body['startRow'] = $itr * $limit;
+					$request_body['rowLimit'] = $limit;
+
+					$request_body_json = json_encode( $request_body );
+					$args = array( 'headers' => $headers, 'body' => $request_body_json );
+					$request_url = 'https://searchconsole.googleapis.com/webmasters/v3/sites/' . urlencode( $projectId ) . '/searchAnalytics/query';
+					$response = wp_remote_post( $request_url, $args );
+					if ( is_wp_error( $response ) ) {
+						$timeout = $this->get_timeouts();
+						SEIWP_Tools::set_error( $response, $timeout );
+						return $response->get_error_code();
+					} else {
+						$response_body = wp_remote_retrieve_body( $response );
+						$response_data = json_decode( $response_body, true );
+						if ( isset( $response_data['error'] ) ) {
+							$timeout = $this->get_timeouts();
+							$error = new WP_Error();
+							if ( isset( $response_data['error']['code'] ) && isset( $response_data['error']['status'] ) ) {
+								$error->add( $response_data['error']['code'], $response_data['error']['message'], array( $response_data['error']['status'], 'trying to refresh token' ) );
+							} else if ( isset( $response_data['error'] ) && isset( $response_data['error_description'] ) ) {
+								$error->add( $response_data['error'], $response_data['error_description'], 'trying to refresh token' );
+							} else if ( isset( $response_data['error']['code'] ) && isset( $response_data['error']['message'] ) ) {
+								$error->add( $response_data['error']['code'], $response_data['error']['message'], 'trying to get sites list' );
+							}
+							SEIWP_Tools::set_error( $error, $timeout );
+							return $error->get_error_code();
+						}
+						if (isset( $response_data['rows'] )){
+						$data['rows'] = array_merge($data['rows'], $response_data['rows']);
+						}
+					}
+
+					$itr++;
+
+				} while ( isset( $response_data['rows'] ) && count( $response_data['rows'] ) == $limit );
+
+				SEIWP_Tools::set_cache( $serial, $data, $this->get_timeouts( 'daily' ) );
+
+			} else {
+				$data = $transient;
 			}
 			$this->seiwp->config->options['api_backoff'] = 0;
 			$this->seiwp->config->set_plugin_options();
-			if ( $data->getRows() > 0 ) {
+			if ( isset( $data['rows'] ) ) {
 				return $data;
 			} else {
-				$data->rows = array();
+				$data['rows'] = array();
 				return $data;
 			}
 		}
@@ -450,12 +662,12 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 			if ( is_numeric( $data ) ) {
 				return $data;
 			}
-			if ( empty( $data->rows ) ) {
+			if ( empty( $data['rows'] ) ) {
 				// unable to render it as an Area Chart, returns a numeric value to be handled by reportsx.js
-				return - 21;
+				return 621;
 			}
 			$seiwp_data = array( array( __( "Date", 'search-engine-insights' ), $title ) );
-			foreach ( $data->getRows() as $row ) {
+			foreach ( $data['rows'] as $row ) {
 				/*
 				 * translators:
 				 * Example: 'l, F j, Y' will become 'Thusday, November 17, 2015'
@@ -495,10 +707,10 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				return $data;
 			}
 			// i18n support
-			$seiwp_data[0] = empty( $data->getRows() ) ? 0 : SEIWP_Tools::number_to_kmb( $data->getRows()[0]->getImpressions() );
-			$seiwp_data[1] = empty( $data->getRows() ) ? 0 : SEIWP_Tools::number_to_kmb( $data->getRows()[0]->getClicks() );
-			$seiwp_data[2] = empty( $data->getRows() ) ? 0 : number_format_i18n( $data->getRows()[0]->getPosition(), 2 );
-			$seiwp_data[3] = empty( $data->getRows() ) ? '0%' : number_format_i18n( $data->getRows()[0]->getCtr(), 2 ) . '%';
+			$seiwp_data[0] = empty( $data['rows'] ) ? 0 : SEIWP_Tools::number_to_kmb( $data['rows'][0]['impressions'] );
+			$seiwp_data[1] = empty( $data['rows'] ) ? 0 : SEIWP_Tools::number_to_kmb( $data['rows'][0]['clicks'] );
+			$seiwp_data[2] = empty( $data['rows'] ) ? 0 : number_format_i18n( $data['rows'][0]['position'], 2 );
+			$seiwp_data[3] = empty( $data['rows'] ) ? '0%' : number_format_i18n( $data['rows'][0]['ctr'], 2 ) . '%';
 			return $seiwp_data;
 		}
 
@@ -534,7 +746,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				return $data;
 			}
 			$seiwp_data = array( array( __( "Pages", 'search-engine-insights' ), __( ucfirst( $metric ), 'search-engine-insights' ) ) );
-			foreach ( $data->getRows() as $row ) {
+			foreach ( $data['rows'] as $row ) {
 				$seiwp_data[] = array( esc_html( $row['keys'][0] ), (float) $row[$metric] );
 			}
 			return $seiwp_data;
@@ -572,7 +784,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				return $data;
 			}
 			$seiwp_data = array( array( __( "Keywords", 'search-engine-insights' ), __( ucfirst( $metric ), 'search-engine-insights' ) ) );
-			foreach ( $data->getRows() as $row ) {
+			foreach ( $data['rows'] as $row ) {
 				$seiwp_data[] = array( esc_html( $row['keys'][0] ), (float) $row[$metric] );
 			}
 			return $seiwp_data;
@@ -613,7 +825,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 			}
 			$country_codes = SEIWP_Tools::get_countrycodes();
 			$seiwp_data = array( array( $title, __( ucfirst( $metric ), 'search-engine-insights' ) ) );
-			foreach ( $data->getRows() as $row ) {
+			foreach ( $data['rows'] as $row ) {
 				if ( isset( $country_codes[strtoupper( $row['keys'][0] )] ) ) {
 					$seiwp_data[] = array( esc_html( $country_codes[strtoupper( $row['keys'][0] )] ), (float) $row[$metric] );
 				}
@@ -640,7 +852,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 */
 		private function get_orgchart_data( $projectId, $from, $to, $query, $metric, $filter = '' ) {
 			$options = array( 'quotaUser' => $this->managequota . 'p' . $projectId );
-			$dimensions = 'query';
+			$dimensions = '';
 			if ( $filter ) {
 				$filters['dimension'] = 'page';
 				$filters['operator'] = 'equals';
@@ -653,14 +865,16 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 			if ( is_numeric( $data ) ) {
 				return $data;
 			}
-			if ( empty( $data->rows ) ) {
+			if ( empty( $data['rows'] ) ) {
 				// unable to render as an Org Chart, returns a numeric value to be handled by reportsx.js
-				return - 21;
+				return 621;
 			}
-			$res_data[__( "Impressions", 'search-engine-insights' )] = $data->getRows()[0]->getImpressions() ? SEIWP_Tools::number_to_kmb( $data->getRows()[0]->getImpressions() ) : 0;
-			$res_data[__( "Clicks", 'search-engine-insights' )] = $data->getRows()[0]->getClicks() ? SEIWP_Tools::number_to_kmb( $data->getRows()[0]->getClicks() ) : 0;
-			$res_data[__( "Position", 'search-engine-insights' )] = $data->getRows()[0]->getPosition() ? number_format_i18n( $data->getRows()[0]->getPosition(), 2 ) : 0;
-			$res_data[__( "CTR", 'search-engine-insights' )] = $data->getRows()[0]->getCtr() ? number_format_i18n( $data->getRows()[0]->getCtr(), 2 ) . '%' : '0%';
+
+      $res_data[__( "Impressions", 'search-engine-insights' )] = $data['rows'][0]['impressions'] ? SEIWP_Tools::number_to_kmb( $data['rows'][0]['impressions'] ) : 0;
+			$res_data[__( "Clicks", 'search-engine-insights' )] = $data['rows'][0]['clicks'] ? SEIWP_Tools::number_to_kmb( $data['rows'][0]['clicks'] ) : 0;
+			$res_data[__( "Position", 'search-engine-insights' )] = $data['rows'][0]['position'] ? number_format_i18n( $data['rows'][0]['position'], 2 ) : 0;
+			$res_data[__( "CTR", 'search-engine-insights' )] = $data['rows'][0]['ctr'] ? number_format_i18n( $data['rows'][0]['ctr'], 2 ) . '%' : '0%';
+
 			if ( is_array( $filters ) ) {
 				$block = __( "Page Performance", 'search-engine-insights' );
 			} else {
@@ -687,11 +901,12 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 * 		$filter
 		 * @param
 		 *   $metric
-		 * @return number|Google\Service\SearchConsole
+		 * @return number|Deconf\SEIWP\Google\Service\SearchConsole
 		 */
 		public function get( $projectId, $query, $from = false, $to = false, $filter = '', $metric = 'sessions' ) {
+
 			if ( empty( $projectId ) ) {
-				wp_die( - 26 );
+				wp_die( 626 );
 			}
 			if ( 'summary' == $query ) {
 				return $this->get_summary( $projectId, $from, $to, $filter );
@@ -703,7 +918,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				return $this->get_locations( $projectId, $from, $to, $metric, $filter );
 			}
 			if ( 'pages' == $query ) {
-				return $this->get_pages( $projectId, $from, $to, $metric, $filter  );
+				return $this->get_pages( $projectId, $from, $to, $metric, $filter );
 			}
 			if ( 'channelGrouping' == $query || 'deviceCategory' == $query ) {
 				return $this->get_orgchart_data( $projectId, $from, $to, $query, $metric, $filter );
@@ -711,7 +926,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 			if ( 'keywords' == $query ) {
 				return $this->get_keywords( $projectId, $from, $to, $metric, $filter );
 			}
-			wp_die( - 27 );
+			wp_die( 627 );
 		}
 	}
 }
