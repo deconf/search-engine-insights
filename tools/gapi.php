@@ -35,7 +35,6 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 			$this->seiwp = SEIWP();
 			$this->quotauser = 'u' . get_current_user_id() . 's' . get_current_blog_id();
 			$security = wp_create_nonce( 'seiwp_state' );
-
 			if ( $this->seiwp->config->options['user_api'] ) {
 				$this->client_id = $this->seiwp->config->options['client_id'];
 				$this->client_secret = $this->seiwp->config->options['client_secret'];
@@ -56,11 +55,9 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				}
 				$this->state = $state_uri;
 			}
-
 			if ( $this->seiwp->config->options['token'] ) {
 				$this->refresh_token();
 			}
-
 		}
 
 		/**
@@ -323,7 +320,6 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 * @return boolean
 		 */
 		public function verify_site() {
-
 			$token = (array) $this->seiwp->config->options['token'];
 			$access_token = $token['access_token'];
 			$headers = array( 'Authorization' => 'Bearer ' . $access_token, 'Content-Type' => 'application/json', 'Referer' => SEIWP_CURRENT_VERSION );
@@ -358,7 +354,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				}
 			}
 			$request_body = array( 'site' => array( 'type' => 'SITE', 'identifier' => SEIWP_SITE_URL ) );
-			$request_args = array( 'method' => 'POST', 'headers' => $headers, 'body' => json_encode($request_body) );
+			$request_args = array( 'method' => 'POST', 'headers' => $headers, 'body' => json_encode( $request_body ) );
 			$request_url = 'https://www.googleapis.com/siteVerification/v1/webResource?verificationMethod=META';
 			$response = wp_remote_request( $request_url, $request_args );
 			if ( is_wp_error( $response ) ) {
@@ -367,9 +363,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				return false;
 			}
 			$body = wp_remote_retrieve_body( $response );
-
 			$response = json_decode( $body, true );
-
 			if ( isset( $response['error'] ) ) {
 				$timeout = $this->get_timeouts();
 				$error = new WP_Error();
@@ -396,7 +390,6 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 * @return boolean || array
 		 */
 		public function delete_site() {
-
 			$token = (array) $this->seiwp->config->options['token'];
 			$access_token = $token['access_token'];
 			$headers = array( 'Authorization' => 'Bearer ' . $access_token, 'Content-Type' => 'application/json', 'Content-Length' => 0, 'Referer' => SEIWP_CURRENT_VERSION );
@@ -432,7 +425,6 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 * @return boolean || array
 		 */
 		public function add_site() {
-
 			$token = (array) $this->seiwp->config->options['token'];
 			$access_token = $token['access_token'];
 			$headers = array( 'Authorization' => 'Bearer ' . $access_token, 'Content-Type' => 'application/json', 'Content-Length' => 0, 'Referer' => SEIWP_CURRENT_VERSION );
@@ -468,7 +460,6 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 * @return array
 		 */
 		public function get_sites() {
-
 			$token = (array) $this->seiwp->config->options['token'];
 			$access_token = $token['access_token'];
 			$headers = array( 'Authorization' => 'Bearer ' . $access_token, 'Content-Type' => 'application/json', 'Content-Length' => 0, 'Referer' => SEIWP_CURRENT_VERSION );
@@ -526,98 +517,53 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 * @param
 		 *            $serial
 		 * @return int|Deconf\SEIWP\Google\Service\SearchConsole
-
+		 */
 		private function handle_searchanalytics_reports( $projectId, $from, $to, $dimensions, $options, $filters, $serial ) {
-			try {
-				$transient = SEIWP_Tools::get_cache( $serial );
-				if ( false === $transient ) {
-					if ( $this->api_errors_handler() ) {
-						return $this->api_errors_handler();
-					}
-					$options['samplingLevel'] = 'HIGHER_PRECISION';
-					$request = new Deconf\SEIWP\Google\Service\SearchConsole\SearchAnalyticsQueryRequest();
-					$request->setStartDate( $from );
-					$request->setEndDate( $to );
-					if ( $dimensions ) {
-						$request->setDimensions( $dimensions );
-					}
-					if ( is_array( $filters ) ) {
-						$dimensionfiltergroup = new Deconf\SEIWP\Google\Service\SearchConsole\ApiDimensionFilterGroup();
-						$filtergroup = new Deconf\SEIWP\Google\Service\SearchConsole\ApiDimensionFilter();
-						$filtergroup->setDimension( $filters['dimension'] );
-						$filtergroup->setExpression( $filters['expression'] );
-						$filtergroup->setOperator( $filters['operator'] );
-						$dimensionfiltergroup->setFilters( array( $filtergroup ) );
-						$request->setDimensionFilterGroups( array( $dimensionfiltergroup ) );
-					}
-					$data = $this->service->searchanalytics->query( $projectId, $request );
-					SEIWP_Tools::set_cache( $serial, $data, $this->get_timeouts( 'daily' ) );
-				} else {
-					$data = $transient;
+			$transient = SEIWP_Tools::get_cache( $serial );
+			if ( false === $transient ) {
+				if ( $this->api_errors_handler() ) {
+					return $this->api_errors_handler();
 				}
-			} catch ( GoogleServiceException $e ) {
-				$timeout = $this->get_timeouts();
-				SEIWP_Tools::set_error( $e, $timeout );
-				return $e->getCode();
-			} catch ( Exception $e ) {
-				$timeout = $this->get_timeouts();
-				SEIWP_Tools::set_error( $e, $timeout );
-				return $e->getCode();
-			}
-			$this->seiwp->config->options['api_backoff'] = 0;
-			$this->seiwp->config->set_plugin_options();
-			if ( $data->getRows() > 0 ) {
-				return $data;
-			} else {
-				$data->rows = array();
-				return $data;
-			}
-		} **/
-
-		private function handle_searchanalytics_reports( $projectId, $from, $to, $dimensions, $options, $filters, $serial ) {
-
-				$transient = SEIWP_Tools::get_cache( $serial );
-				if ( false === $transient ) {
-					if ( $this->api_errors_handler() ) {
-						return $this->api_errors_handler();
-					}
-					$options['samplingLevel'] = 'HIGHER_PRECISION';
-
-					$token = (array) $this->seiwp->config->options['token'];
-					if ( isset( $token['access_token'] ) ) {
-						$access_token = $token['access_token'];
-					} else {
-						return 624;
-					}
-					// @formatter:off
+				$options['samplingLevel'] = 'HIGHER_PRECISION';
+				$token = (array) $this->seiwp->config->options['token'];
+				if ( isset( $token['access_token'] ) ) {
+					$access_token = $token['access_token'];
+				} else {
+					return 624;
+				}
+				// @formatter:off
 					$headers = array(
 						'Authorization' => 'Bearer ' . $access_token,
 						'Content-Type' => 'application/json',
 					);
 					// @formatter:on
-					$request_body = array( 'startDate' => $from, 'endDate' => $to );
-
-					if ( $dimensions ) {
-						if ( is_array( $dimensions ) ) {
-							$request_body['dimensions'] = array();
-							foreach ( $dimensions as $dimension ) {
-								$request_body['dimensions'][] = $dimension ;
-							}
-						} else {
-							$request_body['dimensions'] = array();
-							$request_body['dimensions'][] = $dimensions;
+				$request_body = array( 'startDate' => $from, 'endDate' => $to );
+				if ( $dimensions ) {
+					if ( is_array( $dimensions ) ) {
+						$request_body['dimensions'] = array();
+						foreach ( $dimensions as $dimension ) {
+							$request_body['dimensions'][] = $dimension;
 						}
+					} else {
+						$request_body['dimensions'] = array();
+						$request_body['dimensions'][] = $dimensions;
 					}
+				}
+				if ( is_array( $filters ) ) {
+					$request_body['dimensionFilterGroups'] = array( 'filters' => $filters );
+				}
+				$itr = 0;
+				$data['rows'] = array();
+				do {
 
-					if ( is_array( $filters ) ) {
-						$request_body['dimensionFilterGroups'] = array( 'filters' => $filters );
-					}
+					$limit = 25000;
+					$request_body['startRow'] = $itr * $limit;
+					$request_body['rowLimit'] = $limit;
 
 					$request_body_json = json_encode( $request_body );
 					$args = array( 'headers' => $headers, 'body' => $request_body_json );
-					$request_url = 'https://searchconsole.googleapis.com/webmasters/v3/sites/' . urlencode($projectId) . '/searchAnalytics/query';
+					$request_url = 'https://searchconsole.googleapis.com/webmasters/v3/sites/' . urlencode( $projectId ) . '/searchAnalytics/query';
 					$response = wp_remote_post( $request_url, $args );
-
 					if ( is_wp_error( $response ) ) {
 						$timeout = $this->get_timeouts();
 						SEIWP_Tools::set_error( $response, $timeout );
@@ -638,18 +584,23 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 							SEIWP_Tools::set_error( $error, $timeout );
 							return $error->get_error_code();
 						}
-
-						$data = $response_data;
-						SEIWP_Tools::set_cache( $serial, $data, $this->get_timeouts( 'daily' ) );
+						if (isset( $response_data['rows'] )){
+						$data['rows'] = array_merge($data['rows'], $response_data['rows']);
+						}
 					}
-				} else {
-					$data = $transient;
-				}
 
+					$itr++;
+
+				} while ( isset( $response_data['rows'] ) && count( $response_data['rows'] ) == $limit );
+
+				SEIWP_Tools::set_cache( $serial, $data, $this->get_timeouts( 'daily' ) );
+
+			} else {
+				$data = $transient;
+			}
 			$this->seiwp->config->options['api_backoff'] = 0;
 			$this->seiwp->config->set_plugin_options();
-
-			if ( isset ($data['rows'] ) ) {
+			if ( isset( $data['rows'] ) ) {
 				return $data;
 			} else {
 				$data['rows'] = array();
@@ -741,7 +692,6 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 * @return array|int
 		 */
 		private function get_summary( $projectId, $from, $to, $filter = '' ) {
-
 			$options = array( 'quotaUser' => $this->managequota . 'p' . $projectId );
 			$dimensions = '';
 			if ( $filter ) {
@@ -756,7 +706,6 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 			if ( is_numeric( $data ) ) {
 				return $data;
 			}
-
 			// i18n support
 			$seiwp_data[0] = empty( $data['rows'] ) ? 0 : SEIWP_Tools::number_to_kmb( $data['rows'][0]['impressions'] );
 			$seiwp_data[1] = empty( $data['rows'] ) ? 0 : SEIWP_Tools::number_to_kmb( $data['rows'][0]['clicks'] );
@@ -903,7 +852,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 */
 		private function get_orgchart_data( $projectId, $from, $to, $query, $metric, $filter = '' ) {
 			$options = array( 'quotaUser' => $this->managequota . 'p' . $projectId );
-			$dimensions = 'query';
+			$dimensions = '';
 			if ( $filter ) {
 				$filters['dimension'] = 'page';
 				$filters['operator'] = 'equals';
@@ -953,6 +902,7 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 		 * @return number|Deconf\SEIWP\Google\Service\SearchConsole
 		 */
 		public function get( $projectId, $query, $from = false, $to = false, $filter = '', $metric = 'sessions' ) {
+
 			if ( empty( $projectId ) ) {
 				wp_die( 626 );
 			}

@@ -79,8 +79,13 @@ When new Properties are added to Google Search Console, it may take up to a few 
 
 == Changelog ==
 
+= 2.6 (2024.01.18) =
+* Bug Fixes:
+	* fixes a bug preventing Google Search Console report to have more than 1000 lines
+	* prevent multiple Google Search Console reports calls at first widget render	
+	
 = 2.5 (2024.01.16) =
-* Enhancements:
+* Bug Fixes:
 	* fixed a bug causing the plugin to lose authentication when saving settings
 * Security:
 	* Level: medium; multiple conditions must be met and valid only for websites which are using their own Google API Projects; credits [WPScan Team](https://wpscan.com/)

@@ -233,6 +233,7 @@ jQuery.fn.extend( {
 
 		reports = {
 			oldViewPort : 0,
+			inProgress : 0,
 			orgChartTableChartData : '',
 			tableChartData : '',
 			orgChartPieChartsData : '',
@@ -819,26 +820,34 @@ jQuery.fn.extend( {
 			},
 
 			init : function () {
-
-				try {
-					SEIWPNProgress.configure( {
-						parent : "#seiwp-progressbar" + slug,
-						showSpinner : false
-					} );
-					SEIWPNProgress.start();
-				} catch ( e ) {
-					reports.alertMessage( seiwpItemData.i18n[ 0 ] );
-				}
-
-				reports.render( jQuery( '#seiwp-sel-property' + slug ).val(), jQuery( 'input[name="seiwp-sel-period' + slug + '"]' ).val(), jQuery( '#seiwp-sel-report' + slug ).val() );
-
-				jQuery( window ).resize( function () {
-					var diff = jQuery( window ).width() - reports.oldViewPort;
-					if ( ( diff < -5 ) || ( diff > 5 ) ) {
-						reports.oldViewPort = jQuery( window ).width();
-						reports.refresh(); // refresh only on over 5px viewport width changes
+			
+				if ( !reports.inProgress ) {
+					
+					reports.inProgress = 1;
+					
+					try {
+						SEIWPNProgress.configure( {
+							parent : "#seiwp-progressbar" + slug,
+							showSpinner : false
+						} );
+						SEIWPNProgress.start();
+					} catch ( e ) {
+						reports.alertMessage( seiwpItemData.i18n[ 0 ] );
 					}
-				} );
+	
+					reports.render( jQuery( '#seiwp-sel-property' + slug ).val(), jQuery( 'input[name="seiwp-sel-period' + slug + '"]' ).val(), jQuery( '#seiwp-sel-report' + slug ).val() );
+	
+					jQuery( window ).resize( function () {
+						var diff = jQuery( window ).width() - reports.oldViewPort;
+						if ( ( diff < -5 ) || ( diff > 5 ) ) {
+							reports.oldViewPort = jQuery( window ).width();
+							reports.refresh(); // refresh only on over 5px viewport width changes
+						}
+					} );
+					
+					reports.inProgress = 0;
+					
+				}
 			}
 		}
 
@@ -850,6 +859,14 @@ jQuery.fn.extend( {
 			reports.init();
 		} );
 
+		jQuery( 'input[name="seiwp-sel-period' + slug + '"]' ).change( function () {
+			reports.init();
+		} );
+
+		jQuery( '#seiwp-sel-report' + slug ).change( function () {
+			reports.init();
+		} );	
+				
 		jQuery( function () {
 			jQuery( 'input[name="seiwp-sel-period' + slug + '"]' ).daterangepicker( {
 				ranges : {
@@ -866,14 +883,6 @@ jQuery.fn.extend( {
 					format : 'YYYY-MM-DD'
 				}
 			}, function(start, end, label) { tools.setCookie( 'default_interval', label ); } );
-		} );
-
-		jQuery( 'input[name="seiwp-sel-period' + slug + '"]' ).change( function () {
-			reports.init();
-		} );
-
-		jQuery( '#seiwp-sel-report' + slug ).change( function () {
-			reports.init();
 		} );
 
 		jQuery( '[id^=seiwp-swmetric-]' ).click( function () {

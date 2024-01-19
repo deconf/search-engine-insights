@@ -40,6 +40,7 @@ if ( ! class_exists( 'SEIWP_Backend_Ajax' ) ) {
 		 * @return JsonSerializable|int
 		 */
 		public function ajax_item_reports() {
+
 			if ( ! isset( $_POST['seiwp_security_backend_item_reports'] ) || ! wp_verify_nonce( $_POST['seiwp_security_backend_item_reports'], 'seiwp_backend_item_reports' ) ) {
 				wp_die( 630 );
 			}
