@@ -79,7 +79,7 @@ When new Properties are added to Google Search Console, it may take up to a few 
 
 == Changelog ==
 
-= 2.6 (2024.01.18) =
+= 2.6 (2024.01.19) =
 * Bug Fixes:
 	* fixes a bug preventing Google Search Console report to have more than 1000 lines
 	* prevent multiple Google Search Console reports calls at first widget render	
