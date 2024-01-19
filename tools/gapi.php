@@ -869,10 +869,12 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 				// unable to render as an Org Chart, returns a numeric value to be handled by reportsx.js
 				return 621;
 			}
-			$res_data['Impressions'] = $data['rows'][0]['impressions'] ? SEIWP_Tools::number_to_kmb( $data['rows'][0]['impressions'] ) : 0;
-			$res_data['Clicks'] = $data['rows'][0]['clicks'] ? SEIWP_Tools::number_to_kmb( $data['rows'][0]['clicks'] ) : 0;
-			$res_data['Position'] = $data['rows'][0]['position'] ? number_format_i18n( $data['rows'][0]['position'], 2 ) : 0;
-			$res_data['CTR'] = $data['rows'][0]['ctr'] ? number_format_i18n( $data['rows'][0]['ctr'], 2 ) . '%' : '0%';
+
+      $res_data[__( "Impressions", 'search-engine-insights' )] = $data['rows'][0]['impressions'] ? SEIWP_Tools::number_to_kmb( $data['rows'][0]['impressions'] ) : 0;
+			$res_data[__( "Clicks", 'search-engine-insights' )] = $data['rows'][0]['clicks'] ? SEIWP_Tools::number_to_kmb( $data['rows'][0]['clicks'] ) : 0;
+			$res_data[__( "Position", 'search-engine-insights' )] = $data['rows'][0]['position'] ? number_format_i18n( $data['rows'][0]['position'], 2 ) : 0;
+			$res_data[__( "CTR", 'search-engine-insights' )] = $data['rows'][0]['ctr'] ? number_format_i18n( $data['rows'][0]['ctr'], 2 ) . '%' : '0%';
+
 			if ( is_array( $filters ) ) {
 				$block = __( "Page Performance", 'search-engine-insights' );
 			} else {
