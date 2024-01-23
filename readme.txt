@@ -84,7 +84,9 @@ When new Properties are added to Google Search Console, it may take up to a few 
 	* fixes a bug preventing Google Search Console report to have more than 1000 lines
 	* prevent multiple Google Search Console reports calls at first widget render
 	* a few I18N fixes; props [alexclassroom](https://github.com/alexclassroom)	
-	
+* Enhancements:
+	* automatically clear expired cache
+		
 = 2.5 (2024.01.16) =
 * Bug Fixes:
 	* fixed a bug causing the plugin to lose authentication when saving settings

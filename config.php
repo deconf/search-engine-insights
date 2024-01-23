@@ -143,7 +143,10 @@ if ( ! class_exists( 'SEIWP_Config' ) ) {
 		 * Helps maintaining backwards compatibility
 		 */
 		private function maintain_compatibility() {
+
 			$flag = false;
+
+			SEIWP_Tools::delete_expired_cache();
 
 			$prevver = get_option( 'seiwp_version' );
 			if ( $prevver && SEIWP_CURRENT_VERSION != $prevver ) {

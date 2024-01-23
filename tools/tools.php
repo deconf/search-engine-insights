@@ -167,13 +167,9 @@ if ( ! class_exists( 'SEIWP_Tools' ) ) {
 		 * @param mixed $value
 		 * @param number $expiration
 		 */
-		public static function set_cache( $name, $value, $expiration = 1 ) {
-			if ( 0 == $expiration ) {
-				$option = array( 'value' => $value, 'expires' => 0 );
-			} else {
-				$option = array( 'value' => $value, 'expires' => time() + (int) $expiration );
-			}
-			update_option( 'seiwp_cache_' . $name, $option, 'no' );
+		public static function set_cache( $name, $value, $expiration = 0) {
+			update_option( '_seiwp_cache_' . $name, $value, 'no' );
+			update_option( '_seiwp_cache_timeout_' . $name, time() + (int) $expiration, 'no' );
 		}
 
 		/**
@@ -183,7 +179,8 @@ if ( ! class_exists( 'SEIWP_Tools' ) ) {
 		 * @param number $expiration
 		 */
 		public static function delete_cache( $name ) {
-			delete_option( 'seiwp_cache_' . $name );
+			delete_option( '_seiwp_cache_' . $name );
+			delete_option( '_seiwp_cache_timeout_' . $name );
 		}
 
 		/**
@@ -193,18 +190,19 @@ if ( ! class_exists( 'SEIWP_Tools' ) ) {
 		 * @param number $expiration
 		 */
 		public static function get_cache( $name ) {
-			$option = get_option( 'seiwp_cache_' . $name );
-			if ( false === $option || ! isset( $option['value'] ) || ! isset( $option['expires'] ) ) {
+			$value = get_option( '_seiwp_cache_' . $name );
+			$expires = get_option( '_seiwp_cache_timeout_' . $name );
+
+			if ( false === $value || ! isset( $value ) || ! isset( $expires ) ) {
 				return false;
 			}
-			if ( 0 == $option['expires'] ) {
-				return $option['value'];
-			}
-			if ( $option['expires'] < time() ) {
-				delete_option( 'seiwp_cache_' . $name );
+
+			if ( $expires < time() ) {
+				delete_option( '_seiwp_cache_' . $name );
+				delete_option( '_seiwp_cache_timeout_' . $name );
 				return false;
 			} else {
-				return $option['value'];
+				return $value;
 			}
 		}
 
@@ -213,7 +211,58 @@ if ( ! class_exists( 'SEIWP_Tools' ) ) {
 		 */
 		public static function clear_cache() {
 			global $wpdb;
-			$sqlquery = $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE 'seiwp_cache_qr%%'" );
+			$sqlquery = $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '_seiwp_cache_qr%%'" );
+		}
+
+		public static function delete_expired_cache() {
+			global $wpdb;
+
+			if ( wp_using_ext_object_cache() ) {
+				return;
+			}
+
+			$wpdb->query(
+				$wpdb->prepare(
+					"DELETE a, b FROM {$wpdb->options} a, {$wpdb->options} b
+			WHERE a.option_name LIKE %s
+			AND a.option_name NOT LIKE %s
+			AND b.option_name = CONCAT( '_seiwp_cache_timeout_', SUBSTRING( a.option_name, 14 ) )
+			AND b.option_value < %d",
+			$wpdb->esc_like( '_seiwp_cache_' ) . '%',
+			$wpdb->esc_like( '_seiwp_cache_timeout_' ) . '%',
+			time()
+				)
+				);
+
+			if ( ! is_multisite() ) {
+				// Single site stores site transients in the options table.
+				$wpdb->query(
+					$wpdb->prepare(
+						"DELETE a, b FROM {$wpdb->options} a, {$wpdb->options} b
+				WHERE a.option_name LIKE %s
+				AND a.option_name NOT LIKE %s
+				AND b.option_name = CONCAT( '_site_seiwp_cache_timeout_', SUBSTRING( a.option_name, 19 ) )
+				AND b.option_value < %d",
+				$wpdb->esc_like( '_site_seiwp_cache_' ) . '%',
+				$wpdb->esc_like( '_site_seiwp_cache_timeout_' ) . '%',
+				time()
+					)
+					);
+			} elseif ( is_multisite() && is_main_site() && is_main_network() ) {
+				// Multisite stores site transients in the sitemeta table.
+				$wpdb->query(
+					$wpdb->prepare(
+						"DELETE a, b FROM {$wpdb->sitemeta} a, {$wpdb->sitemeta} b
+				WHERE a.meta_key LIKE %s
+				AND a.meta_key NOT LIKE %s
+				AND b.meta_key = CONCAT( '_site_seiwp_cache_timeout_', SUBSTRING( a.meta_key, 19 ) )
+				AND b.meta_value < %d",
+				$wpdb->esc_like( '_site_seiwp_cache_' ) . '%',
+				$wpdb->esc_like( '_site_seiwp_cache_timeout_' ) . '%',
+				time()
+					)
+					);
+			}
 		}
 
 		/**
