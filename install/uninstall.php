@@ -20,7 +20,7 @@ class SEIWP_Uninstall {
 		if ( is_multisite() ) {
 			foreach ( SEIWP_Tools::get_sites( array( 'number' => apply_filters( 'seiwp_sites_limit', 100 ) ) ) as $blog ) {
 				switch_to_blog( $blog['blog_id'] );
-				$sqlquery = $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE 'seiwp_cache_%%'" );
+				$sqlquery = $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '%%seiwp_cache_%%'" );
 				delete_option( 'seiwp_options' );
 				restore_current_blog();
 			}
@@ -29,7 +29,7 @@ class SEIWP_Uninstall {
 		 * Cleanup Single install
 		 */
 		} else {
-			$sqlquery = $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE 'seiwp_cache_%%'" );
+			$sqlquery = $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '%%seiwp_cache_%%'" );
 			delete_option( 'seiwp_options' );
 		}
 		SEIWP_Tools::unset_cookie( 'default_metric' );
