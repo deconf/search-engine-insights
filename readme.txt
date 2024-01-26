@@ -4,7 +4,7 @@ Donate link: https://deconf.com/donate/
 Tags: search console dashboard, google search console, search console widget, search console metatag, search console, seo
 Requires at least: 3.5
 Tested up to: 6.4
-Stable tag: 2.6.1
+Stable tag: 2.6
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -79,18 +79,12 @@ When new Properties are added to Google Search Console, it may take up to a few 
 
 == Changelog ==
 
-= 2.6.1 (2024.01.26) =
-* Enhancements:
-	* clear expired cache daily using WP Cron
-
 = 2.6 (2024.01.19) =
 * Bug Fixes:
 	* fixes a bug preventing Google Search Console report to have more than 1000 lines
 	* prevent multiple Google Search Console reports calls at first widget render
-	* a few I18N fixes; props [alexclassroom](https://github.com/alexclassroom)	
-* Enhancements:
-	* automatically clear expired cache
-		
+	* a few I18N fixes; props [Alex Lion](https://profiles.wordpress.org/alexclassroom/)	
+	
 = 2.5 (2024.01.16) =
 * Bug Fixes:
 	* fixed a bug causing the plugin to lose authentication when saving settings
