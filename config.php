@@ -18,6 +18,8 @@ if ( ! class_exists( 'SEIWP_Config' ) ) {
 		public $options;
 
 		public function __construct() {
+			global $wp_version;
+
 			/**
 			 * Get plugin options
 			 */
@@ -31,16 +33,23 @@ if ( ! class_exists( 'SEIWP_Config' ) ) {
 			/**
 			 * Clear expired cache using WP Cron
 			 */
-			if ( ! wp_next_scheduled( 'aiwp_expired_cache_hook' ) ) {
+			if ( ! wp_next_scheduled( 'seiwp_expired_cache_hook' ) ) {
 
-				$datetime = new DateTime('tomorrow', new DateTimeZone(wp_timezone_string()));
+				/**
+				 * WP < 5.3.0 compatibility
+				 */
+				if ( version_compare( $wp_version, '5.3.0', '>=' ) ) {
+					$datetime = new DateTime( 'tomorrow', new DateTimeZone(wp_timezone_string()) );
+				} else {
+					$datetime = new DateTime( 'tomorrow', new DateTimeZone( SEIWP_Tools::timezone_string()) );
+				}
 				$timestamp = $datetime->getTimestamp();
 
-				wp_schedule_event($timestamp, 'daily', 'aiwp_expired_cache_hook');
+				wp_schedule_event($timestamp, 'daily', 'seiwp_expired_cache_hook');
 
 			}
 
-			add_action ( 'aiwp_expired_cache_hook', array( $this, 'delete_expired_cache' ) );
+			add_action ( 'seiwp_expired_cache_hook', array( $this, 'delete_expired_cache' ) );
 
 		}
 

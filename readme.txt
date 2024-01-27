@@ -4,7 +4,7 @@ Donate link: https://deconf.com/donate/
 Tags: search console dashboard, google search console, search console widget, search console metatag, search console, seo
 Requires at least: 3.5
 Tested up to: 6.4
-Stable tag: 2.6.1
+Stable tag: 2.6.2
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -78,6 +78,12 @@ When new Properties are added to Google Search Console, it may take up to a few 
 == Upgrade Notice ==
 
 == Changelog ==
+
+= 2.6.2 (2024.01.27) =
+* Bug Fixes:
+	* use plugin's own cron hook
+	* delete crons on uninstall
+	* add compatibility for WordPress version lower than 5.3.0  
 
 = 2.6.1 (2024.01.26) =
 * Enhancements:
