@@ -4,7 +4,7 @@ Donate link: https://deconf.com/donate/
 Tags: search console dashboard, google search console, search console widget, search console metatag, search console, seo
 Requires at least: 3.5
 Tested up to: 6.4
-Stable tag: 2.6.2
+Stable tag: 2.6.3
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -79,9 +79,10 @@ When new Properties are added to Google Search Console, it may take up to a few 
 
 == Changelog ==
 
-= 2.6.2 (2024.02.05) =
+= 2.6.3 (2024.02.05) =
 * Bug Fixes:
 	* fixes PHP 8.3 deprecated warnings
+	* fixes jQuery deprecated warnings	
 
 = 2.6.2 (2024.01.27) =
 * Bug Fixes:

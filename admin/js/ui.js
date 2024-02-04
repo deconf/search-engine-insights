@@ -15,7 +15,7 @@ jQuery( document ).ready( function () {
 		seiwp_security_dismiss_notices : seiwp_ui_data.security,
 	}
 
-	jQuery( "#seiwp-notice .notice-dismiss" ).click( function () {
+	jQuery( "#seiwp-notice .notice-dismiss" ).on("click",  function () {
 		jQuery.post( seiwp_ui_data.ajaxurl, seiwp_ui );
 	} );
 
