@@ -28,6 +28,16 @@ if ( ! class_exists( 'SEIWP_GAPI_Controller' ) ) {
 
 		private $state;
 
+		private $quotauser;
+
+		private $client_id;
+
+		private $client_secret;
+
+		private $token_uri;
+
+		private $revoke_uri;
+
 		/**
 		 * Google API Client Initialization
 		 */

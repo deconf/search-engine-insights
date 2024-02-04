@@ -53,6 +53,8 @@ if ( ! class_exists( 'SEIWP_Manager' ) ) {
 
 		public $gapi_controller = null;
 
+		public $tracking = null;
+
 		/**
 		 * Construct forbidden
 		 */

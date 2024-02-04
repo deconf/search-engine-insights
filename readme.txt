@@ -79,6 +79,10 @@ When new Properties are added to Google Search Console, it may take up to a few 
 
 == Changelog ==
 
+= 2.6.2 (2024.02.05) =
+* Bug Fixes:
+	* fixes PHP 8.3 deprecated warnings
+
 = 2.6.2 (2024.01.27) =
 * Bug Fixes:
 	* use plugin's own cron hook
