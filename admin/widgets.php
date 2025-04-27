@@ -44,7 +44,7 @@ if ( ! class_exists( 'SEIWP_Backend_Widgets' ) ) {
 			}
 
 			if ( ! ( $projectId ) ) {
-				echo '<p>' . __( "Something went wrong while retrieving property data. You need to create and properly configure a Google Search Console account:", 'search-engine-insights' ) . '</p> <form action="https://deconf.com/how-to-set-up-google-analytics-on-your-website/" method="POST">' . get_submit_button( __( "Find out more!", 'search-engine-insights' ), 'secondary' ) . '</form>';
+				echo '<p>' . __( "Something went wrong while retrieving property data. You need to create and properly configure a Google Search Console account:", 'search-engine-insights' ) . '</p> <form action="https://deconf.com/search-engine-insights/" method="POST">' . get_submit_button( __( "Find out more!", 'search-engine-insights' ), 'secondary' ) . '</form>';
 				return;
 			}
 
