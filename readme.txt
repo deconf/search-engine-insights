@@ -1,7 +1,7 @@
 === Search Engine Insights for Google Search Console ===
 Contributors: deconf
 Donate link: https://deconf.com/donate/
-Tags: search console dashboard, google search console, search console widget, search console metatag, search console, seo
+Tags: search console dashboard, google search console, search console widget, search console, seo
 Requires at least: 3.5
 Tested up to: 6.9
 Stable tag: 2.6.5
