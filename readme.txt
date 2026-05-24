@@ -3,7 +3,7 @@ Contributors: deconf
 Donate link: https://deconf.com/donate/
 Tags: search console dashboard, google search console, search console widget, search console, seo
 Requires at least: 3.5
-Tested up to: 6.9
+Tested up to: 7.0
 Stable tag: 2.6.5
 Requires PHP: 5.6
 License: GPLv2 or later
